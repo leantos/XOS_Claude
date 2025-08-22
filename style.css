@@ -576,34 +576,6 @@ pre code,
     text-shadow: none !important;
 }
 
-/* Fix light mode code block colors */
-[data-theme="light"] .code-block {
-    background: var(--colorNeutralBackground3);
-    border: 1px solid var(--colorNeutralStroke1);
-}
-
-[data-theme="light"] .code-header {
-    background: var(--colorNeutralBackground3);
-    border-bottom: 1px solid var(--colorNeutralStroke2);
-}
-
-[data-theme="light"] pre {
-    background: var(--colorNeutralBackground2);
-    color: var(--colorNeutralForeground1);
-}
-
-/* Light mode code blocks - Clean styling */
-[data-theme="light"] pre:not(.code-block pre),
-[data-theme="light"] pre code,
-[data-theme="light"] .code-block pre {
-    background: var(--colorNeutralBackground3) !important;
-    border: 1px solid var(--colorNeutralStroke1) !important;
-    color: var(--colorNeutralForeground1) !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: block !important;
-    text-shadow: none !important;
-}
 
 .code-header {
     background: var(--colorNeutralBackground4);
