@@ -552,7 +552,7 @@ strong {
     border: 1px solid var(--colorNeutralStroke1);
     border-radius: var(--borderRadiusMedium);
     position: relative;
-    margin: 16px 0;
+    /* margin: 16px 0; */
     overflow: hidden;
 }
 
@@ -667,7 +667,7 @@ pre {
 code {
     background: var(--bg-tertiary);
     color: var(--primary-light);
-    padding: 2px 6px;
+    /* padding: 2px 6px; */
     border-radius: var(--radius-small);
     font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace;
     font-size: 13px;
@@ -1011,7 +1011,7 @@ tr:hover {
     }
     
     .code-block {
-        margin: 12px -20px;
+        /* margin: 12px -20px; */
         border-radius: 0;
     }
     
