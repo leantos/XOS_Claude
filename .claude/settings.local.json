@@ -27,7 +27,10 @@
       "Bash(do if grep -q \"searchInput\" \"$file\")",
       "Bash(then echo \"=== $file has searchInput JS but might be missing the input element ===\")",
       "Bash(do if grep -q \"searchTerm.*target.*value\" \"$file\")",
-      "Bash(then echo \"=== $file has broken search code ===\")"
+      "Bash(then echo \"=== $file has broken search code ===\")",
+      "Bash(npx live-server:*)",
+      "WebFetch(domain:www.anthropic.com)",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": []

@@ -165,34 +165,49 @@ Fix using patterns from @claude_docs/troubleshooting/frontend-issues.md
 
 ## 🛠️ **Contributing to Documentation**
 
+### **📚 claude_docs Protection**
+The `claude_docs/` directory is **protected** and requires maintainer approval for all changes.
+
 ### **Found an Issue?**
-1. Create an issue in this repository
+1. Create an issue in this repository with label `[DOCS]`
 2. Describe the problem or improvement needed
 3. Include relevant context (which file, what's wrong)
+4. A maintainer will review and implement if appropriate
 
 ### **Want to Contribute?**
+**For claude_docs changes:**
+1. **Create an Issue** - Describe your suggested documentation improvements
+2. **Fork & PR** - For non-claude_docs code contributions only
+3. **Wait for Review** - Maintainers will handle claude_docs modifications
+
+**For other contributions:**
 1. **Fork** this repository
-2. **Create branch** for your improvements
-3. **Make changes** to the relevant files
+2. **Create branch** for your improvements  
+3. **Make changes** to files outside claude_docs/
 4. **Submit Pull Request** with description of changes
+
+### **🔒 Access Control Summary**
+- **claude_docs/**: Maintainer-only editing rights
+- **CODEOWNERS**: Enforces maintainer review for claude_docs
+- **Pre-commit hooks**: Prevents unauthorized local edits
+- **GitHub Actions**: Blocks non-maintainer PRs affecting claude_docs
+- **Team members**: Can suggest changes via issues or fork+PR
 
 ### **For Maintainers**
 ```bash
-# Clone documentation repo directly
-git clone https://github.com/your-org/xos-docs.git
-cd xos-docs
+# Setup git hooks (run once per repository)
+./.githooks/setup-hooks.sh
 
-# Make improvements
-# Edit files in claude_docs/ or HTML files
+# Update maintainer email in pre-commit hook
+# Edit .githooks/pre-commit and update MAINTAINERS array
 
-# Push changes
+# Regular maintenance
 git add .
-git commit -m "Improve: Add new pattern for async operations"
+git commit -m "Improve: Add new pattern for async operations"  
 git push
-
-# Changes automatically deploy to Netlify
-# Teams can pull updates when ready
 ```
+
+📋 **See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed contribution guidelines**
 
 ---
 

@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Pre-commit hook to protect claude_docs directory
+# Only maintainers should be able to directly modify claude_docs
+
+# Get the current user's email from git config
+CURRENT_USER_EMAIL=$(git config user.email)
+
+# Define maintainer emails (update these with actual maintainer emails)
+MAINTAINERS=(
+    "em3tom@gmail.com"  # Update with actual email
+    # Add more maintainer emails here as needed
+    # "maintainer2@example.com"
+)
+
+# Check if current user is a maintainer
+is_maintainer() {
+    local email="$1"
+    for maintainer in "${MAINTAINERS[@]}"; do
+        if [[ "$email" == "$maintainer" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Get list of staged files that are in claude_docs
+CLAUDE_DOCS_CHANGES=$(git diff --cached --name-only | grep "^claude_docs/")
+
+# If there are claude_docs changes and user is not a maintainer
+if [[ -n "$CLAUDE_DOCS_CHANGES" ]] && ! is_maintainer "$CURRENT_USER_EMAIL"; then
+    echo "❌ Error: Direct modifications to claude_docs are not allowed."
+    echo ""
+    echo "📚 claude_docs is protected and can only be modified by maintainers."
+    echo ""
+    echo "🔧 To suggest changes to claude_docs:"
+    echo "   1. Open an issue: https://github.com/leantos/XOS_Claude/issues"
+    echo "   2. Or fork the repo and submit a pull request"
+    echo ""
+    echo "📝 Files you tried to modify:"
+    echo "$CLAUDE_DOCS_CHANGES" | sed 's/^/   - /'
+    echo ""
+    echo "💡 Current user: $CURRENT_USER_EMAIL"
+    echo "   (Not in maintainer list)"
+    exit 1
+fi
+
+# If we get here, either no claude_docs changes or user is maintainer
+if [[ -n "$CLAUDE_DOCS_CHANGES" ]]; then
+    echo "✅ claude_docs changes detected - user is authorized maintainer"
+    echo "📝 Modified files:"
+    echo "$CLAUDE_DOCS_CHANGES" | sed 's/^/   - /'
+fi
+
+exit 0

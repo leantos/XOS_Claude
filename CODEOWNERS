@@ -1,0 +1,12 @@
+# CODEOWNERS file for XOS_Claude
+# This file defines who is responsible for reviewing changes to specific parts of the codebase
+# More information: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Claude Documentation - Only maintainers can approve changes
+/claude_docs/ @leantos
+
+# You can add additional maintainers by adding their GitHub usernames:
+# /claude_docs/ @leantos @maintainer2 @maintainer3
+
+# Global fallback - repository owner reviews everything else
+* @leantos

@@ -1,0 +1,119 @@
+name: Protect claude_docs
+
+on:
+  pull_request:
+    paths:
+      - 'claude_docs/**'
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-claude-docs-permissions:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if PR author is maintainer
+        id: check-maintainer
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          MAINTAINERS: "leantos" # Add more maintainers separated by spaces
+        run: |
+          echo "PR Author: $PR_AUTHOR"
+          echo "Maintainers: $MAINTAINERS"
+          
+          if echo "$MAINTAINERS" | grep -q "\b$PR_AUTHOR\b"; then
+            echo "is_maintainer=true" >> $GITHUB_OUTPUT
+            echo "✅ $PR_AUTHOR is a maintainer"
+          else
+            echo "is_maintainer=false" >> $GITHUB_OUTPUT
+            echo "❌ $PR_AUTHOR is not a maintainer"
+          fi
+
+      - name: Get changed files in claude_docs
+        id: changed-files
+        if: steps.check-maintainer.outputs.is_maintainer == 'false'
+        run: |
+          echo "Checking for claude_docs changes..."
+          changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep "^claude_docs/" || true)
+          
+          if [ -n "$changed_files" ]; then
+            echo "claude_docs_changed=true" >> $GITHUB_OUTPUT
+            echo "Changed claude_docs files:"
+            echo "$changed_files"
+            echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+            echo "$changed_files" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "claude_docs_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Block non-maintainer claude_docs changes
+        if: steps.check-maintainer.outputs.is_maintainer == 'false' && steps.changed-files.outputs.claude_docs_changed == 'true'
+        run: |
+          echo "❌ claude_docs modifications require maintainer approval"
+          echo ""
+          echo "📚 The claude_docs directory contains critical project documentation"
+          echo "   and can only be modified by repository maintainers."
+          echo ""
+          echo "🔧 To suggest changes to claude_docs:"
+          echo "   1. Close this PR and open an issue instead"
+          echo "   2. Describe your suggested changes in the issue"
+          echo "   3. A maintainer will review and implement if appropriate"
+          echo ""
+          echo "📝 Files you attempted to modify:"
+          echo "${{ steps.changed-files.outputs.changed_files }}" | sed 's/^/   - /'
+          echo ""
+          echo "👥 Current maintainers: ${{ env.MAINTAINERS }}"
+          echo "💡 Contact a maintainer if you need to become one"
+          exit 1
+
+      - name: Approve maintainer changes
+        if: steps.check-maintainer.outputs.is_maintainer == 'true'
+        run: |
+          echo "✅ claude_docs changes approved - author is a maintainer"
+          echo "📝 Maintainer: ${{ github.event.pull_request.user.login }}"
+          echo "🎯 This PR can proceed with claude_docs modifications"
+
+  require-maintainer-review:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.changed_files, 'claude_docs/')
+    
+    steps:
+      - name: Add maintainer review requirement
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // This job runs when claude_docs files are changed
+            // It ensures the PR description mentions the protection
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+            
+            const body = pr.body || '';
+            const hasNotice = body.includes('claude_docs') || body.includes('maintainer');
+            
+            if (!hasNotice) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: `📚 **claude_docs Protection Notice**
+                
+This PR modifies files in the \`claude_docs/\` directory, which requires maintainer review.
+
+🔒 **Automatic protections active:**
+- CODEOWNERS file requires maintainer approval
+- Branch protection rules enforce review requirements
+- Pre-commit hooks prevent unauthorized local changes
+
+✅ **Next steps:**
+- A maintainer will review these documentation changes
+- The PR will be approved/merged once review is complete`
+              });
+            }
