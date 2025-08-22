@@ -546,33 +546,64 @@ strong {
     color: #16a34a;
 }
 
-/* Code Blocks - Flush with container */
+/* Code Blocks - Fluent 2 Design System */
 .code-block {
     background: var(--colorNeutralBackground3);
     border: 1px solid var(--colorNeutralStroke1);
     border-radius: var(--borderRadiusMedium);
     position: relative;
-    margin: 0;
+    margin: 16px 0;
     overflow: hidden;
 }
 
-/* Clean code blocks - flush with container */
+/* Clean code blocks - no extra padding or shadows */
 pre:not(.code-block pre),
 pre code,
 .code-block pre {
-    background: var(--colorNeutralBackground3);
-    border: 1px solid var(--colorNeutralStroke1);
+    background: var(--colorNeutralBackground3) !important;
+    border: 1px solid var(--colorNeutralStroke1) !important;
     border-radius: var(--borderRadiusMedium);
-    margin: 0;
-    padding: 12px;
+    margin: 16px 0;
+    padding: 12px !important;
     overflow-x: auto;
-    font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace;
-    font-size: 13px;
-    line-height: 1.4;
-    color: var(--colorNeutralForeground1);
-    text-shadow: none;
+    font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    color: var(--colorNeutralForeground1) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    text-shadow: none !important;
 }
 
+/* Fix light mode code block colors */
+[data-theme="light"] .code-block {
+    background: var(--colorNeutralBackground3);
+    border: 1px solid var(--colorNeutralStroke1);
+}
+
+[data-theme="light"] .code-header {
+    background: var(--colorNeutralBackground3);
+    border-bottom: 1px solid var(--colorNeutralStroke2);
+}
+
+[data-theme="light"] pre {
+    background: var(--colorNeutralBackground2);
+    color: var(--colorNeutralForeground1);
+}
+
+/* Light mode code blocks - Clean styling */
+[data-theme="light"] pre:not(.code-block pre),
+[data-theme="light"] pre code,
+[data-theme="light"] .code-block pre {
+    background: var(--colorNeutralBackground3) !important;
+    border: 1px solid var(--colorNeutralStroke1) !important;
+    color: var(--colorNeutralForeground1) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    text-shadow: none !important;
+}
 
 .code-header {
     background: var(--colorNeutralBackground4);
@@ -623,14 +654,14 @@ pre code,
 
 pre {
     margin: 0;
-    padding: 12px;
+    padding: 16px;
     overflow-x: auto;
     white-space: pre-wrap;
     font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace;
     font-size: 13px;
-    line-height: 1.4;
-    color: var(--colorNeutralForeground1);
-    text-shadow: none;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    text-shadow: none !important;
 }
 
 code {
