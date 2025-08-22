@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDD XOS Frontend Workflow - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-list-check"></i> TDD Workflow</h3>
+            <ul>
+                <li><a href="#overview"><i class="bi bi-info-circle"></i> Overview</a></li>
+                <li><a href="#step1-design"><i class="bi bi-pencil"></i> Step 1: Design</a></li>
+                <li><a href="#step2-structure"><i class="bi bi-diagram-3"></i> Step 2: Structure</a></li>
+                <li><a href="#step3-implement"><i class="bi bi-code"></i> Step 3: Implement</a></li>
+                <li><a href="#step4-test"><i class="bi bi-check-circle"></i> Step 4: Test</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1><i class="bi bi-list-check"></i> TDD XOS Frontend Workflow</h1>
+
+            <div class="alert alert-critical">
+                <h3>🚨 XOS Framework Requirement</h3>
+                <p>This workflow is specifically for <strong>XOS Framework</strong> components. Standard React patterns will not work and will break your application.</p>
+            </div>
+
+            <section id="overview">
+                <h2>Overview</h2>
+                <p>Test-Driven Development workflow specifically designed for XOS Framework frontend components. This ensures components work correctly with the XOS MVVM pattern.</p>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>🎯 Goals</h4>
+                        <ul>
+                            <li>Ensure keyboard input functionality</li>
+                            <li>Validate XOS MVVM integration</li>
+                            <li>Verify data binding patterns</li>
+                            <li>Test component lifecycle</li>
+                        </ul>
+                    </div>
+                    <div class="nav-card">
+                        <h4>📋 Requirements</h4>
+                        <ul>
+                            <li>Follow <a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a></li>
+                            <li>Use VMBase Data reference pattern</li>
+                            <li>Implement three-step event handlers</li>
+                            <li>Ensure updateUI() calls</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step1-design">
+                <h2>Step 1: Design Component Interface</h2>
+                
+                <h3>Claude Prompt Template</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Component Design Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'design-prompt')">Copy</button>
+                    </div>
+                    <pre id="design-prompt">Design [ComponentName] XOS component interface.
+Follow CRITICAL_PATTERNS.html for XOS MVVM pattern.
+Requirements:
+- VMBase inheritance with Data reference
+- Three-step event handlers for all inputs
+- updateUI() after state changes
+- Props/data interface definition
+- Method signatures for key operations</pre>
+                </div>
+
+                <h3>Expected Output</h3>
+                <ul>
+                    <li>Component class structure with VMBase</li>
+                    <li>Data property definitions</li>
+                    <li>Event handler method signatures</li>
+                    <li>updateUI integration points</li>
+                </ul>
+            </section>
+
+            <section id="step2-structure">
+                <h2>Step 2: Create Component Structure</h2>
+                
+                <h3>Claude Prompt Template</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Structure Creation Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'structure-prompt')">Copy</button>
+                    </div>
+                    <pre id="structure-prompt">Implement [ComponentName] component structure using XOS patterns from CRITICAL_PATTERNS.html.
+CRITICAL: Use VMBase Data reference pattern from xos-input-handling-fix.html
+Requirements:
+- Proper init() method with Data setup
+- Three-step event handlers (onChange, onInput, etc.)
+- updateUI() calls after state changes
+- XOS-compatible JSX structure</pre>
+                </div>
+
+                <h3>Validation Checklist</h3>
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>✅ Must Have</h4>
+                        <ul>
+                            <li>VMBase inheritance</li>
+                            <li>Data property initialization</li>
+                            <li>init() method implementation</li>
+                            <li>updateUI() integration</li>
+                        </ul>
+                    </div>
+                    <div class="nav-card">
+                        <h4>🚫 Must NOT Have</h4>
+                        <ul>
+                            <li>Standard React useState</li>
+                            <li>Direct state mutations</li>
+                            <li>Missing updateUI() calls</li>
+                            <li>Standard onChange patterns</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="step3-implement">
+                <h2>Step 3: Implement Functionality</h2>
+                
+                <h3>Claude Prompt Template</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Implementation Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'implementation-prompt')">Copy</button>
+                    </div>
+                    <pre id="implementation-prompt">Complete [ComponentName] implementation with working keyboard input.
+CRITICAL: Fix using patterns from xos-input-handling-fix.html
+- Implement three-step event handler pattern
+- Ensure all inputs accept keyboard typing
+- Add proper Data reference management
+- Include updateUI() after all state changes
+Test that inputs work correctly with keyboard typing.</pre>
+                </div>
+
+                <h3>Key Implementation Points</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pattern</th>
+                                <th>Implementation</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Three-step handlers</td>
+                                <td>onChange + onInput + Data.field = value</td>
+                                <td>Ensure keyboard input works</td>
+                            </tr>
+                            <tr>
+                                <td>Data reference</td>
+                                <td>this.Data.fieldName = newValue</td>
+                                <td>XOS state management</td>
+                            </tr>
+                            <tr>
+                                <td>updateUI() calls</td>
+                                <td>After every state change</td>
+                                <td>Trigger UI re-render</td>
+                            </tr>
+                            <tr>
+                                <td>init() method</td>
+                                <td>Set up Data object structure</td>
+                                <td>Component initialization</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="step4-test">
+                <h2>Step 4: Test Component</h2>
+                
+                <h3>Manual Testing Checklist</h3>
+                <div class="alert alert-info">
+                    <h4>✅ Required Tests</h4>
+                    <ol>
+                        <li><strong>Keyboard Input</strong> - All text inputs accept typing</li>
+                        <li><strong>State Updates</strong> - Data changes trigger UI updates</li>
+                        <li><strong>Event Handling</strong> - All interactions work correctly</li>
+                        <li><strong>Data Persistence</strong> - State survives component updates</li>
+                    </ol>
+                </div>
+
+                <h3>Automated Testing Prompt</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Test Creation Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'test-prompt')">Copy</button>
+                    </div>
+                    <pre id="test-prompt">Create comprehensive tests for [ComponentName] XOS component.
+Test requirements:
+- Keyboard input functionality in all text fields
+- Data reference pattern working correctly
+- updateUI() being called after state changes
+- Component initialization with proper Data setup
+- Event handlers working with XOS patterns
+Use Jest/React Testing Library for implementation.</pre>
+                </div>
+
+                <h3>Common Issues & Fixes</h3>
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>🚨 Input Not Working</h4>
+                        <p><strong>Fix:</strong> Use three-step event handler pattern from <a href="xos-input-handling-fix.html">xos-input-handling-fix.html</a></p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>🚨 State Not Updating</h4>
+                        <p><strong>Fix:</strong> Ensure updateUI() is called after every Data modification</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>🚨 Component Not Initializing</h4>
+                        <p><strong>Fix:</strong> Implement proper init() method with Data object setup</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>🚨 "Cannot set property Data" Error</h4>
+                        <p><strong>Fix:</strong> Use ViewModel initialization patterns from <a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a></p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="workflow-summary">
+                <h2>Workflow Summary</h2>
+                <div class="alert alert-success">
+                    <h3>🎯 Success Criteria</h3>
+                    <p>Your XOS frontend component is ready when:</p>
+                    <ul>
+                        <li>✅ All keyboard inputs work correctly</li>
+                        <li>✅ Data changes trigger UI updates</li>
+                        <li>✅ No "Cannot set property Data" errors</li>
+                        <li>✅ Component follows XOS MVVM patterns</li>
+                        <li>✅ All tests pass</li>
+                    </ul>
+                </div>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>📚 Reference Documents</h4>
+                        <ul>
+                            <li><a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a> - Core XOS patterns</li>
+                            <li><a href="xos-input-handling-fix.html">xos-input-handling-fix.html</a> - Input handling fix</li>
+                            <li><a href="MODULE-DEVELOPMENT-GUIDE.html">MODULE-DEVELOPMENT-GUIDE.html</a> - Complete workflow</li>
+                        </ul>
+                    </div>
+                    <div class="nav-card">
+                        <h4>🔧 Next Steps</h4>
+                        <ul>
+                            <li>Integrate with backend APIs</li>
+                            <li>Add to parent components</li>
+                            <li>Deploy and test in production</li>
+                            <li>Document component usage</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>TDD XOS Frontend Workflow Guide</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

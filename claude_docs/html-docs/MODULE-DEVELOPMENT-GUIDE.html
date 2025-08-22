@@ -122,9 +122,9 @@ Requirements:
 - [List your UI requirements]
 - [List fields needed]
 
-Follow @claude_docs/development-guide/TDD-XOS-FRONTEND-WORKFLOW.md
+Follow TDD-XOS-FRONTEND-WORKFLOW.html
 Use @claude_docs/frontend/ui-templates/XOSComponentTemplate as base.
-CRITICAL: Must use VMBase Data reference pattern from @claude_docs/frontend/xos-input-handling-fix.md</code></pre>
+CRITICAL: Must use VMBase Data reference pattern from xos-input-handling-fix.html</code></pre>
                         </div>
 
                         <h4>For Complex UI with Wireframe</h4>
@@ -134,7 +134,7 @@ CRITICAL: Must use VMBase Data reference pattern from @claude_docs/frontend/xos-
                                 <button class="copy-btn" onclick="copyCode(this, 'complex-component')">Copy</button>
                             </div>
                             <pre id="complex-component"><code class="language-text">Implement [ModuleName] frontend module from MODULE_[ModuleName]_FRONTEND_WIREFRAME_[timestamp].md
-Follow @claude_docs/development-guide/TDD-XOS-FRONTEND-WORKFLOW.md
+Follow TDD-XOS-FRONTEND-WORKFLOW.html
 Use XOS MVVM pattern with VMBase.
 CRITICAL: All inputs must accept keyboard input - follow three-step event handler pattern.
 Target: 80% test coverage minimum.</code></pre>
@@ -153,7 +153,7 @@ Requirements:
 - Search and pagination
 
 Use @claude_docs/frontend/ui-templates/SearchListGridTemplate as reference.
-Follow XOS patterns from @claude_docs/CRITICAL_PATTERNS.md</code></pre>
+Follow XOS patterns from CRITICAL_PATTERNS.html</code></pre>
                         </div>
                     </div>
                 </div>
@@ -177,8 +177,8 @@ Entity: [EntityName]
 Fields: [list fields with types]
 Database: PostgreSQL with raw SQL
 
-Follow @claude_docs/development-guide/TDD-MODULE-WORKFLOW.md for backend.
-Use XOS data patterns from @claude_docs/backend/backend-blueprint.md
+Follow TDD-MODULE-WORKFLOW.html for backend.
+Use XOS data patterns from backend-blueprint.html
 IMPORTANT: Use GetEntityDataListAsync pattern, NOT Entity Framework.
 All endpoints should be POST, return domain types directly.</pre>
                                 </div>
@@ -224,17 +224,17 @@ BACKEND:
 - Entity: [EntityName] with fields [list fields]
 - CRUD operations + [custom operations]
 - PostgreSQL with raw SQL
-- Follow @claude_docs/backend/backend-blueprint.md
+- Follow backend-blueprint.html
 
 FRONTEND:
 - List view with XOSGrid
 - Add/Edit form with validation
 - Delete with confirmation
-- Follow @claude_docs/development-guide/TDD-XOS-FRONTEND-WORKFLOW.md
+- Follow TDD-XOS-FRONTEND-WORKFLOW.html
 
 INTEGRATION:
 - Use Utils.ajax for API calls
-- Follow patterns from @claude_docs/CRITICAL_PATTERNS.md
+- Follow patterns from CRITICAL_PATTERNS.html
 
 Target: Working end-to-end feature with 80% test coverage.</pre>
                         </div>
@@ -256,7 +256,7 @@ Target: Working end-to-end feature with 80% test coverage.</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'input-fix')">Copy</button>
                                     </div>
                                     <pre id="input-fix">XOSTextbox inputs are not accepting keyboard input in [ComponentName].
-Fix using patterns from @claude_docs/frontend/xos-input-handling-fix.md
+Fix using patterns from xos-input-handling-fix.html
 Ensure three-step event handler pattern and updateUI() calls.</pre>
                                 </div>
                             </div>
@@ -269,7 +269,7 @@ Ensure three-step event handler pattern and updateUI() calls.</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'data-error-fix')">Copy</button>
                                     </div>
                                     <pre id="data-error-fix">Getting 'Cannot set property Data of #<VMBase>' error in [ComponentName].
-Fix using correct ViewModel initialization from @claude_docs/CRITICAL_PATTERNS.md
+Fix using correct ViewModel initialization from CRITICAL_PATTERNS.html
 Use init() method with Data reference pattern.</pre>
                                 </div>
                             </div>
@@ -283,8 +283,8 @@ Use init() method with Data reference pattern.</pre>
                                     </div>
                                     <pre id="api-fix">API calls failing in [ModuleName]. Current code: [paste code]
 Fix using XOS patterns:
-- Utils.ajax from @claude_docs/frontend/utils-api.md
-- POST-only endpoints from @claude_docs/backend/api-routes.md</pre>
+- Utils.ajax from utils-api.html
+- POST-only endpoints from api-routes.html</pre>
                                 </div>
                             </div>
                         </div>
@@ -434,7 +434,7 @@ Generate CREATE TABLE script and migration.</pre>
 - Transaction support
 - Error handling
 
-Follow patterns from @claude_docs/backend/services-core.md</pre>
+Follow patterns from services-core.html</pre>
                         </div>
                     </div>
 
@@ -451,7 +451,7 @@ Follow patterns from @claude_docs/backend/services-core.md</pre>
 - Route: /api/[EntityName]/[Action]
 - Authorization attributes
 
-Follow @claude_docs/backend/api-routes.md patterns</pre>
+Follow api-routes.html patterns</pre>
                         </div>
                     </div>
 
@@ -535,7 +535,7 @@ Ensure 80% coverage minimum.</pre>
                     <p>If Claude's implementation has issues:</p>
                     <ol>
                         <li><strong>Be Specific</strong>: "The userName input in UserForm component won't accept typing"</li>
-                        <li><strong>Reference Docs</strong>: "Fix using @claude_docs/frontend/xos-input-handling-fix.md"</li>
+                        <li><strong>Reference Docs</strong>: "Fix using xos-input-handling-fix.html"</li>
                         <li><strong>Show Error</strong>: "Getting error: [paste exact error]"</li>
                         <li><strong>Request Pattern</strong>: "Use the three-step event handler pattern"</li>
                     </ol>
@@ -555,7 +555,7 @@ Ensure 80% coverage minimum.</pre>
                                 <tbody>
                                     <tr>
                                         <td>"Cannot set property Data" error</td>
-                                        <td>Fix using Data reference pattern from @claude_docs/frontend/xos-input-handling-fix.md</td>
+                                        <td>Fix using Data reference pattern from xos-input-handling-fix.html</td>
                                     </tr>
                                     <tr>
                                         <td>Inputs not accepting typing</td>
@@ -646,7 +646,7 @@ Follow backend patterns from @claude_docs/backend/</code></pre>
 - Delete functionality
 - Connect to backend APIs using Utils.ajax
 
-Follow @claude_docs/development-guide/TDD-XOS-FRONTEND-WORKFLOW.md</code></pre>
+Follow TDD-XOS-FRONTEND-WORKFLOW.html</code></pre>
                         </div>
                     </div>
 
@@ -916,7 +916,7 @@ Frontend:
                 <p>If Claude's implementation has issues:</p>
                 <ol>
                     <li><strong>Be Specific</strong>: "The userName input in UserForm component won't accept typing"</li>
-                    <li><strong>Reference Docs</strong>: "Fix using @claude_docs/frontend/xos-input-handling-fix.md"</li>
+                    <li><strong>Reference Docs</strong>: "Fix using xos-input-handling-fix.html"</li>
                     <li><strong>Show Error</strong>: "Getting error: [paste exact error]"</li>
                     <li><strong>Request Pattern</strong>: "Use the three-step event handler pattern"</li>
                 </ol>
@@ -927,11 +927,11 @@ Frontend:
                 
                 <p>Before starting any module, ensure Claude reads:</p>
                 <ol>
-                    <li><code>@claude_docs/CRITICAL_PATTERNS.md</code> - Core XOS patterns</li>
-                    <li><code>@claude_docs/frontend/xos-input-handling-fix.md</code> - Frontend input handling</li>
-                    <li><code>@claude_docs/backend/backend-blueprint.md</code> - Backend architecture</li>
-                    <li><code>@claude_docs/development-guide/TDD-MODULE-WORKFLOW.md</code> - TDD process</li>
-                    <li><code>@claude_docs/development-guide/TDD-XOS-FRONTEND-WORKFLOW.md</code> - Frontend specifics</li>
+                    <li><code>CRITICAL_PATTERNS.html</code> - Core XOS patterns</li>
+                    <li><code>xos-input-handling-fix.html</code> - Frontend input handling</li>
+                    <li><code>backend-blueprint.html</code> - Backend architecture</li>
+                    <li><code>TDD-MODULE-WORKFLOW.html</code> - TDD process</li>
+                    <li><code>TDD-XOS-FRONTEND-WORKFLOW.html</code> - Frontend specifics</li>
                 </ol>
 
                 <h3>Quick Access Resources</h3>
@@ -939,8 +939,8 @@ Frontend:
                     <div class="nav-card">
                         <h4>For Quick Reference</h4>
                         <ul>
-                            <li><code>@claude_docs/CLAUDE-PROMPT-QUICK-REFERENCE.md</code> - Copy-paste prompts</li>
-                            <li><code>@claude_docs/COMMON-MODULE-EXAMPLES.md</code> - Ready-to-use module templates</li>
+                            <li><code>CLAUDE-PROMPT-QUICK-REFERENCE.html</code> - Copy-paste prompts</li>
+                            <li><code>COMMON-MODULE-EXAMPLES.html</code> - Ready-to-use module templates</li>
                             <li><code>@claude_docs/development-guide/XOS-COMPONENT-CHECKLIST.md</code> - Component validation</li>
                         </ul>
                     </div>

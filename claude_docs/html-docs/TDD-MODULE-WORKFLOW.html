@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDD Module Workflow - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-diagram-3"></i> TDD Module</h3>
+            <ul>
+                <li><a href="#overview"><i class="bi bi-info-circle"></i> Overview</a></li>
+                <li><a href="#planning"><i class="bi bi-clipboard"></i> Planning</a></li>
+                <li><a href="#backend-first"><i class="bi bi-server"></i> Backend First</a></li>
+                <li><a href="#frontend-integration"><i class="bi bi-palette"></i> Frontend</a></li>
+                <li><a href="#end-to-end-testing"><i class="bi bi-check-all"></i> E2E Testing</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="backend-blueprint.html"><i class="bi bi-diagram-3"></i> Backend Blueprint</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1><i class="bi bi-diagram-3"></i> TDD Module Workflow</h1>
+
+            <div class="alert alert-critical">
+                <h3>🚨 Full-Stack XOS Module Development</h3>
+                <p>This workflow covers complete module development from database to frontend, using XOS Framework patterns throughout.</p>
+            </div>
+
+            <section id="overview">
+                <h2>Overview</h2>
+                <p>Test-Driven Development workflow for creating complete XOS modules with backend services, database integration, and frontend components.</p>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>🎯 Module Components</h4>
+                        <ul>
+                            <li>PostgreSQL database schema</li>
+                            <li>Backend service with CRUD operations</li>
+                            <li>API controller with POST endpoints</li>
+                            <li>Frontend XOS component with MVVM</li>
+                        </ul>
+                    </div>
+                    <div class="nav-card">
+                        <h4>📋 Success Criteria</h4>
+                        <ul>
+                            <li>80% test coverage</li>
+                            <li>Working keyboard input</li>
+                            <li>End-to-end functionality</li>
+                            <li>XOS pattern compliance</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="planning">
+                <h2>Phase 1: Module Planning</h2>
+                
+                <h3>Claude Prompt Template</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Module Planning Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'planning-prompt')">Copy</button>
+                    </div>
+                    <pre id="planning-prompt">Plan complete [ModuleName] module for XOS Framework.
+Follow MODULE-DEVELOPMENT-GUIDE.html patterns.
+Requirements:
+- PostgreSQL schema design
+- Backend service with CRUD operations
+- POST-only API endpoints
+- Frontend XOS component with MVVM pattern
+- 80% test coverage target
+Create detailed technical specification.</pre>
+                </div>
+
+                <h3>Planning Deliverables</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Component</th>
+                                <th>Specification</th>
+                                <th>Key Requirements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Database</td>
+                                <td>Table schema with relationships</td>
+                                <td>Multi-tenant support, audit fields</td>
+                            </tr>
+                            <tr>
+                                <td>Backend</td>
+                                <td>Service methods and data models</td>
+                                <td>Raw SQL, transaction support</td>
+                            </tr>
+                            <tr>
+                                <td>API</td>
+                                <td>Endpoint definitions</td>
+                                <td>POST-only, domain type returns</td>
+                            </tr>
+                            <tr>
+                                <td>Frontend</td>
+                                <td>Component interface and data flow</td>
+                                <td>XOS MVVM, working keyboard input</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="backend-first">
+                <h2>Phase 2: Backend-First Development</h2>
+                
+                <h3>Step 2.1: Database Schema</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Database Creation Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'database-prompt')">Copy</button>
+                    </div>
+                    <pre id="database-prompt">Create PostgreSQL schema for [ModuleName] module.
+Follow backend-blueprint.html patterns.
+Requirements:
+- Multi-tenant support with TenantId
+- Audit fields (CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
+- Primary key as Id (int identity)
+- Appropriate indexes and constraints
+- Raw SQL migrations</pre>
+                </div>
+
+                <h3>Step 2.2: Backend Service</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Service Creation Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'service-prompt')">Copy</button>
+                    </div>
+                    <pre id="service-prompt">Create [ModuleName]Service with CRUD operations for PostgreSQL.
+Follow backend-blueprint.html patterns.
+Requirements:
+- GetEntityDataListAsync pattern
+- Raw SQL queries (no ORM)
+- Transaction support where needed
+- Domain model returns
+- 80% unit test coverage</pre>
+                </div>
+
+                <h3>Step 2.3: API Controller</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Controller Creation Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'controller-prompt')">Copy</button>
+                    </div>
+                    <pre id="controller-prompt">Create [ModuleName]Controller with POST endpoints.
+Follow api-routes.html patterns.
+Requirements:
+- POST-only endpoints (no GET/PUT/DELETE)
+- Return domain types directly (not IActionResult)
+- Dependency injection for services
+- Proper error handling
+- Integration test coverage</pre>
+                </div>
+
+                <div class="alert alert-info">
+                    <h4>Backend Testing Requirements</h4>
+                    <ul>
+                        <li><strong>Unit Tests:</strong> Service methods with mocked dependencies</li>
+                        <li><strong>Integration Tests:</strong> API endpoints with test database</li>
+                        <li><strong>Coverage Target:</strong> 80% minimum</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="frontend-integration">
+                <h2>Phase 3: Frontend Integration</h2>
+                
+                <h3>Step 3.1: XOS Component Structure</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Component Creation Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'component-prompt')">Copy</button>
+                    </div>
+                    <pre id="component-prompt">Create [ModuleName] XOS component with backend integration.
+Follow TDD-XOS-FRONTEND-WORKFLOW.html and CRITICAL_PATTERNS.html.
+Requirements:
+- VMBase inheritance with Data reference pattern
+- API integration using Utils.ajax
+- Three-step event handlers for all inputs
+- updateUI() calls after state changes
+- CRUD operations connected to backend endpoints</pre>
+                </div>
+
+                <h3>Step 3.2: API Integration</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>API Integration Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'api-integration-prompt')">Copy</button>
+                    </div>
+                    <pre id="api-integration-prompt">Implement API integration for [ModuleName] component.
+Connect to backend endpoints using XOS patterns.
+Requirements:
+- Use Utils.ajax for API calls
+- Handle loading states properly
+- Error handling and user feedback
+- Data transformation between frontend and backend
+- Ensure all CRUD operations work end-to-end</pre>
+                </div>
+
+                <h3>Frontend Validation Checklist</h3>
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>✅ Component Requirements</h4>
+                        <ul>
+                            <li>VMBase inheritance</li>
+                            <li>Working keyboard input</li>
+                            <li>Proper Data reference pattern</li>
+                            <li>updateUI() integration</li>
+                        </ul>
+                    </div>
+                    <div class="nav-card">
+                        <h4>✅ API Integration</h4>
+                        <ul>
+                            <li>Utils.ajax usage</li>
+                            <li>POST-only endpoint calls</li>
+                            <li>Loading state management</li>
+                            <li>Error handling</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="end-to-end-testing">
+                <h2>Phase 4: End-to-End Testing</h2>
+                
+                <h3>Manual Testing Checklist</h3>
+                <div class="alert alert-warning">
+                    <h4>🔍 Critical Tests</h4>
+                    <ol>
+                        <li><strong>Keyboard Input:</strong> All text inputs accept typing</li>
+                        <li><strong>Create Operation:</strong> New records save to database</li>
+                        <li><strong>Read Operation:</strong> Data loads and displays correctly</li>
+                        <li><strong>Update Operation:</strong> Changes persist to database</li>
+                        <li><strong>Delete Operation:</strong> Records remove correctly</li>
+                        <li><strong>Multi-tenant:</strong> Data isolation works</li>
+                    </ol>
+                </div>
+
+                <h3>Automated E2E Testing</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>E2E Test Creation Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'e2e-prompt')">Copy</button>
+                    </div>
+                    <pre id="e2e-prompt">Create end-to-end tests for [ModuleName] module.
+Test requirements:
+- Complete CRUD workflow from frontend to database
+- Keyboard input functionality in all fields
+- API integration working correctly
+- Data persistence and retrieval
+- Error handling scenarios
+- Multi-tenant data isolation
+Use Playwright or Cypress for implementation.</pre>
+                </div>
+
+                <h3>Performance Testing</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Test Type</th>
+                                <th>Metric</th>
+                                <th>Target</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>API Response</td>
+                                <td>Response time</td>
+                                <td>&lt; 500ms</td>
+                            </tr>
+                            <tr>
+                                <td>Frontend Loading</td>
+                                <td>Component render</td>
+                                <td>&lt; 200ms</td>
+                            </tr>
+                            <tr>
+                                <td>Database Query</td>
+                                <td>Query execution</td>
+                                <td>&lt; 100ms</td>
+                            </tr>
+                            <tr>
+                                <td>User Input</td>
+                                <td>Input responsiveness</td>
+                                <td>Immediate</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="deployment-checklist">
+                <h2>Phase 5: Deployment Checklist</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>🔧 Backend Deployment</h4>
+                        <ul>
+                            <li>✅ Database migrations applied</li>
+                            <li>✅ Service registered in DI container</li>
+                            <li>✅ Controller endpoints accessible</li>
+                            <li>✅ All tests passing</li>
+                        </ul>
+                    </div>
+                    <div class="nav-card">
+                        <h4>🎨 Frontend Deployment</h4>
+                        <ul>
+                            <li>✅ Component integrated in parent</li>
+                            <li>✅ Keyboard input working</li>
+                            <li>✅ API calls successful</li>
+                            <li>✅ Error handling functional</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="alert alert-success">
+                    <h3>🎯 Module Complete</h3>
+                    <p>Your XOS module is ready for production when all phases pass:</p>
+                    <ul>
+                        <li>✅ Backend services with 80% test coverage</li>
+                        <li>✅ Frontend component with working keyboard input</li>
+                        <li>✅ End-to-end functionality verified</li>
+                        <li>✅ Performance targets met</li>
+                        <li>✅ Deployment checklist complete</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="common-issues">
+                <h2>Common Issues & Solutions</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>🚨 Backend Issues</h4>
+                        <ul>
+                            <li><strong>SQL Errors:</strong> Check multi-tenant filters</li>
+                            <li><strong>Transaction Issues:</strong> Verify connection scope</li>
+                            <li><strong>Performance:</strong> Add appropriate indexes</li>
+                        </ul>
+                    </div>
+                    <div class="nav-card">
+                        <h4>🚨 Frontend Issues</h4>
+                        <ul>
+                            <li><strong>Input Not Working:</strong> Use <a href="xos-input-handling-fix.html">xos-input-handling-fix.html</a></li>
+                            <li><strong>State Issues:</strong> Check updateUI() calls</li>
+                            <li><strong>API Errors:</strong> Verify Utils.ajax usage</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>TDD Module Workflow Guide</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

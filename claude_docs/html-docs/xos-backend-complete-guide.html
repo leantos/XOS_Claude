@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XOS Backend Complete Guide - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-server"></i> Backend Guide</h3>
+            <ul>
+                <li><a href="#overview"><i class="bi bi-info-circle"></i> Overview</a></li>
+                <li><a href="#architecture"><i class="bi bi-diagram-3"></i> Architecture</a></li>
+                <li><a href="#service-patterns"><i class="bi bi-gear"></i> Service Patterns</a></li>
+                <li><a href="#database-access"><i class="bi bi-database"></i> Database</a></li>
+                <li><a href="#api-controllers"><i class="bi bi-cloud"></i> API Controllers</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-code-square"></i> Implementation</h3>
+            <ul>
+                <li><a href="#crud-operations"><i class="bi bi-arrow-repeat"></i> CRUD Operations</a></li>
+                <li><a href="#multi-tenant"><i class="bi bi-building"></i> Multi-Tenant</a></li>
+                <li><a href="#transactions"><i class="bi bi-arrow-left-right"></i> Transactions</a></li>
+                <li><a href="#testing"><i class="bi bi-check-circle"></i> Testing</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="backend-blueprint.html"><i class="bi bi-diagram-3"></i> Backend Blueprint</a></li>
+                <li><a href="api-routes.html"><i class="bi bi-arrow-left-right"></i> API Routes</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1><i class="bi bi-server"></i> XOS Backend Complete Guide</h1>
+
+            <div class="alert alert-critical">
+                <h3>🚨 XOS Backend Framework</h3>
+                <p>This guide covers XOS-specific backend patterns that differ from standard ASP.NET Core. Standard patterns will not work in XOS applications.</p>
+            </div>
+
+            <section id="overview">
+                <h2>Overview</h2>
+                <p>Complete guide to building XOS backend services with PostgreSQL, focusing on the specific patterns required by the XOS framework.</p>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>🎯 Key Concepts</h4>
+                        <ul>
+                            <li>Raw SQL queries (no ORM)</li>
+                            <li>POST-only API endpoints</li>
+                            <li>Multi-tenant data isolation</li>
+                            <li>GetEntityDataListAsync pattern</li>
+                        </ul>
+                    </div>
+                    <div class="nav-card">
+                        <h4>📋 Technologies</h4>
+                        <ul>
+                            <li>ASP.NET Core with XOS modifications</li>
+                            <li>PostgreSQL database</li>
+                            <li>Raw SQL with Dapper</li>
+                            <li>Dependency injection</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="architecture">
+                <h2>XOS Backend Architecture</h2>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Layer</th>
+                                <th>Responsibility</th>
+                                <th>XOS Requirements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Controllers</td>
+                                <td>API endpoints</td>
+                                <td>POST-only, return domain types</td>
+                            </tr>
+                            <tr>
+                                <td>Services</td>
+                                <td>Business logic</td>
+                                <td>GetEntityDataListAsync pattern</td>
+                            </tr>
+                            <tr>
+                                <td>Data Access</td>
+                                <td>Database operations</td>
+                                <td>Raw SQL with multi-tenant support</td>
+                            </tr>
+                            <tr>
+                                <td>Models</td>
+                                <td>Data structures</td>
+                                <td>Domain types with audit fields</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Claude Prompt for Architecture Setup</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Architecture Setup Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'architecture-prompt')">Copy</button>
+                    </div>
+                    <pre id="architecture-prompt">Set up XOS backend architecture for [ModuleName].
+Follow backend-blueprint.html patterns.
+Create:
+- Domain model with audit fields (CreatedBy, CreatedDate, etc.)
+- Service interface and implementation
+- Controller with POST-only endpoints
+- Multi-tenant data access layer
+Use dependency injection and raw SQL patterns.</pre>
+                </div>
+            </section>
+
+            <section id="service-patterns">
+                <h2>XOS Service Patterns</h2>
+                
+                <h3>GetEntityDataListAsync Pattern</h3>
+                <div class="alert alert-info">
+                    <h4>Core XOS Pattern</h4>
+                    <p>This is the standard pattern for retrieving data in XOS applications. All list operations should follow this structure.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>GetEntityDataListAsync Implementation</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'get-list-pattern')">Copy</button>
+                    </div>
+                    <pre id="get-list-pattern">public async Task&lt;List&lt;EntityModel&gt;&gt; GetEntityDataListAsync(int tenantId, string searchTerm = "")
+{
+    var sql = @"
+        SELECT Id, Name, Description, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate
+        FROM EntityTable 
+        WHERE TenantId = @TenantId
+        AND (@SearchTerm = '' OR Name ILIKE @SearchPattern)
+        ORDER BY Name";
+    
+    var parameters = new 
+    { 
+        TenantId = tenantId,
+        SearchTerm = searchTerm,
+        SearchPattern = $"%{searchTerm}%"
+    };
+    
+    return await _connection.QueryAsync&lt;EntityModel&gt;(sql, parameters);
+}</pre>
+                </div>
+
+                <h3>Service Implementation Template</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Complete Service Implementation</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'service-template')">Copy</button>
+                    </div>
+                    <pre id="service-template">public class EntityService : IEntityService
+{
+    private readonly IDbConnection _connection;
+    
+    public EntityService(IDbConnection connection)
+    {
+        _connection = connection;
+    }
+    
+    public async Task&lt;List&lt;EntityModel&gt;&gt; GetEntityDataListAsync(int tenantId, string searchTerm = "")
+    {
+        // Implementation as above
+    }
+    
+    public async Task&lt;EntityModel&gt; CreateEntityAsync(EntityModel entity, int userId)
+    {
+        var sql = @"
+            INSERT INTO EntityTable (Name, Description, TenantId, CreatedBy, CreatedDate)
+            VALUES (@Name, @Description, @TenantId, @UserId, NOW())
+            RETURNING *";
+            
+        return await _connection.QuerySingleAsync&lt;EntityModel&gt;(sql, 
+            new { entity.Name, entity.Description, entity.TenantId, UserId = userId });
+    }
+    
+    public async Task&lt;EntityModel&gt; UpdateEntityAsync(EntityModel entity, int userId)
+    {
+        var sql = @"
+            UPDATE EntityTable 
+            SET Name = @Name, Description = @Description, ModifiedBy = @UserId, ModifiedDate = NOW()
+            WHERE Id = @Id AND TenantId = @TenantId
+            RETURNING *";
+            
+        return await _connection.QuerySingleAsync&lt;EntityModel&gt;(sql, 
+            new { entity.Name, entity.Description, entity.Id, entity.TenantId, UserId = userId });
+    }
+}</pre>
+                </div>
+            </section>
+
+            <section id="database-access">
+                <h2>Database Access Patterns</h2>
+                
+                <h3>Multi-Tenant Data Isolation</h3>
+                <div class="alert alert-warning">
+                    <h4>🔒 Security Requirement</h4>
+                    <p>Every database query MUST include TenantId filtering to ensure data isolation between tenants.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Multi-Tenant Query Pattern</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'multitenant-pattern')">Copy</button>
+                    </div>
+                    <pre id="multitenant-pattern">// ✅ CORRECT - Always include TenantId filter
+var sql = @"
+    SELECT * FROM EntityTable 
+    WHERE TenantId = @TenantId 
+    AND Id = @Id";
+
+// ❌ WRONG - Missing TenantId filter (security risk)
+var sql = @"
+    SELECT * FROM EntityTable 
+    WHERE Id = @Id";</pre>
+                </div>
+
+                <h3>Database Schema Requirements</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Id</td>
+                                <td>INTEGER IDENTITY</td>
+                                <td>Yes</td>
+                                <td>Primary key</td>
+                            </tr>
+                            <tr>
+                                <td>TenantId</td>
+                                <td>INTEGER</td>
+                                <td>Yes</td>
+                                <td>Multi-tenant isolation</td>
+                            </tr>
+                            <tr>
+                                <td>CreatedBy</td>
+                                <td>INTEGER</td>
+                                <td>Yes</td>
+                                <td>Audit trail</td>
+                            </tr>
+                            <tr>
+                                <td>CreatedDate</td>
+                                <td>TIMESTAMP</td>
+                                <td>Yes</td>
+                                <td>Audit trail</td>
+                            </tr>
+                            <tr>
+                                <td>ModifiedBy</td>
+                                <td>INTEGER</td>
+                                <td>Optional</td>
+                                <td>Audit trail</td>
+                            </tr>
+                            <tr>
+                                <td>ModifiedDate</td>
+                                <td>TIMESTAMP</td>
+                                <td>Optional</td>
+                                <td>Audit trail</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="api-controllers">
+                <h2>XOS API Controllers</h2>
+                
+                <h3>POST-Only Endpoints</h3>
+                <div class="alert alert-info">
+                    <h4>XOS Requirement</h4>
+                    <p>XOS applications use POST-only endpoints for all operations. Do not create GET, PUT, or DELETE endpoints.</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Controller Template</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'controller-template')">Copy</button>
+                    </div>
+                    <pre id="controller-template">[ApiController]
+[Route("api/[controller]")]
+public class EntityController : ControllerBase
+{
+    private readonly IEntityService _entityService;
+    
+    public EntityController(IEntityService entityService)
+    {
+        _entityService = entityService;
+    }
+    
+    [HttpPost("GetList")]
+    public async Task&lt;List&lt;EntityModel&gt;&gt; GetList([FromBody] GetListRequest request)
+    {
+        return await _entityService.GetEntityDataListAsync(
+            request.TenantId, 
+            request.SearchTerm);
+    }
+    
+    [HttpPost("Create")]
+    public async Task&lt;EntityModel&gt; Create([FromBody] CreateEntityRequest request)
+    {
+        return await _entityService.CreateEntityAsync(
+            request.Entity, 
+            request.UserId);
+    }
+    
+    [HttpPost("Update")]
+    public async Task&lt;EntityModel&gt; Update([FromBody] UpdateEntityRequest request)
+    {
+        return await _entityService.UpdateEntityAsync(
+            request.Entity, 
+            request.UserId);
+    }
+}</pre>
+                </div>
+
+                <h3>Request/Response Models</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Request Models</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'request-models')">Copy</button>
+                    </div>
+                    <pre id="request-models">public class GetListRequest
+{
+    public int TenantId { get; set; }
+    public string SearchTerm { get; set; } = "";
+}
+
+public class CreateEntityRequest
+{
+    public EntityModel Entity { get; set; }
+    public int UserId { get; set; }
+}
+
+public class UpdateEntityRequest
+{
+    public EntityModel Entity { get; set; }
+    public int UserId { get; set; }
+}</pre>
+                </div>
+            </section>
+
+            <section id="crud-operations">
+                <h2>Complete CRUD Implementation</h2>
+                
+                <h3>Claude Prompt for CRUD Operations</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>CRUD Implementation Prompt</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'crud-prompt')">Copy</button>
+                    </div>
+                    <pre id="crud-prompt">Implement complete CRUD operations for [EntityName] using XOS patterns.
+Follow xos-backend-complete-guide.html requirements.
+Include:
+- GetEntityDataListAsync method for listing with search
+- CreateEntityAsync with audit field population  
+- UpdateEntityAsync with modified audit fields
+- DeleteEntityAsync with soft delete if needed
+- All queries must include TenantId filtering
+- Use raw SQL with proper parameter binding
+- Return domain types directly from controller</pre>
+                </div>
+
+                <h3>Advanced Operations</h3>
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Bulk Operations</h4>
+                        <ul>
+                            <li>Batch inserts with transaction</li>
+                            <li>Bulk updates with WHERE IN</li>
+                            <li>Mass delete operations</li>
+                        </ul>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Complex Queries</h4>
+                        <ul>
+                            <li>JOIN operations across tables</li>
+                            <li>Aggregation and grouping</li>
+                            <li>Pagination with OFFSET/LIMIT</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="transactions">
+                <h2>Transaction Management</h2>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Transaction Pattern</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'transaction-pattern')">Copy</button>
+                    </div>
+                    <pre id="transaction-pattern">public async Task&lt;EntityModel&gt; CreateComplexEntityAsync(ComplexEntityRequest request)
+{
+    using var transaction = _connection.BeginTransaction();
+    try
+    {
+        // Create main entity
+        var entity = await CreateEntityAsync(request.Entity, request.UserId);
+        
+        // Create related records
+        foreach (var item in request.RelatedItems)
+        {
+            item.EntityId = entity.Id;
+            await CreateRelatedItemAsync(item, request.UserId);
+        }
+        
+        transaction.Commit();
+        return entity;
+    }
+    catch
+    {
+        transaction.Rollback();
+        throw;
+    }
+}</pre>
+                </div>
+            </section>
+
+            <section id="testing">
+                <h2>Backend Testing Strategies</h2>
+                
+                <h3>Unit Testing</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Service Unit Test Template</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'unit-test')">Copy</button>
+                    </div>
+                    <pre id="unit-test">[Test]
+public async Task GetEntityDataListAsync_WithSearchTerm_ReturnsFilteredResults()
+{
+    // Arrange
+    var mockConnection = new Mock&lt;IDbConnection&gt;();
+    var service = new EntityService(mockConnection.Object);
+    var expectedEntities = new List&lt;EntityModel&gt; { /* test data */ };
+    
+    mockConnection.Setup(x => x.QueryAsync&lt;EntityModel&gt;(
+        It.IsAny&lt;string&gt;(), 
+        It.IsAny&lt;object&gt;()))
+        .ReturnsAsync(expectedEntities);
+    
+    // Act
+    var result = await service.GetEntityDataListAsync(1, "search");
+    
+    // Assert
+    Assert.That(result, Is.EqualTo(expectedEntities));
+    mockConnection.Verify(x => x.QueryAsync&lt;EntityModel&gt;(
+        It.Is&lt;string&gt;(sql => sql.Contains("TenantId = @TenantId")),
+        It.IsAny&lt;object&gt;()));
+}</pre>
+                </div>
+
+                <h3>Integration Testing</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>API Integration Test</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'integration-test')">Copy</button>
+                    </div>
+                    <pre id="integration-test">[Test]
+public async Task CreateEntity_WithValidData_ReturnsCreatedEntity()
+{
+    // Arrange
+    using var factory = new WebApplicationFactory&lt;Program&gt;();
+    var client = factory.CreateClient();
+    
+    var request = new CreateEntityRequest
+    {
+        Entity = new EntityModel { Name = "Test", TenantId = 1 },
+        UserId = 1
+    };
+    
+    // Act
+    var response = await client.PostAsJsonAsync("/api/entity/create", request);
+    
+    // Assert
+    response.EnsureSuccessStatusCode();
+    var result = await response.Content.ReadFromJsonAsync&lt;EntityModel&gt;();
+    Assert.That(result.Name, Is.EqualTo("Test"));
+    Assert.That(result.Id, Is.GreaterThan(0));
+}</pre>
+                </div>
+            </section>
+
+            <section id="performance-optimization">
+                <h2>Performance Optimization</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>🚀 Database Optimization</h4>
+                        <ul>
+                            <li>Create indexes on TenantId + frequently queried fields</li>
+                            <li>Use EXPLAIN ANALYZE to optimize queries</li>
+                            <li>Implement connection pooling</li>
+                            <li>Use async operations everywhere</li>
+                        </ul>
+                    </div>
+                    <div class="nav-card">
+                        <h4>📊 Monitoring</h4>
+                        <ul>
+                            <li>Log slow queries (&gt; 100ms)</li>
+                            <li>Monitor connection pool usage</li>
+                            <li>Track API response times</li>
+                            <li>Set up alerts for errors</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>XOS Backend Complete Guide</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

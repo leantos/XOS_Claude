@@ -108,7 +108,7 @@
                             <span>Essential Context Prompt</span>
                             <button class="copy-btn" onclick="copyCode(this, 'context-prompt')">Copy</button>
                         </div>
-                        <pre id="context-prompt">I'm working with XOS framework. Check @claude_docs/CRITICAL_PATTERNS.md before implementing anything.</pre>
+                        <pre id="context-prompt">I'm working with XOS framework. Check CRITICAL_PATTERNS.html before implementing anything.</pre>
                     </div>
                     <p><strong>Why</strong>: Claude needs this context or it will use standard React/.NET patterns that don't work.</p>
                 </div>
@@ -129,9 +129,9 @@
                                         <button class="copy-btn" onclick="copyCode(this, 'new-component')">Copy</button>
                                     </div>
                                     <pre id="new-component">Create [YourComponentName] component using XOS MVVM pattern.
-Follow @claude_docs/development-guide/TDD-XOS-FRONTEND-WORKFLOW.md
+Follow TDD-XOS-FRONTEND-WORKFLOW.html
 Use @claude_docs/frontend/ui-templates/XOSComponentTemplate as base.
-CRITICAL: All inputs must accept keyboard typing - use patterns from @claude_docs/frontend/xos-input-handling-fix.md</pre>
+CRITICAL: All inputs must accept keyboard typing - use patterns from xos-input-handling-fix.html</pre>
                                 </div>
                             </div>
                         </div>
@@ -148,7 +148,7 @@ CRITICAL: All inputs must accept keyboard typing - use patterns from @claude_doc
                                         <button class="copy-btn" onclick="copyCode(this, 'input-fix')">Copy</button>
                                     </div>
                                     <pre id="input-fix">[YourComponentName] inputs won't accept keyboard typing.
-Fix using three-step event handler pattern from @claude_docs/frontend/xos-input-handling-fix.md
+Fix using three-step event handler pattern from xos-input-handling-fix.html
 Ensure updateUI() is called after state changes.</pre>
                                 </div>
                             </div>
@@ -166,7 +166,7 @@ Ensure updateUI() is called after state changes.</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'data-error')">Copy</button>
                                     </div>
                                     <pre id="data-error">Getting "Cannot set property Data" error in [ComponentName].
-Fix using ViewModel initialization patterns from @claude_docs/CRITICAL_PATTERNS.md
+Fix using ViewModel initialization patterns from CRITICAL_PATTERNS.html
 Use init() method with Data reference pattern.</pre>
                                 </div>
                             </div>
@@ -188,8 +188,8 @@ Use init() method with Data reference pattern.</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'api-service')">Copy</button>
                                     </div>
                                     <pre id="api-service">Create [EntityName]Service with CRUD operations for PostgreSQL.
-Follow @claude_docs/backend/backend-blueprint.md patterns.
-Use GetEntityDataListAsync pattern from @claude_docs/backend/xos-backend-complete-guide.md
+Follow backend-blueprint.html patterns.
+Use GetEntityDataListAsync pattern from xos-backend-complete-guide.html
 POST endpoints only, return domain types directly.
 Target 80% test coverage.</pre>
                                 </div>
@@ -208,7 +208,7 @@ Target 80% test coverage.</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'api-controller')">Copy</button>
                                     </div>
                                     <pre id="api-controller">Create [EntityName]Controller with POST endpoints.
-Follow @claude_docs/backend/api-routes.md patterns.
+Follow api-routes.html patterns.
 Return domain types directly, not IActionResult.
 Use dependency injection for services.</pre>
                                 </div>
@@ -231,8 +231,8 @@ Use dependency injection for services.</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'fullstack-module')">Copy</button>
                                     </div>
                                     <pre id="fullstack-module">Create complete [ModuleName] module with frontend + backend.
-Use module examples from @claude_docs/COMMON-MODULE-EXAMPLES.md
-Follow full workflow from @claude_docs/MODULE-DEVELOPMENT-GUIDE.md
+Use module examples from COMMON-MODULE-EXAMPLES.html
+Follow full workflow from MODULE-DEVELOPMENT-GUIDE.html
 Backend: PostgreSQL with raw SQL, POST-only endpoints
 Frontend: XOS MVVM with working keyboard inputs
 Target: 80% test coverage, working end-to-end</pre>
@@ -273,7 +273,7 @@ Check @claude_docs/troubleshooting/[frontend|backend|api|database|testing]-issue
                                         <span>Claude Confusion Fix</span>
                                         <button class="copy-btn" onclick="copyCode(this, 'claude-confused')">Copy</button>
                                     </div>
-                                    <pre id="claude-confused">Use XOS patterns from @claude_docs/CRITICAL_PATTERNS.md
+                                    <pre id="claude-confused">Use XOS patterns from CRITICAL_PATTERNS.html
 This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                                 </div>
                             </div>
@@ -296,32 +296,32 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                         <tbody>
                             <tr>
                                 <td><strong>CRITICAL_PATTERNS.md</strong></td>
-                                <td><code>@claude_docs/CRITICAL_PATTERNS.md</code></td>
+                                <td><code>CRITICAL_PATTERNS.html</code></td>
                                 <td><span class="badge badge-critical">Every single prompt</span></td>
                             </tr>
                             <tr>
                                 <td><strong>MODULE-DEVELOPMENT-GUIDE.md</strong></td>
-                                <td><code>@claude_docs/MODULE-DEVELOPMENT-GUIDE.md</code></td>
+                                <td><code>MODULE-DEVELOPMENT-GUIDE.html</code></td>
                                 <td>Creating any new feature</td>
                             </tr>
                             <tr>
                                 <td><strong>CLAUDE-PROMPT-QUICK-REFERENCE.md</strong></td>
-                                <td><code>@claude_docs/CLAUDE-PROMPT-QUICK-REFERENCE.md</code></td>
+                                <td><code>CLAUDE-PROMPT-QUICK-REFERENCE.html</code></td>
                                 <td>Need more copy-paste prompts</td>
                             </tr>
                             <tr>
                                 <td><strong>xos-input-handling-fix.md</strong></td>
-                                <td><code>@claude_docs/frontend/xos-input-handling-fix.md</code></td>
+                                <td><code>xos-input-handling-fix.html</code></td>
                                 <td>Inputs won't type</td>
                             </tr>
                             <tr>
                                 <td><strong>backend-blueprint.md</strong></td>
-                                <td><code>@claude_docs/backend/backend-blueprint.md</code></td>
+                                <td><code>backend-blueprint.html</code></td>
                                 <td>Any backend work</td>
                             </tr>
                             <tr>
                                 <td><strong>SETUP.md</strong></td>
-                                <td><code>@claude_docs/SETUP.md</code></td>
+                                <td><code>SETUP.html</code></td>
                                 <td>Initial project setup</td>
                             </tr>
                         </tbody>
@@ -346,7 +346,7 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                         <ol>
                             <li>Don't assume Claude knows XOS patterns without references</li>
                             <li>Don't try to explain XOS yourself - let the docs do it</li>
-                            <li>Don't skip the <code>@claude_docs/CRITICAL_PATTERNS.md</code> reference</li>
+                            <li>Don't skip the <code>CRITICAL_PATTERNS.html</code> reference</li>
                         </ol>
                     </div>
                 </div>
@@ -361,7 +361,7 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                             <li><strong>Need new feature?</strong> → Use "Full-Stack Module" prompt</li>
                             <li><strong>Component broken?</strong> → Use "Fixing Input Issues" or "Data/State Errors" prompts</li>
                             <li><strong>API not working?</strong> → Use "Creating API Service" prompt</li>
-                            <li><strong>Claude confused?</strong> → Reference <code>@claude_docs/CRITICAL_PATTERNS.md</code></li>
+                            <li><strong>Claude confused?</strong> → Reference <code>CRITICAL_PATTERNS.html</code></li>
                             <li><strong>Still stuck?</strong> → Check <code>@claude_docs/troubleshooting/</code></li>
                         </ol>
                     </div>
