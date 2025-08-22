@@ -12,7 +12,14 @@
       "Bash(rm:*)",
       "Bash(git add:*)",
       "Bash(mv:*)",
-      "Bash(do echo \"=== $file ===\")"
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(do if grep -q \"search-box\" \"$file\")",
+      "Bash(then echo \"=== $file has search box ===\")",
+      "Bash(then echo \"=== $file ===\")",
+      "Bash(then sed -i '/<div class=\"\"search-box\"\">/,/<\\/div>/d' \"$file\")",
+      "Bash(echo:*)",
+      "Bash(do if grep -q \"<!-- Search Box -->\" \"$file\")",
+      "Bash(then sed -i '/<!-- Search Box -->/d' \"$file\")"
     ],
     "deny": [],
     "ask": []
