@@ -37,7 +37,7 @@ param(
 )
 
 # Script configuration
-$script:Version = "3.0.0"
+$script:Version = "3.1.0"
 $script:ClaudeDocsPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 $script:Framework = "unknown"
 $script:ProjectName = Split-Path -Leaf $ProjectPath
@@ -99,6 +99,176 @@ function Detect-Framework {
     $script:Framework = "generic"
     Write-Warning "No specific framework detected, using generic settings"
     return "generic"
+}
+
+# Documentation setup detection
+function Detect-DocumentationSetup {
+    $isMainRepo = Test-Path "$ProjectPath\claude_docs" -and (Test-Path "$ProjectPath\update-html-docs.ps1")
+    $hasSubmodule = Test-Path "$ProjectPath\.gitmodules"
+    $hasClaudeDocsSubmodule = $false
+    
+    if ($hasSubmodule) {
+        $gitmodules = Get-Content "$ProjectPath\.gitmodules" -ErrorAction SilentlyContinue
+        $hasClaudeDocsSubmodule = $gitmodules -match "path = claude_docs"
+    }
+    
+    if ($isMainRepo) {
+        Write-Info "This appears to be the main documentation repository"
+        return "main-repo"
+    } elseif ($hasClaudeDocsSubmodule) {
+        Write-Info "Documentation submodule detected"
+        return "has-submodule"
+    } else {
+        Write-Info "No documentation setup detected"
+        return "needs-setup"
+    }
+}
+
+# Module: Setup Documentation Submodule
+function Setup-DocumentationSubmodule {
+    Write-Header "Setting up Documentation Submodule"
+    
+    $docStatus = Detect-DocumentationSetup
+    
+    switch ($docStatus) {
+        "main-repo" {
+            Write-Info "claude_docs found locally - configuring protection system..."
+            
+            # Set up git hooks for protection
+            $hooksDir = Join-Path $ProjectPath ".githooks"
+            if (!(Test-Path $hooksDir)) {
+                New-Item -ItemType Directory -Path $hooksDir -Force | Out-Null
+            }
+            
+            # Copy protection hooks if they exist
+            $sourceHooks = Join-Path $ProjectPath ".githooks"
+            if (Test-Path $sourceHooks) {
+                Write-Step "Activating git hooks..."
+                try {
+                    git config core.hooksPath .githooks
+                    Write-Success "Git hooks configured for claude_docs protection"
+                } catch {
+                    Write-Warning "Could not configure git hooks: $($_.Exception.Message)"
+                }
+            }
+            
+            # Create CODEOWNERS if not exists
+            $codeownersPath = Join-Path $ProjectPath "CODEOWNERS"
+            if (!(Test-Path $codeownersPath)) {
+                Write-Step "Creating CODEOWNERS file..."
+                $gitUser = git config user.name 2>$null
+                if (!$gitUser) { $gitUser = $env:USERNAME }
+                
+                @"
+# CODEOWNERS file for XOS_Claude repository
+# Claude Documentation - Only maintainers can approve changes
+/claude_docs/ @$gitUser
+
+# Global fallback - repository owner reviews everything else  
+* @$gitUser
+"@ | Set-Content $codeownersPath -Encoding UTF8
+                Write-Success "CODEOWNERS created with user: $gitUser"
+            }
+            
+            # Ensure CONTRIBUTING.md exists
+            $contributingPath = Join-Path $ProjectPath "CONTRIBUTING.md"
+            if (Test-Path $contributingPath) {
+                Write-Success "CONTRIBUTING.md found - team guidelines available"
+            } else {
+                Write-Warning "CONTRIBUTING.md not found - team members won't see contribution guidelines"
+            }
+            
+            Write-Success "Main repository documentation protection configured"
+        }
+        
+        "has-submodule" {
+            Write-Info "Checking submodule status..."
+            
+            # Check if submodule is initialized
+            $claudeDocsExists = Test-Path "$ProjectPath\claude_docs"
+            if (!$claudeDocsExists) {
+                Write-Step "Initializing documentation submodule..."
+                try {
+                    git submodule init
+                    git submodule update
+                    Write-Success "Documentation submodule initialized"
+                } catch {
+                    Write-Error "Failed to initialize submodule: $($_.Exception.Message)"
+                    return
+                }
+            }
+            
+            # Check if submodule is up to date
+            Set-Location "$ProjectPath\claude_docs"
+            $submoduleStatus = git status --porcelain 2>$null
+            $behindCommits = git rev-list HEAD..origin/main --count 2>$null
+            Set-Location $ProjectPath
+            
+            if ($behindCommits -gt 0) {
+                Write-Warning "Documentation submodule is $behindCommits commits behind"
+                Write-Info "To update: git submodule update --remote claude_docs"
+            } else {
+                Write-Success "Documentation submodule is up to date"
+            }
+        }
+        
+        "needs-setup" {
+            Write-Info "No documentation submodule found. Setting up..."
+            
+            # Check if git repo
+            if (!(Test-Path "$ProjectPath\.git")) {
+                Write-Error "Not a git repository. Initialize git first: git init"
+                return
+            }
+            
+            # Interactive setup
+            Write-Host ""
+            Write-Host "🤔 How would you like to set up documentation?" -ForegroundColor Yellow
+            Write-Host "  [1] Add as git submodule (recommended for teams)"
+            Write-Host "  [2] Skip documentation setup"
+            Write-Host ""
+            
+            $choice = Read-Host "Select option (1-2)"
+            
+            if ($choice -eq "1") {
+                Write-Host ""
+                Write-Host "Enter the git URL for your claude_docs repository:" -ForegroundColor Yellow
+                Write-Host "Example: https://github.com/yourusername/XOS_Claude.git" -ForegroundColor Gray
+                $repoUrl = Read-Host "Repository URL"
+                
+                if (![string]::IsNullOrWhiteSpace($repoUrl)) {
+                    try {
+                        Write-Step "Adding documentation submodule..."
+                        git submodule add $repoUrl claude_docs
+                        
+                        Write-Step "Initializing submodule..."
+                        git submodule init
+                        git submodule update
+                        
+                        Write-Step "Committing submodule addition..."
+                        git add .gitmodules claude_docs
+                        git commit -m "📚 Add claude_docs as submodule for documentation
+
+🤖 Generated with Claude Code Master Setup v$script:Version
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+                        
+                        Write-Success "Documentation submodule added successfully!"
+                        Write-Info "Team members should clone with: git clone --recurse-submodules <repo-url>"
+                        Write-Info "Or after cloning run: git submodule update --init --recursive"
+                        
+                    } catch {
+                        Write-Error "Failed to add submodule: $($_.Exception.Message)"
+                        Write-Info "Make sure the repository URL is correct and accessible"
+                    }
+                } else {
+                    Write-Warning "No URL provided, skipping submodule setup"
+                }
+            } else {
+                Write-Info "Skipping documentation submodule setup"
+            }
+        }
+    }
 }
 
 # Module: Install Hooks
@@ -518,9 +688,10 @@ function Show-Menu {
     Write-Host "  [5] 📚 Create Documentation Context" -ForegroundColor Yellow
     Write-Host "  [6] 🛠️  Setup Development Environment" -ForegroundColor Yellow
     Write-Host "  [7] 🤖 Setup Claude Code Agents" -ForegroundColor Blue
-    Write-Host "  [8] 🔧 Fix Common Issues" -ForegroundColor Magenta
-    Write-Host "  [9] 🎯 Run ALL Setup Options" -ForegroundColor Cyan
-    Write-Host "  [10] 📊 View Setup Status" -ForegroundColor White
+    Write-Host "  [8] 📚 Setup Documentation Submodule" -ForegroundColor Blue
+    Write-Host "  [9] 🔧 Fix Common Issues" -ForegroundColor Magenta
+    Write-Host "  [10] 🎯 Run ALL Setup Options" -ForegroundColor Cyan
+    Write-Host "  [11] 📊 View Setup Status" -ForegroundColor White
     Write-Host "  [Q] ❌ Quit" -ForegroundColor Red
     Write-Host ""
     Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor DarkGray
@@ -571,6 +742,39 @@ function Show-Status {
         Write-Info "Claude Code Agents: Not installed"
     }
     
+    # Check documentation submodule
+    $docStatus = Detect-DocumentationSetup
+    switch ($docStatus) {
+        "main-repo" {
+            $protectionFiles = @("CODEOWNERS", "CONTRIBUTING.md", ".githooks\pre-commit")
+            $protectionCount = ($protectionFiles | Where-Object { Test-Path "$ProjectPath\$_" }).Count
+            Write-Success "Documentation: Main repository ($protectionCount/$($protectionFiles.Count) protection files)"
+        }
+        "has-submodule" {
+            if (Test-Path "$ProjectPath\claude_docs") {
+                # Check if submodule is up to date
+                try {
+                    Set-Location "$ProjectPath\claude_docs"
+                    $behindCommits = git rev-list HEAD..origin/main --count 2>$null
+                    Set-Location $ProjectPath
+                    
+                    if ($behindCommits -gt 0) {
+                        Write-Warning "Documentation Submodule: $behindCommits commits behind"
+                    } else {
+                        Write-Success "Documentation Submodule: Up to date"
+                    }
+                } catch {
+                    Write-Success "Documentation Submodule: Configured"
+                }
+            } else {
+                Write-Warning "Documentation Submodule: Not initialized"
+            }
+        }
+        "needs-setup" {
+            Write-Info "Documentation Submodule: Not configured"
+        }
+    }
+    
     Write-Host ""
     Write-Host "Press any key to continue..." -ForegroundColor Gray
     $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
@@ -590,6 +794,7 @@ function Main {
         Write-Info "Running quick setup..."
         Install-Hooks
         Setup-Agents
+        Setup-DocumentationSubmodule
         Create-DocumentationContext
         Fix-CommonIssues
         Setup-DevEnvironment
@@ -619,6 +824,7 @@ function Main {
             "1" {
                 # Quick Setup
                 Install-Hooks
+                Setup-DocumentationSubmodule
                 Create-DocumentationContext
                 Fix-CommonIssues
                 Write-Success "Quick setup complete!"
@@ -629,8 +835,9 @@ function Main {
             "5" { Create-DocumentationContext }
             "6" { Setup-DevEnvironment }
             "7" { Setup-Agents }
-            "8" { Fix-CommonIssues }
-            "9" {
+            "8" { Setup-DocumentationSubmodule }
+            "9" { Fix-CommonIssues }
+            "10" {
                 # Run all
                 Install-Hooks
                 Setup-MCPServers
@@ -638,10 +845,11 @@ function Main {
                 Create-DocumentationContext
                 Setup-DevEnvironment
                 Setup-Agents
+                Setup-DocumentationSubmodule
                 Fix-CommonIssues
                 Write-Success "All setup options complete!"
             }
-            "10" { Show-Status }
+            "11" { Show-Status }
             "Q" {
                 Write-Info "Exiting setup..."
                 return
