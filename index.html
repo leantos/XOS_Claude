@@ -559,29 +559,78 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
         // Search functionality
         function highlightText(text, searchTerm) {
             if (!searchTerm) return text;
-            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            // Escape special regex characters in search term
+            const escapedTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escapedTerm})`, 'gi');
             return text.replace(regex, '<span class="highlight">$1</span>');
         }
 
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             const content = document.querySelector('.main-content');
-            const sections = content.querySelectorAll('section, h2, h3, p, li, td');
+            const sections = content.querySelectorAll('section, h2, h3, h4, p, li, td, pre, code');
             
             // Remove previous highlights
             sections.forEach(section => {
-                section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
+                if (section.innerHTML.includes('<span class="highlight">')) {
+                    section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
+                }
+            });
+
+            // Clear any existing search results styling
+            sections.forEach(section => {
+                section.style.display = '';
+                section.parentElement.style.display = '';
             });
             
-            if (searchTerm.length > 2) {
+            if (searchTerm.length > 0) {
+                let hasResults = false;
+                
                 sections.forEach(section => {
                     const text = section.textContent.toLowerCase();
                     if (text.includes(searchTerm)) {
-                        section.innerHTML = highlightText(section.innerHTML, searchTerm);
+                        // Highlight matching text
+                        const originalHTML = section.innerHTML;
+                        section.innerHTML = highlightText(originalHTML, searchTerm);
+                        
+                        // Expand parent collapsibles if needed
+                        let parent = section.closest('.collapsible');
+                        while (parent) {
+                            parent.classList.add('expanded');
+                            parent = parent.parentElement.closest('.collapsible');
+                        }
+                        
+                        hasResults = true;
                     }
                 });
+                
+                // Show message if no results
+                let noResultsMsg = document.getElementById('no-results-message');
+                if (!hasResults) {
+                    if (!noResultsMsg) {
+                        noResultsMsg = document.createElement('div');
+                        noResultsMsg.id = 'no-results-message';
+                        noResultsMsg.innerHTML = '<p style="color: #888; text-align: center; margin: 2rem 0;">No results found for "' + searchTerm + '"</p>';
+                        content.appendChild(noResultsMsg);
+                    }
+                } else if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
+            } else {
+                // Clear search - collapse all collapsibles
+                document.querySelectorAll('.collapsible.expanded').forEach(collapsible => {
+                    collapsible.classList.remove('expanded');
+                });
+                
+                // Remove no results message
+                const noResultsMsg = document.getElementById('no-results-message');
+                if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
             }
-        });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', performSearch);
 
         // Mobile sidebar toggle
         function toggleSidebar() {
@@ -592,23 +641,11 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
         if (window.innerWidth <= 768) {
             const menuButton = document.createElement('button');
             menuButton.innerHTML = '☰ Menu';
-            menuButton.README.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
+            menuButton.style.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
             menuButton.onclick = toggleSidebar;
             document.body.appendChild(menuButton);
         }
 
-        // Auto-expand sections with search results
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            if (searchTerm.length > 2) {
-                document.querySelectorAll('.collapsible').forEach(collapsible => {
-                    const text = collapsible.textContent.toLowerCase();
-                    if (text.includes(searchTerm)) {
-                        collapsible.classList.add('expanded');
-                    }
-                });
-            }
-        });
 
         // Theme Toggle Functionality - Fluent 2 Design System
         function toggleTheme() {
