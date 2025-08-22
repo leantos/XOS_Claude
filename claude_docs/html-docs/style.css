@@ -575,6 +575,7 @@ pre code,
     opacity: 1 !important;
     visibility: visible !important;
     display: block !important;
+    text-shadow: none !important;
 }
 
 /* Fix light mode code block colors */
@@ -603,6 +604,7 @@ pre code,
     opacity: 1 !important;
     visibility: visible !important;
     display: block !important;
+    text-shadow: none !important;
 }
 
 .code-header {
@@ -661,6 +663,7 @@ pre {
     font-size: 13px;
     line-height: 1.5;
     color: var(--text-secondary);
+    text-shadow: none !important;
 }
 
 code {
@@ -671,6 +674,7 @@ code {
     font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace;
     font-size: 13px;
     border: 1px solid var(--border-secondary);
+    text-shadow: none !important;
 }
 
 /* Tables - Microsoft Style */
