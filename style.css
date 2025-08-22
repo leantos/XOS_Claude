@@ -554,7 +554,6 @@ strong {
     position: relative;
     margin: 16px 0;
     overflow: hidden;
-    box-shadow: var(--shadow2);
 }
 
 /* Standalone code blocks (pre > code pattern) - Override Prism */
@@ -567,7 +566,6 @@ pre code,
     margin: 16px 0;
     padding: 16px !important;
     overflow-x: auto;
-    box-shadow: var(--shadow2);
     font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
     font-size: 13px !important;
     line-height: 1.5 !important;
