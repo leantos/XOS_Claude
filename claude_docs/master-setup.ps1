@@ -427,143 +427,6 @@ function Setup-Agents {
     }
 }
 
-# Module: Setup Documentation Submodule
-function Setup-DocumentationSubmodule {
-    Write-Header "Setting up Documentation Submodule"
-    
-    $submodulePath = "claude_docs"
-    $repoUrl = "https://github.com/your-org/xos-docs.git"
-    
-    # Check if we're already inside the claude_docs directory
-    if ($ProjectPath -like "*claude_docs*") {
-        Write-Warning "Cannot setup documentation submodule from within claude_docs directory"
-        Write-Info "Please run this script from your main project directory"
-        return
-    }
-    
-    # Check if submodule already exists
-    if (Test-Path (Join-Path $ProjectPath $submodulePath)) {
-        Write-Warning "Documentation folder already exists at: $submodulePath"
-        
-        # Check if it's a git submodule
-        try {
-            Set-Location $ProjectPath
-            $currentUrl = git config --file .gitmodules --get "submodule.$submodulePath.url" 2>$null
-            if ($currentUrl) {
-                Write-Success "Documentation submodule is already set up"
-                Write-Info "Current URL: $currentUrl"
-                
-                # Check for updates
-                Write-Step "Checking for documentation updates..."
-                Set-Location $submodulePath
-                git fetch 2>$null
-                $behindCount = (git rev-list HEAD..origin/main --count 2>$null)
-                Set-Location $ProjectPath
-                
-                if ($behindCount -and $behindCount -gt 0) {
-                    Write-Warning "Documentation is $behindCount commit(s) behind"
-                    $update = Read-Host "Update to latest version? (y/N)"
-                    if ($update -eq "y" -or $update -eq "Y") {
-                        Write-Step "Updating documentation..."
-                        git submodule update --remote $submodulePath
-                        git add $submodulePath
-                        git commit -m "Update XOS documentation to latest" 2>$null
-                        Write-Success "Documentation updated successfully"
-                    }
-                } else {
-                    Write-Success "Documentation is up to date"
-                }
-            } else {
-                Write-Warning "Folder exists but is not a Git submodule"
-                Write-Info "Manual setup may be required"
-            }
-        } catch {
-            Write-Warning "Could not check submodule status"
-        }
-        return
-    }
-    
-    # Check if we're in a git repository
-    if (!(Test-Path (Join-Path $ProjectPath ".git"))) {
-        Write-Error "Not in a Git repository. Please initialize Git first:"
-        Write-Info "git init"
-        Write-Info "git remote add origin <your-repo-url>"
-        return
-    }
-    
-    try {
-        Set-Location $ProjectPath
-        
-        Write-Step "Adding XOS documentation as Git submodule..."
-        $output = git submodule add $repoUrl $submodulePath 2>&1
-        
-        if ($LASTEXITCODE -eq 0) {
-            Write-Success "Submodule added successfully!"
-            
-            # Initialize and update
-            Write-Step "Initializing and updating submodule..."
-            git submodule update --init --recursive
-            
-            if ($LASTEXITCODE -eq 0) {
-                Write-Success "Submodule initialized successfully!"
-                
-                # Commit the changes
-                Write-Step "Committing submodule addition..."
-                git add .gitmodules $submodulePath
-                git commit -m "Add XOS documentation submodule"
-                
-                if ($LASTEXITCODE -eq 0) {
-                    Write-Success "Changes committed successfully!"
-                } else {
-                    Write-Warning "Submodule added but could not commit automatically"
-                    Write-Info "Please commit manually:"
-                    Write-Info "git add .gitmodules $submodulePath"
-                    Write-Info "git commit -m 'Add XOS documentation submodule'"
-                }
-                
-                # Show usage instructions
-                Write-Header "Documentation Setup Complete!"
-                Write-Success "📂 Documentation Location: ./$submodulePath/"
-                Write-Host ""
-                Write-Info "🤖 Usage with Claude Code:"
-                Write-Host "   Reference files in your prompts like this:" -ForegroundColor Yellow
-                Write-Host ""
-                Write-Host "   Create component using @claude_docs/CRITICAL_PATTERNS.md" -ForegroundColor Green
-                Write-Host "   Fix inputs with @claude_docs/frontend/xos-input-handling-fix.md" -ForegroundColor Green
-                Write-Host "   Build API following @claude_docs/backend/backend-blueprint.md" -ForegroundColor Green
-                Write-Host ""
-                Write-Info "🔄 To update documentation later:"
-                Write-Host "   git submodule update --remote $submodulePath" -ForegroundColor Green
-                Write-Host "   git add $submodulePath && git commit -m 'Update documentation'" -ForegroundColor Green
-                Write-Host ""
-                Write-Warning "🚨 IMPORTANT: Always include @claude_docs/CRITICAL_PATTERNS.md in Claude prompts!"
-                
-            } else {
-                Write-Error "Failed to initialize submodule"
-            }
-        } else {
-            Write-Error "Failed to add submodule:"
-            Write-Host $output -ForegroundColor Red
-            
-            # Check if it's a URL issue
-            if ($output -like "*not found*" -or $output -like "*repository*") {
-                Write-Info "The repository URL might need to be updated:"
-                Write-Info "Current: $repoUrl"
-                $customUrl = Read-Host "Enter the correct repository URL (or press Enter to skip)"
-                if ($customUrl) {
-                    Write-Step "Trying with custom URL: $customUrl"
-                    git submodule add $customUrl $submodulePath
-                    if ($LASTEXITCODE -eq 0) {
-                        Write-Success "Submodule added with custom URL!"
-                    }
-                }
-            }
-        }
-    } catch {
-        Write-Error "Error setting up documentation submodule: $($_.Exception.Message)"
-    }
-}
-
 # Module: Setup Development Environment
 function Setup-DevEnvironment {
     Write-Header "Setting up Development Environment"
@@ -655,10 +518,9 @@ function Show-Menu {
     Write-Host "  [5] 📚 Create Documentation Context" -ForegroundColor Yellow
     Write-Host "  [6] 🛠️  Setup Development Environment" -ForegroundColor Yellow
     Write-Host "  [7] 🤖 Setup Claude Code Agents" -ForegroundColor Blue
-    Write-Host "  [8] 📖 Setup Documentation Submodule" -ForegroundColor Blue
-    Write-Host "  [9] 🔧 Fix Common Issues" -ForegroundColor Magenta
-    Write-Host "  [10] 🎯 Run ALL Setup Options" -ForegroundColor Cyan
-    Write-Host "  [11] 📊 View Setup Status" -ForegroundColor White
+    Write-Host "  [8] 🔧 Fix Common Issues" -ForegroundColor Magenta
+    Write-Host "  [9] 🎯 Run ALL Setup Options" -ForegroundColor Cyan
+    Write-Host "  [10] 📊 View Setup Status" -ForegroundColor White
     Write-Host "  [Q] ❌ Quit" -ForegroundColor Red
     Write-Host ""
     Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor DarkGray
@@ -707,23 +569,6 @@ function Show-Status {
         Write-Success "Claude Code Agents: $agentCount installed"
     } else {
         Write-Info "Claude Code Agents: Not installed"
-    }
-    
-    # Check documentation submodule
-    $docsSubmoduleExists = Test-Path "$ProjectPath\claude_docs"
-    if ($docsSubmoduleExists) {
-        try {
-            $currentUrl = git config --file "$ProjectPath\.gitmodules" --get "submodule.claude_docs.url" 2>$null
-            if ($currentUrl) {
-                Write-Success "Documentation Submodule: Configured ($currentUrl)"
-            } else {
-                Write-Warning "Documentation: Folder exists but not a submodule"
-            }
-        } catch {
-            Write-Info "Documentation: Folder exists (status unknown)"
-        }
-    } else {
-        Write-Info "Documentation Submodule: Not configured"
     }
     
     Write-Host ""
@@ -784,9 +629,8 @@ function Main {
             "5" { Create-DocumentationContext }
             "6" { Setup-DevEnvironment }
             "7" { Setup-Agents }
-            "8" { Setup-DocumentationSubmodule }
-            "9" { Fix-CommonIssues }
-            "10" {
+            "8" { Fix-CommonIssues }
+            "9" {
                 # Run all
                 Install-Hooks
                 Setup-MCPServers
@@ -794,11 +638,10 @@ function Main {
                 Create-DocumentationContext
                 Setup-DevEnvironment
                 Setup-Agents
-                Setup-DocumentationSubmodule
                 Fix-CommonIssues
                 Write-Success "All setup options complete!"
             }
-            "11" { Show-Status }
+            "10" { Show-Status }
             "Q" {
                 Write-Info "Exiting setup..."
                 return

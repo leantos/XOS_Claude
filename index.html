@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XOS Framework Documentation Hub</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="shortcut icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="icon" type="image/png" href="claude_docs/html-docs/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="claude_docs/html-docs/favicon.png">
+    <link rel="apple-touch-icon" href="claude_docs/html-docs/favicon.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -17,49 +17,106 @@
     <div class="container">
         <!-- Sidebar Navigation -->
         <nav class="sidebar">
-            <h3><i class="bi bi-lightning-charge"></i> Quick Access</h3>
+            <h3><i class="bi bi-rocket"></i> Start Here</h3>
             <ul>
-                <li><a href="#critical-start"><i class="bi bi-exclamation-triangle"></i> Start Here</a></li>
+                <li><a href="#critical-start"><i class="bi bi-exclamation-triangle"></i> Critical Rules</a></li>
+                <li><a href="#xos-complete-patterns"><i class="bi bi-star"></i> XOS Complete Patterns</a></li>
                 <li><a href="#how-to-use"><i class="bi bi-question-circle"></i> How to Use</a></li>
                 <li><a href="#copy-paste-prompts"><i class="bi bi-clipboard"></i> Copy-Paste Prompts</a></li>
-                <li><a href="#essential-files"><i class="bi bi-star"></i> Essential Files</a></li>
                 <li><a href="#quick-setup"><i class="bi bi-play-circle"></i> Quick Setup</a></li>
             </ul>
             
-            <h3><i class="bi bi-palette"></i> Frontend</h3>
+            <h3><i class="bi bi-palette"></i> Frontend Patterns</h3>
             <ul>
-                <li><a href="#frontend-prompts"><i class="bi bi-code-square"></i> Component Prompts</a></li>
+                <li><a href="#frontend-prompts"><i class="bi bi-code-square"></i> Component Patterns</a></li>
                 <li><a href="claude_docs/html-docs/xos-input-handling-fix.html"><i class="bi bi-tools"></i> Input Fix Guide</a></li>
-                <li><a href="#"><i class="bi bi-grid-3x3-gap"></i> Component Templates (Coming Soon)</a></li>
+                <li><a href="#complete-frontend"><i class="bi bi-grid-3x3-gap"></i> Complete Components</a></li>
                 <li><a href="claude_docs/html-docs/frontend-troubleshooting.html"><i class="bi bi-question-circle"></i> Frontend Troubleshooting</a></li>
             </ul>
             
-            <h3><i class="bi bi-server"></i> Backend</h3>
+            <h3><i class="bi bi-server"></i> Backend Patterns</h3>
             <ul>
-                <li><a href="#backend-prompts"><i class="bi bi-gear"></i> API Prompts</a></li>
+                <li><a href="#backend-prompts"><i class="bi bi-gear"></i> API Patterns</a></li>
                 <li><a href="claude_docs/html-docs/backend-blueprint.html"><i class="bi bi-diagram-3"></i> Backend Blueprint</a></li>
                 <li><a href="claude_docs/html-docs/api-routes.html"><i class="bi bi-arrow-left-right"></i> API Routes</a></li>
+                <li><a href="#complete-backend"><i class="bi bi-database"></i> Complete Services</a></li>
                 <li><a href="claude_docs/html-docs/backend-troubleshooting.html"><i class="bi bi-bug"></i> Backend Troubleshooting</a></li>
             </ul>
             
-            <h3><i class="bi bi-wrench"></i> Tools</h3>
+            <h3><i class="bi bi-tools"></i> Automation & Tools</h3>
             <ul>
+                <li><a href="#automation-agents"><i class="bi bi-robot"></i> AI Agents</a></li>
                 <li><a href="claude_docs/html-docs/SETUP.html"><i class="bi bi-download"></i> Setup Guide</a></li>
                 <li><a href="claude_docs/html-docs/MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Development Guide</a></li>
-                <li><a href="claude_docs/html-docs/CLAUDE-PROMPT-QUICK-REFERENCE.html"><i class="bi bi-card-text"></i> Quick Reference</a></li>
+                <li><a href="#hooks-config"><i class="bi bi-link-45deg"></i> Claude Code Hooks</a></li>
                 <li><a href="#development-workflow"><i class="bi bi-arrow-repeat"></i> Workflow</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-shield-check"></i> Testing & Security</h3>
+            <ul>
+                <li><a href="#testing-patterns"><i class="bi bi-check-circle"></i> Testing Patterns</a></li>
+                <li><a href="#security-rules"><i class="bi bi-lock"></i> Security Rules</a></li>
+                <li><a href="claude_docs/html-docs/testing-troubleshooting.html"><i class="bi bi-bug"></i> Testing Troubleshooting</a></li>
             </ul>
         </nav>
 
         <!-- Main Content -->
         <main class="main-content">
 
-            <h1><i class="bi bi-book"></i> XOS Framework Documentation Hub</h1>
+            <h1><i class="bi bi-rocket"></i> XOS Framework Documentation Hub</h1>
 
             <div class="alert alert-critical" id="critical-start">
-                <h3>CRITICAL - READ FIRST</h3>
-                <p><strong><a href="claude_docs/html-docs/CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a></strong> - This document contains MANDATORY patterns that differ from standard development. XOS-based applications use a custom framework that significantly modifies standard React and ASP.NET Core patterns.</p>
+                <h3>🚨 CRITICAL - READ FIRST</h3>
+                <p><strong>This is NOT standard React + ASP.NET Core development!</strong></p>
+                <p>XOS Framework completely changes how you build components, handle state, and make API calls. Following standard tutorials will break your code.</p>
+                <p><strong>Essential Reading:</strong> <a href="claude_docs/essential/CRITICAL_PATTERNS.md">CRITICAL_PATTERNS.md</a> and <a href="claude_docs/START-HERE.md">START-HERE.md</a></p>
             </div>
+
+            <section id="xos-complete-patterns">
+                <h2><i class="bi bi-star"></i> XOS Complete Patterns - Your Source of Truth</h2>
+                
+                <div class="alert alert-success">
+                    <h3>📁 xos-complete-patterns/ - Everything You Need</h3>
+                    <p>This folder contains <strong>exhaustive, production-ready code patterns</strong> (not fragments or examples). Each file is 500-1200 lines of complete working code covering every edge case.</p>
+                </div>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4><i class="bi bi-palette"></i> Frontend Patterns</h4>
+                        <ul>
+                            <li><a href="claude_docs/xos-complete-patterns/frontend/component-complete.jsx">component-complete.jsx</a> - 1000+ lines, every UI pattern</li>
+                            <li><a href="claude_docs/xos-complete-patterns/frontend/viewmodel-complete.jsx">viewmodel-complete.jsx</a> - 800+ lines, all VM patterns</li>
+                            <li><a href="claude_docs/xos-complete-patterns/frontend/service-complete.js">service-complete.js</a> - 500+ lines, all API calls</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-server"></i> Backend Patterns</h4>
+                        <ul>
+                            <li><a href="claude_docs/xos-complete-patterns/backend/controller-complete.cs">controller-complete.cs</a> - 600+ lines, all endpoints</li>
+                            <li><a href="claude_docs/xos-complete-patterns/backend/service-complete.cs">service-complete.cs</a> - 1200+ lines, all DB operations</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-gear"></i> Infrastructure</h4>
+                        <ul>
+                            <li><a href="claude_docs/xos-complete-patterns/infrastructure/program-complete.cs">program-complete.cs</a> - Complete startup configuration</li>
+                            <li><a href="claude_docs/xos-complete-patterns/infrastructure/xos-controller-base.cs">xos-controller-base.cs</a> - Base controller patterns</li>
+                            <li><a href="claude_docs/xos-complete-patterns/infrastructure/xos-data-framework.cs">xos-data-framework.cs</a> - Data access patterns</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-palette2"></i> Styling & UI</h4>
+                        <ul>
+                            <li><a href="claude_docs/xos-complete-patterns/styling/bootstrap-complete.html">bootstrap-complete.html</a> - 1000+ lines, all Bootstrap usage</li>
+                            <li><a href="claude_docs/xos-complete-patterns/styling/theme-complete.css">theme-complete.css</a> - 600+ lines, complete theming</li>
+                            <li><a href="claude_docs/xos-complete-patterns/jquery-bootstrap/modal-patterns.js">modal-patterns.js</a> - Modal handling</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
 
             <section id="how-to-use">
                 <h2><i class="bi bi-question-circle"></i> How to Use This Documentation</h2>
@@ -194,9 +251,70 @@ git add claude_docs && git commit -m "Update XOS documentation"</pre>
                             <span>Essential Context Prompt</span>
                             <button class="copy-btn" onclick="copyCode(this, 'context-prompt')">Copy</button>
                         </div>
-                        <pre id="context-prompt">I'm working with XOS framework. Check @claude_docs/CRITICAL_PATTERNS.md before implementing anything.</pre>
+                        <pre id="context-prompt">I'm working with XOS framework. Check @claude_docs/START-HERE.md and @claude_docs/essential/CRITICAL_PATTERNS.md before implementing anything.</pre>
                     </div>
                     <p><strong>Why</strong>: Claude needs this context or it will use standard React/.NET patterns that don't work.</p>
+                </div>
+
+                <div class="alert alert-info">
+                    <h3>🎯 What Are You Building? Use These Prompts</h3>
+                    <div class="nav-grid">
+                        <div class="nav-card">
+                            <h4>Frontend Component</h4>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span>Frontend Component Prompt</span>
+                                    <button class="copy-btn" onclick="copyCode(this, 'frontend-component')">Copy</button>
+                                </div>
+                                <pre id="frontend-component">Create [ComponentName] using XOS patterns.
+Follow @claude_docs/xos-complete-patterns/frontend/component-complete.jsx
+Use @claude_docs/xos-complete-patterns/frontend/viewmodel-complete.jsx for state
+CRITICAL: All inputs must accept keyboard typing</pre>
+                            </div>
+                        </div>
+
+                        <div class="nav-card">
+                            <h4>Backend API</h4>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span>Backend API Prompt</span>
+                                    <button class="copy-btn" onclick="copyCode(this, 'backend-api')">Copy</button>
+                                </div>
+                                <pre id="backend-api">Create [EntityName] API with CRUD operations.
+Follow @claude_docs/xos-complete-patterns/backend/controller-complete.cs
+Use @claude_docs/xos-complete-patterns/backend/service-complete.cs for DB operations
+POST endpoints only, return domain types directly</pre>
+                            </div>
+                        </div>
+
+                        <div class="nav-card">
+                            <h4>Full-Stack Module</h4>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span>Full-Stack Module Prompt</span>
+                                    <button class="copy-btn" onclick="copyCode(this, 'fullstack-module')">Copy</button>
+                                </div>
+                                <pre id="fullstack-module">Create complete [ModuleName] module with frontend + backend.
+Use patterns from @claude_docs/xos-complete-patterns/
+Follow @claude_docs/xos-complete-patterns/integration/frontend-to-backend.md
+Backend: PostgreSQL with raw SQL, POST-only endpoints
+Frontend: XOS MVVM with working keyboard inputs</pre>
+                            </div>
+                        </div>
+
+                        <div class="nav-card">
+                            <h4>Fix Input Issues</h4>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span>Input Fix Prompt</span>
+                                    <button class="copy-btn" onclick="copyCode(this, 'input-fix')">Copy</button>
+                                </div>
+                                <pre id="input-fix">[ComponentName] inputs won't accept keyboard typing.
+Fix using patterns from @claude_docs/xos-complete-patterns/frontend/component-complete.jsx
+Use 3-step event handler pattern + updateUI()</pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="nav-grid" id="frontend-prompts">
@@ -368,6 +486,102 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                 </div>
             </section>
 
+            <section id="automation-agents">
+                <h2><i class="bi bi-robot"></i> Automation & AI Agents</h2>
+                
+                <div class="alert alert-info">
+                    <h3>🤖 Specialized AI Agents Available</h3>
+                    <p>Your claude_docs includes specialized AI agents for different tasks. Use these for complex, multi-step operations.</p>
+                </div>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4><i class="bi bi-gear"></i> Development Agents</h4>
+                        <ul>
+                            <li><a href="claude_docs/automation/agents/backend-service-builder.md">Backend Service Builder</a> - Complete service generation</li>
+                            <li><a href="claude_docs/automation/agents/frontend-architect.md">Frontend Architect</a> - Component architecture</li>
+                            <li><a href="claude_docs/automation/agents/database-architect.md">Database Architect</a> - Schema design</li>
+                            <li><a href="claude_docs/automation/agents/test-automation-engineer.md">Test Automation Engineer</a> - Test generation</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-tools"></i> Operations Agents</h4>
+                        <ul>
+                            <li><a href="claude_docs/automation/agents/devops-automator.md">DevOps Automator</a> - Deployment & CI/CD</li>
+                            <li><a href="claude_docs/automation/agents/performance-optimizer.md">Performance Optimizer</a> - Code optimization</li>
+                            <li><a href="claude_docs/automation/agents/security-auditor.md">Security Auditor</a> - Security analysis</li>
+                            <li><a href="claude_docs/automation/agents/documentation-engineer.md">Documentation Engineer</a> - Docs generation</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-git"></i> Git & Workflow</h4>
+                        <ul>
+                            <li><a href="claude_docs/automation/agents/git-workflow-manager.md">Git Workflow Manager</a> - Git automation</li>
+                            <li><a href="claude_docs/automation/agents/code-reviewer.md">Code Reviewer</a> - Automated reviews</li>
+                            <li><a href="claude_docs/git-github/git-automation-guide.md">Git Automation Guide</a> - Workflow setup</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="hooks-config">
+                <h2><i class="bi bi-link-45deg"></i> Claude Code Hooks Configuration</h2>
+                
+                <div class="alert alert-warning">
+                    <h3>⚙️ Automated XOS Framework Support</h3>
+                    <p>Configure Claude Code to automatically understand your XOS patterns and prevent common errors.</p>
+                </div>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4><i class="bi bi-play-circle"></i> Quick Setup</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Run Hook Setup</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'hooks-setup')">Copy</button>
+                            </div>
+                            <pre id="hooks-setup">powershell claude_docs/hooks/setup-optimized-hooks.ps1</pre>
+                        </div>
+                        <p>Automatically configures Claude Code with XOS-specific settings.</p>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-gear"></i> Available Configurations</h4>
+                        <ul>
+                            <li><a href="claude_docs/hooks/optimized-hooks-windows.json">Optimized Hooks (Windows)</a> - Best performance setup</li>
+                            <li><a href="claude_docs/hooks/claude-code-hooks-windows.json">Standard Hooks</a> - Basic configuration</li>
+                            <li><a href="claude_docs/hooks/hook-system.md">Hook System Guide</a> - Understanding hooks</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="testing-patterns">
+                <h2><i class="bi bi-check-circle"></i> Testing Patterns</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4><i class="bi bi-server"></i> Backend Testing</h4>
+                        <ul>
+                            <li><a href="claude_docs/testing/backend-testing-guide.md">Backend Testing Guide</a> - Complete testing strategy</li>
+                            <li><a href="claude_docs/testing/test-examples/backend-examples.md">Backend Examples</a> - Sample tests</li>
+                            <li><a href="claude_docs/testing/xos-framework-testing.md">XOS Framework Testing</a> - Framework-specific tests</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-palette"></i> Frontend Testing</h4>
+                        <ul>
+                            <li><a href="claude_docs/testing/frontend-testing-guide.md">Frontend Testing Guide</a> - Component testing</li>
+                            <li><a href="claude_docs/testing/test-examples/frontend-examples.md">Frontend Examples</a> - Sample tests</li>
+                            <li><a href="claude_docs/testing/testing-best-practices.md">Testing Best Practices</a> - XOS-specific practices</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
             <section id="essential-files">
                 <h2>Essential Files Every Developer Should Know</h2>
                 <div class="table-container">
@@ -381,33 +595,33 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                         </thead>
                         <tbody>
                             <tr>
+                                <td><strong>START-HERE.md</strong></td>
+                                <td><code>@claude_docs/START-HERE.md</code></td>
+                                <td><span class="badge badge-critical">First time using XOS</span></td>
+                            </tr>
+                            <tr>
                                 <td><strong>CRITICAL_PATTERNS.md</strong></td>
-                                <td><code>@claude_docs/CRITICAL_PATTERNS.md</code></td>
+                                <td><code>@claude_docs/essential/CRITICAL_PATTERNS.md</code></td>
                                 <td><span class="badge badge-critical">Every single prompt</span></td>
                             </tr>
                             <tr>
-                                <td><strong>MODULE-DEVELOPMENT-GUIDE.md</strong></td>
-                                <td><code>@claude_docs/MODULE-DEVELOPMENT-GUIDE.md</code></td>
-                                <td>Creating any new feature</td>
+                                <td><strong>component-complete.jsx</strong></td>
+                                <td><code>@claude_docs/xos-complete-patterns/frontend/component-complete.jsx</code></td>
+                                <td>Building any frontend component</td>
                             </tr>
                             <tr>
-                                <td><strong>CLAUDE-PROMPT-QUICK-REFERENCE.md</strong></td>
-                                <td><code>@claude_docs/CLAUDE-PROMPT-QUICK-REFERENCE.md</code></td>
-                                <td>Need more copy-paste prompts</td>
+                                <td><strong>controller-complete.cs</strong></td>
+                                <td><code>@claude_docs/xos-complete-patterns/backend/controller-complete.cs</code></td>
+                                <td>Building any API endpoint</td>
                             </tr>
                             <tr>
-                                <td><strong>xos-input-handling-fix.md</strong></td>
-                                <td><code>@claude_docs/frontend/xos-input-handling-fix.md</code></td>
-                                <td>Inputs won't type</td>
-                            </tr>
-                            <tr>
-                                <td><strong>backend-blueprint.md</strong></td>
-                                <td><code>@claude_docs/backend/backend-blueprint.md</code></td>
-                                <td>Any backend work</td>
+                                <td><strong>ABSOLUTE-RULES.md</strong></td>
+                                <td><code>@claude_docs/xos-complete-patterns/ABSOLUTE-RULES.md</code></td>
+                                <td>Unbreakable XOS laws</td>
                             </tr>
                             <tr>
                                 <td><strong>SETUP.md</strong></td>
-                                <td><code>@claude_docs/SETUP.md</code></td>
+                                <td><code>@claude_docs/essential/SETUP.md</code></td>
                                 <td>Initial project setup</td>
                             </tr>
                         </tbody>
@@ -459,12 +673,33 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                 <div class="alert alert-info">
                     <div class="code-block">
                         <div class="code-header">
-                            <span>Setup Command</span>
+                            <span>Master Setup Command</span>
                             <button class="copy-btn" onclick="copyCode(this, 'setup-command')">Copy</button>
                         </div>
-                        <pre id="setup-command">powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup</pre>
+                        <pre id="setup-command">powershell claude_docs/master-setup.ps1 -QuickSetup</pre>
                     </div>
-                    <p>This prevents 90% of XOS framework errors automatically.</p>
+                    <p>This prevents 90% of XOS framework errors automatically by configuring hooks, dependencies, and environment.</p>
+                </div>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4><i class="bi bi-gear"></i> Available Setup Scripts</h4>
+                        <ul>
+                            <li><a href="claude_docs/master-setup.ps1">master-setup.ps1</a> - Complete environment setup</li>
+                            <li><a href="claude_docs/setup/auto-setup.ps1">auto-setup.ps1</a> - Automated dependency installation</li>
+                            <li><a href="claude_docs/setup/install-postgres-mcp.ps1">install-postgres-mcp.ps1</a> - PostgreSQL MCP setup</li>
+                            <li><a href="claude_docs/hooks/setup-optimized-hooks.ps1">setup-optimized-hooks.ps1</a> - Claude Code hooks</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-book"></i> Setup Guides</h4>
+                        <ul>
+                            <li><a href="claude_docs/setup/xos-app-setup-guide.md">XOS App Setup Guide</a> - Step-by-step instructions</li>
+                            <li><a href="claude_docs/setup/postgres-mcp-complete-setup.md">PostgreSQL MCP Setup</a> - Database configuration</li>
+                            <li><a href="claude_docs/essential/SETUP.md">Essential Setup</a> - Core requirements</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
 
@@ -472,38 +707,39 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                 <h2>Quick Navigation</h2>
                 <div class="nav-grid">
                     <div class="nav-card">
-                        <h4>Most Used Files</h4>
+                        <h4>🚀 Start Here</h4>
                         <ul>
-                            <li><a href="claude_docs/html-docs/CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a> - <strong>Start here always</strong></li>
-                            <li><a href="claude_docs/html-docs/CLAUDE-PROMPT-QUICK-REFERENCE.html">CLAUDE-PROMPT-QUICK-REFERENCE.html</a> - More copy-paste prompts</li>
-                            <li><a href="claude_docs/html-docs/MODULE-DEVELOPMENT-GUIDE.html">MODULE-DEVELOPMENT-GUIDE.html</a> - Complete workflows</li>
-                            <li><a href="claude_docs/html-docs/SETUP.html">SETUP.html</a> - Environment setup</li>
+                            <li><a href="claude_docs/START-HERE.md">START-HERE.md</a> - <strong>New to XOS? Start here</strong></li>
+                            <li><a href="claude_docs/essential/CRITICAL_PATTERNS.md">CRITICAL_PATTERNS.md</a> - <strong>Essential reading</strong></li>
+                            <li><a href="claude_docs/xos-complete-patterns/ABSOLUTE-RULES.md">ABSOLUTE-RULES.md</a> - Unbreakable laws</li>
+                            <li><a href="claude_docs/essential/SETUP.md">SETUP.md</a> - Environment setup</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
-                        <h4>Frontend Development</h4>
+                        <h4>🎯 Complete Patterns (Source of Truth)</h4>
                         <ul>
-                            <li><a href="claude_docs/html-docs/xos-input-handling-fix.html">XOS Input Fix</a> - Fix typing issues</li>
-                            <li>Component Templates (Coming Soon) - Ready-made components</li>
-                            <li>XOS Framework Guide (Coming Soon) - Complete reference</li>
-                            <li><a href="claude_docs/html-docs/frontend-troubleshooting.html">Frontend Troubleshooting</a> - Common problems</li>
+                            <li><a href="claude_docs/xos-complete-patterns/frontend/component-complete.jsx">Frontend Components</a> - 1000+ lines, every UI pattern</li>
+                            <li><a href="claude_docs/xos-complete-patterns/backend/controller-complete.cs">Backend Controllers</a> - 600+ lines, all endpoints</li>
+                            <li><a href="claude_docs/xos-complete-patterns/backend/service-complete.cs">Backend Services</a> - 1200+ lines, all DB operations</li>
+                            <li><a href="claude_docs/xos-complete-patterns/styling/bootstrap-complete.html">Bootstrap Styling</a> - 1000+ lines, all UI patterns</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
-                        <h4>Backend Development</h4>
+                        <h4>🔧 Tools & Automation</h4>
                         <ul>
-                            <li><a href="claude_docs/html-docs/backend-blueprint.html">Backend Blueprint</a> - Architecture patterns</li>
-                            <li><a href="claude_docs/html-docs/api-routes.html">API Routes</a> - Endpoint patterns</li>
-                            <li>XOS Backend Guide (Coming Soon) - Complete reference</li>
-                            <li><a href="claude_docs/html-docs/backend-troubleshooting.html">Backend Troubleshooting</a> - Common problems</li>
+                            <li><a href="claude_docs/automation/agents/">AI Agents</a> - Specialized automation</li>
+                            <li><a href="claude_docs/hooks/">Claude Code Hooks</a> - Auto-configuration</li>
+                            <li><a href="claude_docs/testing/">Testing Guides</a> - Complete testing strategy</li>
+                            <li><a href="claude_docs/git-github/">Git Workflows</a> - Version control automation</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
-                        <h4>Troubleshooting</h4>
+                        <h4>🩺 Troubleshooting</h4>
                         <ul>
+                            <li><a href="claude_docs/xos-complete-patterns/COMMON-PITFALLS.md">Common Pitfalls</a> - What breaks everything</li>
                             <li><a href="claude_docs/html-docs/api-troubleshooting.html">API Issues</a> - Endpoint problems</li>
                             <li><a href="claude_docs/html-docs/database-troubleshooting.html">Database Issues</a> - PostgreSQL problems</li>
                             <li><a href="claude_docs/html-docs/testing-troubleshooting.html">Testing Issues</a> - Test failures</li>
@@ -513,11 +749,13 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
             </section>
 
             <div class="footer">
-                <p><em>Documentation Version: 2.1.0</em><br>
-                <em>Last Updated: August 21, 2025</em><br>
+                <p><em>Documentation Version: 3.0.0</em><br>
+                <em>Last Updated: August 22, 2025</em><br>
                 <em>Maintainer: Development Team</em></p>
                 
-                <p><strong>Need Help?</strong> Start with <a href="claude_docs/html-docs/CLAUDE-PROMPT-QUICK-REFERENCE.html">Quick Reference</a> or use the search above to find topics quickly</p>
+                <p><strong>Need Help?</strong> Start with <a href="claude_docs/START-HERE.md">START-HERE.md</a> or browse the <a href="#xos-complete-patterns">XOS Complete Patterns</a> section for production-ready code examples.</p>
+                
+                <p><strong>Pro Tip:</strong> Always reference <code>@claude_docs/</code> files in your Claude prompts for accurate XOS Framework assistance.</p>
             </div>
         </main>
     </div>

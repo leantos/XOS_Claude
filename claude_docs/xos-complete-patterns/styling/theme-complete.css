@@ -1,0 +1,765 @@
+/* ===== THEME COMPLETE PATTERNS ===== */
+/* This file contains EVERY theming pattern for XOS Framework */
+/* Follow CSS custom properties and theming conventions EXACTLY */
+
+/* ===== SECTION 1: CSS CUSTOM PROPERTIES (VARIABLES) ===== */
+
+:root {
+  /* ⚠️ CRITICAL: Primary Color Palette */
+  --xos-primary-50: #eff6ff;
+  --xos-primary-100: #dbeafe;
+  --xos-primary-200: #bfdbfe;
+  --xos-primary-300: #93c5fd;
+  --xos-primary-400: #60a5fa;
+  --xos-primary-500: #3b82f6;  /* Main primary color */
+  --xos-primary-600: #2563eb;
+  --xos-primary-700: #1d4ed8;
+  --xos-primary-800: #1e40af;
+  --xos-primary-900: #1e3a8a;
+
+  /* ⚠️ CRITICAL: Secondary Color Palette */
+  --xos-secondary-50: #f8fafc;
+  --xos-secondary-100: #f1f5f9;
+  --xos-secondary-200: #e2e8f0;
+  --xos-secondary-300: #cbd5e1;
+  --xos-secondary-400: #94a3b8;
+  --xos-secondary-500: #64748b;  /* Main secondary color */
+  --xos-secondary-600: #475569;
+  --xos-secondary-700: #334155;
+  --xos-secondary-800: #1e293b;
+  --xos-secondary-900: #0f172a;
+
+  /* ⚠️ CRITICAL: Status Colors */
+  --xos-success-50: #f0fdf4;
+  --xos-success-100: #dcfce7;
+  --xos-success-500: #22c55e;
+  --xos-success-600: #16a34a;
+  --xos-success-700: #15803d;
+
+  --xos-warning-50: #fffbeb;
+  --xos-warning-100: #fef3c7;
+  --xos-warning-500: #f59e0b;
+  --xos-warning-600: #d97706;
+  --xos-warning-700: #b45309;
+
+  --xos-danger-50: #fef2f2;
+  --xos-danger-100: #fee2e2;
+  --xos-danger-500: #ef4444;
+  --xos-danger-600: #dc2626;
+  --xos-danger-700: #b91c1c;
+
+  --xos-info-50: #eff6ff;
+  --xos-info-100: #dbeafe;
+  --xos-info-500: #3b82f6;
+  --xos-info-600: #2563eb;
+  --xos-info-700: #1d4ed8;
+
+  /* ⚠️ CRITICAL: Neutral Colors */
+  --xos-gray-50: #f9fafb;
+  --xos-gray-100: #f3f4f6;
+  --xos-gray-200: #e5e7eb;
+  --xos-gray-300: #d1d5db;
+  --xos-gray-400: #9ca3af;
+  --xos-gray-500: #6b7280;
+  --xos-gray-600: #4b5563;
+  --xos-gray-700: #374151;
+  --xos-gray-800: #1f2937;
+  --xos-gray-900: #111827;
+
+  /* ⚠️ CRITICAL: Typography Scale */
+  --xos-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --xos-font-family-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Monaco, monospace;
+  
+  --xos-font-size-xs: 0.75rem;      /* 12px */
+  --xos-font-size-sm: 0.875rem;     /* 14px */
+  --xos-font-size-base: 1rem;       /* 16px */
+  --xos-font-size-lg: 1.125rem;     /* 18px */
+  --xos-font-size-xl: 1.25rem;      /* 20px */
+  --xos-font-size-2xl: 1.5rem;      /* 24px */
+  --xos-font-size-3xl: 1.875rem;    /* 30px */
+  --xos-font-size-4xl: 2.25rem;     /* 36px */
+  --xos-font-size-5xl: 3rem;        /* 48px */
+  --xos-font-size-6xl: 3.75rem;     /* 60px */
+
+  --xos-font-weight-thin: 100;
+  --xos-font-weight-light: 300;
+  --xos-font-weight-normal: 400;
+  --xos-font-weight-medium: 500;
+  --xos-font-weight-semibold: 600;
+  --xos-font-weight-bold: 700;
+  --xos-font-weight-extrabold: 800;
+  --xos-font-weight-black: 900;
+
+  --xos-line-height-tight: 1.25;
+  --xos-line-height-normal: 1.5;
+  --xos-line-height-relaxed: 1.75;
+
+  /* ⚠️ CRITICAL: Spacing Scale */
+  --xos-space-0: 0;
+  --xos-space-1: 0.25rem;   /* 4px */
+  --xos-space-2: 0.5rem;    /* 8px */
+  --xos-space-3: 0.75rem;   /* 12px */
+  --xos-space-4: 1rem;      /* 16px */
+  --xos-space-5: 1.25rem;   /* 20px */
+  --xos-space-6: 1.5rem;    /* 24px */
+  --xos-space-8: 2rem;      /* 32px */
+  --xos-space-10: 2.5rem;   /* 40px */
+  --xos-space-12: 3rem;     /* 48px */
+  --xos-space-16: 4rem;     /* 64px */
+  --xos-space-20: 5rem;     /* 80px */
+  --xos-space-24: 6rem;     /* 96px */
+  --xos-space-32: 8rem;     /* 128px */
+
+  /* ⚠️ CRITICAL: Border Radius */
+  --xos-border-radius-none: 0;
+  --xos-border-radius-sm: 0.125rem;   /* 2px */
+  --xos-border-radius: 0.25rem;       /* 4px */
+  --xos-border-radius-md: 0.375rem;   /* 6px */
+  --xos-border-radius-lg: 0.5rem;     /* 8px */
+  --xos-border-radius-xl: 0.75rem;    /* 12px */
+  --xos-border-radius-2xl: 1rem;      /* 16px */
+  --xos-border-radius-full: 9999px;
+
+  /* ⚠️ CRITICAL: Shadows */
+  --xos-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --xos-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --xos-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --xos-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --xos-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --xos-shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+  /* ⚠️ CRITICAL: Z-Index Scale */
+  --xos-z-dropdown: 1000;
+  --xos-z-sticky: 1020;
+  --xos-z-fixed: 1030;
+  --xos-z-modal-backdrop: 1040;
+  --xos-z-modal: 1050;
+  --xos-z-popover: 1060;
+  --xos-z-tooltip: 1070;
+  --xos-z-toast: 1080;
+
+  /* ⚠️ CRITICAL: Transitions */
+  --xos-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --xos-transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --xos-transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ⚠️ CRITICAL: Breakpoints (for use in container queries) */
+  --xos-breakpoint-sm: 576px;
+  --xos-breakpoint-md: 768px;
+  --xos-breakpoint-lg: 992px;
+  --xos-breakpoint-xl: 1200px;
+  --xos-breakpoint-xxl: 1400px;
+}
+
+/* ===== SECTION 2: LIGHT THEME (DEFAULT) ===== */
+
+:root,
+[data-theme="light"] {
+  /* ✅ CORRECT: Light theme color assignments */
+  --xos-color-background: var(--xos-gray-50);
+  --xos-color-background-alt: var(--xos-gray-100);
+  --xos-color-surface: #ffffff;
+  --xos-color-surface-hover: var(--xos-gray-50);
+  --xos-color-surface-active: var(--xos-gray-100);
+  
+  --xos-color-text: var(--xos-gray-900);
+  --xos-color-text-muted: var(--xos-gray-600);
+  --xos-color-text-light: var(--xos-gray-500);
+  --xos-color-text-inverse: #ffffff;
+  
+  --xos-color-border: var(--xos-gray-200);
+  --xos-color-border-light: var(--xos-gray-100);
+  --xos-color-border-dark: var(--xos-gray-300);
+  
+  --xos-color-primary: var(--xos-primary-500);
+  --xos-color-primary-hover: var(--xos-primary-600);
+  --xos-color-primary-active: var(--xos-primary-700);
+  --xos-color-primary-bg: var(--xos-primary-50);
+  
+  --xos-color-secondary: var(--xos-secondary-500);
+  --xos-color-secondary-hover: var(--xos-secondary-600);
+  --xos-color-secondary-active: var(--xos-secondary-700);
+  --xos-color-secondary-bg: var(--xos-secondary-50);
+  
+  --xos-color-success: var(--xos-success-500);
+  --xos-color-success-hover: var(--xos-success-600);
+  --xos-color-success-bg: var(--xos-success-50);
+  
+  --xos-color-warning: var(--xos-warning-500);
+  --xos-color-warning-hover: var(--xos-warning-600);
+  --xos-color-warning-bg: var(--xos-warning-50);
+  
+  --xos-color-danger: var(--xos-danger-500);
+  --xos-color-danger-hover: var(--xos-danger-600);
+  --xos-color-danger-bg: var(--xos-danger-50);
+  
+  --xos-color-info: var(--xos-info-500);
+  --xos-color-info-hover: var(--xos-info-600);
+  --xos-color-info-bg: var(--xos-info-50);
+  
+  /* Form specific colors */
+  --xos-form-background: #ffffff;
+  --xos-form-border: var(--xos-gray-300);
+  --xos-form-border-focus: var(--xos-primary-500);
+  --xos-form-placeholder: var(--xos-gray-400);
+  
+  /* Navigation specific colors */
+  --xos-nav-background: #ffffff;
+  --xos-nav-border: var(--xos-gray-200);
+  --xos-nav-text: var(--xos-gray-900);
+  --xos-nav-text-hover: var(--xos-primary-600);
+  --xos-nav-active-bg: var(--xos-primary-50);
+  
+  /* Table specific colors */
+  --xos-table-background: #ffffff;
+  --xos-table-stripe: var(--xos-gray-50);
+  --xos-table-border: var(--xos-gray-200);
+  --xos-table-header-bg: var(--xos-gray-100);
+  --xos-table-hover: var(--xos-gray-50);
+}
+
+/* ===== SECTION 3: DARK THEME ===== */
+
+[data-theme="dark"] {
+  /* ✅ CORRECT: Dark theme color assignments */
+  --xos-color-background: var(--xos-gray-900);
+  --xos-color-background-alt: var(--xos-gray-800);
+  --xos-color-surface: var(--xos-gray-800);
+  --xos-color-surface-hover: var(--xos-gray-700);
+  --xos-color-surface-active: var(--xos-gray-600);
+  
+  --xos-color-text: var(--xos-gray-100);
+  --xos-color-text-muted: var(--xos-gray-400);
+  --xos-color-text-light: var(--xos-gray-500);
+  --xos-color-text-inverse: var(--xos-gray-900);
+  
+  --xos-color-border: var(--xos-gray-700);
+  --xos-color-border-light: var(--xos-gray-800);
+  --xos-color-border-dark: var(--xos-gray-600);
+  
+  --xos-color-primary: var(--xos-primary-400);
+  --xos-color-primary-hover: var(--xos-primary-300);
+  --xos-color-primary-active: var(--xos-primary-200);
+  --xos-color-primary-bg: rgba(59, 130, 246, 0.1);
+  
+  --xos-color-secondary: var(--xos-secondary-400);
+  --xos-color-secondary-hover: var(--xos-secondary-300);
+  --xos-color-secondary-active: var(--xos-secondary-200);
+  --xos-color-secondary-bg: rgba(148, 163, 184, 0.1);
+  
+  --xos-color-success: var(--xos-success-400);
+  --xos-color-success-hover: var(--xos-success-300);
+  --xos-color-success-bg: rgba(34, 197, 94, 0.1);
+  
+  --xos-color-warning: var(--xos-warning-400);
+  --xos-color-warning-hover: var(--xos-warning-300);
+  --xos-color-warning-bg: rgba(245, 158, 11, 0.1);
+  
+  --xos-color-danger: var(--xos-danger-400);
+  --xos-color-danger-hover: var(--xos-danger-300);
+  --xos-color-danger-bg: rgba(239, 68, 68, 0.1);
+  
+  --xos-color-info: var(--xos-info-400);
+  --xos-color-info-hover: var(--xos-info-300);
+  --xos-color-info-bg: rgba(59, 130, 246, 0.1);
+  
+  /* Form specific colors */
+  --xos-form-background: var(--xos-gray-800);
+  --xos-form-border: var(--xos-gray-600);
+  --xos-form-border-focus: var(--xos-primary-400);
+  --xos-form-placeholder: var(--xos-gray-500);
+  
+  /* Navigation specific colors */
+  --xos-nav-background: var(--xos-gray-800);
+  --xos-nav-border: var(--xos-gray-700);
+  --xos-nav-text: var(--xos-gray-100);
+  --xos-nav-text-hover: var(--xos-primary-400);
+  --xos-nav-active-bg: rgba(59, 130, 246, 0.1);
+  
+  /* Table specific colors */
+  --xos-table-background: var(--xos-gray-800);
+  --xos-table-stripe: var(--xos-gray-750);
+  --xos-table-border: var(--xos-gray-700);
+  --xos-table-header-bg: var(--xos-gray-700);
+  --xos-table-hover: var(--xos-gray-700);
+  
+  /* Override shadow for dark theme */
+  --xos-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --xos-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --xos-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --xos-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
+  --xos-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== SECTION 4: HIGH CONTRAST THEME ===== */
+
+[data-theme="high-contrast"] {
+  /* ✅ CORRECT: High contrast theme for accessibility */
+  --xos-color-background: #000000;
+  --xos-color-background-alt: #1a1a1a;
+  --xos-color-surface: #1a1a1a;
+  --xos-color-surface-hover: #333333;
+  --xos-color-surface-active: #4d4d4d;
+  
+  --xos-color-text: #ffffff;
+  --xos-color-text-muted: #cccccc;
+  --xos-color-text-light: #aaaaaa;
+  --xos-color-text-inverse: #000000;
+  
+  --xos-color-border: #ffffff;
+  --xos-color-border-light: #cccccc;
+  --xos-color-border-dark: #ffffff;
+  
+  --xos-color-primary: #00ccff;
+  --xos-color-primary-hover: #33d6ff;
+  --xos-color-primary-active: #66e0ff;
+  --xos-color-primary-bg: rgba(0, 204, 255, 0.1);
+  
+  --xos-color-success: #00ff00;
+  --xos-color-success-hover: #33ff33;
+  --xos-color-success-bg: rgba(0, 255, 0, 0.1);
+  
+  --xos-color-warning: #ffff00;
+  --xos-color-warning-hover: #ffff33;
+  --xos-color-warning-bg: rgba(255, 255, 0, 0.1);
+  
+  --xos-color-danger: #ff0000;
+  --xos-color-danger-hover: #ff3333;
+  --xos-color-danger-bg: rgba(255, 0, 0, 0.1);
+  
+  --xos-color-info: #00ccff;
+  --xos-color-info-hover: #33d6ff;
+  --xos-color-info-bg: rgba(0, 204, 255, 0.1);
+  
+  /* Enhanced borders for high contrast */
+  --xos-shadow-sm: 0 0 0 1px #ffffff;
+  --xos-shadow: 0 0 0 2px #ffffff;
+  --xos-shadow-md: 0 0 0 2px #ffffff;
+  --xos-shadow-lg: 0 0 0 3px #ffffff;
+  --xos-shadow-xl: 0 0 0 3px #ffffff;
+}
+
+/* ===== SECTION 5: THEME COMPONENT APPLICATIONS ===== */
+
+/* ✅ CORRECT: Apply theme variables to components */
+
+/* Base body styling */
+body {
+  background-color: var(--xos-color-background);
+  color: var(--xos-color-text);
+  font-family: var(--xos-font-family-base);
+  font-size: var(--xos-font-size-base);
+  line-height: var(--xos-line-height-normal);
+  transition: background-color var(--xos-transition-base), color var(--xos-transition-base);
+}
+
+/* Typography theming */
+.xos-text {
+  color: var(--xos-color-text);
+}
+
+.xos-text-muted {
+  color: var(--xos-color-text-muted);
+}
+
+.xos-text-light {
+  color: var(--xos-color-text-light);
+}
+
+.xos-text-primary {
+  color: var(--xos-color-primary);
+}
+
+.xos-text-success {
+  color: var(--xos-color-success);
+}
+
+.xos-text-warning {
+  color: var(--xos-color-warning);
+}
+
+.xos-text-danger {
+  color: var(--xos-color-danger);
+}
+
+.xos-text-info {
+  color: var(--xos-color-info);
+}
+
+/* Background theming */
+.xos-bg-surface {
+  background-color: var(--xos-color-surface);
+}
+
+.xos-bg-primary {
+  background-color: var(--xos-color-primary-bg);
+}
+
+.xos-bg-success {
+  background-color: var(--xos-color-success-bg);
+}
+
+.xos-bg-warning {
+  background-color: var(--xos-color-warning-bg);
+}
+
+.xos-bg-danger {
+  background-color: var(--xos-color-danger-bg);
+}
+
+.xos-bg-info {
+  background-color: var(--xos-color-info-bg);
+}
+
+/* Button theming */
+.btn-xos-primary {
+  background-color: var(--xos-color-primary);
+  border-color: var(--xos-color-primary);
+  color: var(--xos-color-text-inverse);
+  transition: all var(--xos-transition-fast);
+}
+
+.btn-xos-primary:hover,
+.btn-xos-primary:focus {
+  background-color: var(--xos-color-primary-hover);
+  border-color: var(--xos-color-primary-hover);
+  color: var(--xos-color-text-inverse);
+}
+
+.btn-xos-primary:active {
+  background-color: var(--xos-color-primary-active);
+  border-color: var(--xos-color-primary-active);
+}
+
+.btn-outline-xos-primary {
+  background-color: transparent;
+  border-color: var(--xos-color-primary);
+  color: var(--xos-color-primary);
+  transition: all var(--xos-transition-fast);
+}
+
+.btn-outline-xos-primary:hover,
+.btn-outline-xos-primary:focus {
+  background-color: var(--xos-color-primary);
+  border-color: var(--xos-color-primary);
+  color: var(--xos-color-text-inverse);
+}
+
+/* Card theming */
+.card {
+  background-color: var(--xos-color-surface);
+  border-color: var(--xos-color-border);
+  color: var(--xos-color-text);
+  box-shadow: var(--xos-shadow);
+  transition: all var(--xos-transition-fast);
+}
+
+.card:hover {
+  box-shadow: var(--xos-shadow-md);
+}
+
+.card-header {
+  background-color: var(--xos-color-background-alt);
+  border-bottom-color: var(--xos-color-border);
+}
+
+/* Form theming */
+.form-control,
+.form-select {
+  background-color: var(--xos-form-background);
+  border-color: var(--xos-form-border);
+  color: var(--xos-color-text);
+  transition: all var(--xos-transition-fast);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--xos-form-background);
+  border-color: var(--xos-form-border-focus);
+  color: var(--xos-color-text);
+  box-shadow: 0 0 0 0.2rem rgba(var(--xos-color-primary), 0.25);
+}
+
+.form-control::placeholder {
+  color: var(--xos-form-placeholder);
+}
+
+/* Table theming */
+.table {
+  --bs-table-bg: var(--xos-table-background);
+  --bs-table-color: var(--xos-color-text);
+  --bs-table-border-color: var(--xos-table-border);
+  --bs-table-striped-bg: var(--xos-table-stripe);
+  --bs-table-hover-bg: var(--xos-table-hover);
+}
+
+.table thead th {
+  background-color: var(--xos-table-header-bg);
+  border-color: var(--xos-table-border);
+}
+
+/* Navigation theming */
+.navbar {
+  background-color: var(--xos-nav-background);
+  border-bottom: 1px solid var(--xos-nav-border);
+}
+
+.navbar-nav .nav-link {
+  color: var(--xos-nav-text);
+  transition: color var(--xos-transition-fast);
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+  color: var(--xos-nav-text-hover);
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--xos-nav-text-hover);
+  background-color: var(--xos-nav-active-bg);
+  border-radius: var(--xos-border-radius);
+}
+
+/* Modal theming */
+.modal-content {
+  background-color: var(--xos-color-surface);
+  border-color: var(--xos-color-border);
+  color: var(--xos-color-text);
+}
+
+.modal-header {
+  border-bottom-color: var(--xos-color-border);
+}
+
+.modal-footer {
+  border-top-color: var(--xos-color-border);
+}
+
+/* Alert theming */
+.alert-xos-primary {
+  background-color: var(--xos-color-primary-bg);
+  border-color: var(--xos-color-primary);
+  color: var(--xos-color-primary);
+}
+
+.alert-xos-success {
+  background-color: var(--xos-color-success-bg);
+  border-color: var(--xos-color-success);
+  color: var(--xos-color-success);
+}
+
+.alert-xos-warning {
+  background-color: var(--xos-color-warning-bg);
+  border-color: var(--xos-color-warning);
+  color: var(--xos-color-warning);
+}
+
+.alert-xos-danger {
+  background-color: var(--xos-color-danger-bg);
+  border-color: var(--xos-color-danger);
+  color: var(--xos-color-danger);
+}
+
+/* ===== SECTION 6: THEME UTILITIES ===== */
+
+/* ✅ CORRECT: Theme utility classes */
+
+/* Spacing utilities using theme variables */
+.xos-p-1 { padding: var(--xos-space-1); }
+.xos-p-2 { padding: var(--xos-space-2); }
+.xos-p-3 { padding: var(--xos-space-3); }
+.xos-p-4 { padding: var(--xos-space-4); }
+.xos-p-5 { padding: var(--xos-space-5); }
+.xos-p-6 { padding: var(--xos-space-6); }
+.xos-p-8 { padding: var(--xos-space-8); }
+
+.xos-m-1 { margin: var(--xos-space-1); }
+.xos-m-2 { margin: var(--xos-space-2); }
+.xos-m-3 { margin: var(--xos-space-3); }
+.xos-m-4 { margin: var(--xos-space-4); }
+.xos-m-5 { margin: var(--xos-space-5); }
+.xos-m-6 { margin: var(--xos-space-6); }
+.xos-m-8 { margin: var(--xos-space-8); }
+
+/* Border radius utilities */
+.xos-rounded-none { border-radius: var(--xos-border-radius-none); }
+.xos-rounded-sm { border-radius: var(--xos-border-radius-sm); }
+.xos-rounded { border-radius: var(--xos-border-radius); }
+.xos-rounded-md { border-radius: var(--xos-border-radius-md); }
+.xos-rounded-lg { border-radius: var(--xos-border-radius-lg); }
+.xos-rounded-xl { border-radius: var(--xos-border-radius-xl); }
+.xos-rounded-2xl { border-radius: var(--xos-border-radius-2xl); }
+.xos-rounded-full { border-radius: var(--xos-border-radius-full); }
+
+/* Shadow utilities */
+.xos-shadow-none { box-shadow: none; }
+.xos-shadow-sm { box-shadow: var(--xos-shadow-sm); }
+.xos-shadow { box-shadow: var(--xos-shadow); }
+.xos-shadow-md { box-shadow: var(--xos-shadow-md); }
+.xos-shadow-lg { box-shadow: var(--xos-shadow-lg); }
+.xos-shadow-xl { box-shadow: var(--xos-shadow-xl); }
+.xos-shadow-inner { box-shadow: var(--xos-shadow-inner); }
+
+/* Typography utilities */
+.xos-text-xs { font-size: var(--xos-font-size-xs); }
+.xos-text-sm { font-size: var(--xos-font-size-sm); }
+.xos-text-base { font-size: var(--xos-font-size-base); }
+.xos-text-lg { font-size: var(--xos-font-size-lg); }
+.xos-text-xl { font-size: var(--xos-font-size-xl); }
+.xos-text-2xl { font-size: var(--xos-font-size-2xl); }
+.xos-text-3xl { font-size: var(--xos-font-size-3xl); }
+
+.xos-font-thin { font-weight: var(--xos-font-weight-thin); }
+.xos-font-light { font-weight: var(--xos-font-weight-light); }
+.xos-font-normal { font-weight: var(--xos-font-weight-normal); }
+.xos-font-medium { font-weight: var(--xos-font-weight-medium); }
+.xos-font-semibold { font-weight: var(--xos-font-weight-semibold); }
+.xos-font-bold { font-weight: var(--xos-font-weight-bold); }
+
+.xos-leading-tight { line-height: var(--xos-line-height-tight); }
+.xos-leading-normal { line-height: var(--xos-line-height-normal); }
+.xos-leading-relaxed { line-height: var(--xos-line-height-relaxed); }
+
+/* Transition utilities */
+.xos-transition-fast {
+  transition: all var(--xos-transition-fast);
+}
+
+.xos-transition-base {
+  transition: all var(--xos-transition-base);
+}
+
+.xos-transition-slow {
+  transition: all var(--xos-transition-slow);
+}
+
+/* ===== SECTION 7: THEME SWITCHING UTILITIES ===== */
+
+/* ✅ CORRECT: Theme toggle button */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--xos-color-border);
+  border-radius: var(--xos-border-radius);
+  padding: var(--xos-space-2) var(--xos-space-3);
+  color: var(--xos-color-text);
+  cursor: pointer;
+  transition: all var(--xos-transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--xos-space-2);
+}
+
+.theme-toggle:hover {
+  background-color: var(--xos-color-surface-hover);
+  border-color: var(--xos-color-border-dark);
+}
+
+.theme-toggle:focus {
+  outline: 2px solid var(--xos-color-primary);
+  outline-offset: 2px;
+}
+
+/* Theme indicator */
+.theme-indicator {
+  width: var(--xos-space-4);
+  height: var(--xos-space-4);
+  border-radius: var(--xos-border-radius-full);
+  background-color: var(--xos-color-primary);
+  transition: background-color var(--xos-transition-fast);
+}
+
+/* ===== SECTION 8: PRINT THEME ===== */
+
+@media print {
+  :root {
+    /* ✅ CORRECT: Print-specific theme overrides */
+    --xos-color-background: #ffffff;
+    --xos-color-surface: #ffffff;
+    --xos-color-text: #000000;
+    --xos-color-text-muted: #666666;
+    --xos-color-border: #cccccc;
+    
+    /* Remove shadows for print */
+    --xos-shadow-sm: none;
+    --xos-shadow: none;
+    --xos-shadow-md: none;
+    --xos-shadow-lg: none;
+    --xos-shadow-xl: none;
+  }
+  
+  body {
+    color: #000000 !important;
+    background: #ffffff !important;
+  }
+  
+  .card {
+    border: 1px solid #cccccc !important;
+    box-shadow: none !important;
+  }
+  
+  /* Hide elements that shouldn't print */
+  .theme-toggle,
+  .btn-group,
+  .navbar,
+  .modal,
+  .toast,
+  .offcanvas {
+    display: none !important;
+  }
+}
+
+/* ===== SECTION 9: REDUCED MOTION ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    /* ✅ CORRECT: Respect user's motion preferences */
+    --xos-transition-fast: none;
+    --xos-transition-base: none;
+    --xos-transition-slow: none;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===== SECTION 10: FORCED COLORS MODE ===== */
+
+@media (forced-colors: active) {
+  :root {
+    /* ✅ CORRECT: Windows high contrast mode support */
+    --xos-color-background: Canvas;
+    --xos-color-surface: Canvas;
+    --xos-color-text: CanvasText;
+    --xos-color-border: CanvasText;
+    --xos-color-primary: Highlight;
+    --xos-color-primary-hover: Highlight;
+  }
+  
+  .btn {
+    border: 1px solid ButtonBorder;
+  }
+  
+  .form-control {
+    border: 1px solid ButtonBorder;
+  }
+}
+
+/*
+❌ COMMON MISTAKES TO AVOID:
+1. Not using CSS custom properties for theme values
+2. Hardcoding colors instead of using theme variables
+3. Not providing proper fallbacks for older browsers
+4. Missing dark theme considerations
+5. Not respecting user preferences (reduced motion, high contrast)
+6. Inconsistent color naming conventions
+7. Not using proper color contrast ratios
+8. Missing print styles
+9. Not organizing theme variables logically
+10. Forgetting to test all theme variations
+*/
