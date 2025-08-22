@@ -21,6 +21,7 @@
             <h3><i class="bi bi-lightning-charge"></i> Quick Access</h3>
             <ul>
                 <li><a href="#critical-start"><i class="bi bi-exclamation-triangle"></i> Start Here</a></li>
+                <li><a href="#team-collaboration"><i class="bi bi-people"></i> Team Usage</a></li>
                 <li><a href="#copy-paste-prompts"><i class="bi bi-clipboard"></i> Copy-Paste Prompts</a></li>
                 <li><a href="#essential-files"><i class="bi bi-star"></i> Essential Files</a></li>
                 <li><a href="#quick-setup"><i class="bi bi-play-circle"></i> Quick Setup</a></li>
@@ -363,6 +364,103 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                             <li><strong>Claude confused?</strong> → Reference <code>@claude_docs/CRITICAL_PATTERNS.md</code></li>
                             <li><strong>Still stuck?</strong> → Check <code>@claude_docs/troubleshooting/</code></li>
                         </ol>
+                    </div>
+                </div>
+            </section>
+
+            <section id="team-collaboration">
+                <h2>🤝 Team Collaboration & Repository Usage</h2>
+                
+                <div class="alert alert-warning">
+                    <h3><i class="bi bi-shield-check"></i> claude_docs Protection System</h3>
+                    <p>This repository has <strong>built-in protection</strong> for the claude_docs directory. Only maintainers can directly edit documentation files.</p>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3><i class="bi bi-git"></i> How Team Members Should Use This Repository</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        
+                        <h4><i class="bi bi-download"></i> Getting Started</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Clone Repository</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'clone-repo')">Copy</button>
+                            </div>
+                            <pre id="clone-repo">git clone https://github.com/leantos/XOS_Claude.git
+cd XOS_Claude
+
+# Enable git hooks for protection
+./.githooks/setup-hooks.sh</pre>
+                        </div>
+
+                        <h4><i class="bi bi-book"></i> Using Documentation</h4>
+                        <ul>
+                            <li><strong>Read freely</strong> - All documentation is accessible</li>
+                            <li><strong>Reference in Claude prompts</strong> - Use <code>@claude_docs/path/file.md</code></li>
+                            <li><strong>Browse HTML docs</strong> - This web interface for human reading</li>
+                        </ul>
+
+                        <h4><i class="bi bi-pencil-square"></i> Suggesting Changes</h4>
+                        <div class="alert alert-info">
+                            <p><strong>For claude_docs improvements:</strong></p>
+                            <ol>
+                                <li><strong>Create an Issue</strong> - Use <code>[DOCS]</code> in the title</li>
+                                <li><strong>Describe the change</strong> - What needs to be updated and why</li>
+                                <li><strong>Wait for review</strong> - Maintainers will implement if appropriate</li>
+                            </ol>
+                        </div>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Create Documentation Issue</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'create-issue')">Copy</button>
+                            </div>
+                            <pre id="create-issue"># Go to: https://github.com/leantos/XOS_Claude/issues/new
+
+Title: [DOCS] Improve XOS input handling examples
+Description: 
+- Current issue with documentation
+- Suggested improvement 
+- Why this would help the team</pre>
+                        </div>
+
+                        <h4><i class="bi bi-code-slash"></i> Contributing Code (Non-Documentation)</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Standard Git Workflow</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'git-workflow')">Copy</button>
+                            </div>
+                            <pre id="git-workflow"># For code contributions (outside claude_docs/)
+git checkout -b feature/your-feature-name
+# Make your changes (not in claude_docs/)
+git add .
+git commit -m "Add: Your feature description"
+git push origin feature/your-feature-name
+# Create Pull Request on GitHub</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3><i class="bi bi-shield-lock"></i> Protection Mechanisms</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li><strong>CODEOWNERS</strong> - Requires maintainer approval for claude_docs changes</li>
+                            <li><strong>Pre-commit hooks</strong> - Blocks unauthorized local edits</li>
+                            <li><strong>GitHub Actions</strong> - Validates pull requests</li>
+                            <li><strong>Branch protection</strong> - Enforces review requirements</li>
+                        </ul>
+                        
+                        <div class="alert alert-success">
+                            <h4>Why This System?</h4>
+                            <p>Ensures documentation quality and consistency while allowing the entire team to suggest improvements through proper channels.</p>
+                        </div>
                     </div>
                 </div>
             </section>
