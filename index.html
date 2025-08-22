@@ -566,42 +566,49 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
         }
 
         function performSearch() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const searchInput = document.getElementById('searchInput').value.trim();
+            const searchTerm = searchInput.toLowerCase();
             const content = document.querySelector('.main-content');
-            const sections = content.querySelectorAll('section, h2, h3, h4, p, li, td, pre, code');
             
-            // Remove previous highlights
-            sections.forEach(section => {
-                if (section.innerHTML.includes('<span class="highlight">')) {
-                    section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
+            // First pass: Remove previous highlights from leaf elements only
+            const allElements = content.querySelectorAll('*');
+            allElements.forEach(element => {
+                if (element.innerHTML.includes('<span class="highlight">')) {
+                    element.innerHTML = element.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
                 }
-            });
-
-            // Clear any existing search results styling
-            sections.forEach(section => {
-                section.style.display = '';
-                section.parentElement.style.display = '';
             });
             
             if (searchTerm.length > 0) {
                 let hasResults = false;
+                const collapsibleParents = new Set();
                 
-                sections.forEach(section => {
-                    const text = section.textContent.toLowerCase();
+                // Select only leaf-level text elements for highlighting
+                const textElements = content.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, td, span:not(.collapsible-toggle), strong, em, a, code, pre');
+                
+                textElements.forEach(element => {
+                    const text = element.textContent.toLowerCase();
                     if (text.includes(searchTerm)) {
-                        // Highlight matching text
-                        const originalHTML = section.innerHTML;
-                        section.innerHTML = highlightText(originalHTML, searchTerm);
+                        // Only highlight if element doesn't contain other elements (is a leaf)
+                        const hasChildElements = element.children.length > 0;
+                        if (!hasChildElements || element.tagName === 'PRE' || element.tagName === 'CODE') {
+                            const originalHTML = element.innerHTML;
+                            element.innerHTML = highlightText(originalHTML, searchInput);
+                        }
                         
-                        // Expand parent collapsibles if needed
-                        let parent = section.closest('.collapsible');
+                        // Find and expand parent collapsibles
+                        let parent = element.closest('.collapsible');
                         while (parent) {
-                            parent.classList.add('expanded');
-                            parent = parent.parentElement.closest('.collapsible');
+                            collapsibleParents.add(parent);
+                            parent = parent.parentElement ? parent.parentElement.closest('.collapsible') : null;
                         }
                         
                         hasResults = true;
                     }
+                });
+                
+                // Expand all found collapsible parents
+                collapsibleParents.forEach(collapsible => {
+                    collapsible.classList.add('expanded');
                 });
                 
                 // Show message if no results
@@ -610,7 +617,7 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     if (!noResultsMsg) {
                         noResultsMsg = document.createElement('div');
                         noResultsMsg.id = 'no-results-message';
-                        noResultsMsg.innerHTML = '<p style="color: #888; text-align: center; margin: 2rem 0;">No results found for "' + searchTerm + '"</p>';
+                        noResultsMsg.innerHTML = '<p style="color: #888; text-align: center; margin: 2rem 0;">No results found for "' + searchInput + '"</p>';
                         content.appendChild(noResultsMsg);
                     }
                 } else if (noResultsMsg) {
