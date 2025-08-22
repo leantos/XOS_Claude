@@ -564,7 +564,7 @@ pre code,
     border: 1px solid var(--colorNeutralStroke1) !important;
     border-radius: var(--borderRadiusMedium);
     margin: 16px 0;
-    padding: 12px !important;
+    /* padding: 12px !important; */
     overflow-x: auto;
     font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
     font-size: 13px !important;
@@ -667,7 +667,7 @@ pre {
 code {
     background: var(--bg-tertiary);
     color: var(--primary-light);
-    padding: 2px 6px;
+    /* padding: 2px 6px; */
     border-radius: var(--radius-small);
     font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace;
     font-size: 13px;
