@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>git-integration-workflow - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># XOS Framework Git Integration Workflow
+
+<h2>Overview</h2>
+
+This document defines the complete Git workflow for XOS Framework development, integrating version control practices with XOS-specific development patterns, TDD workflows, and quality gates.
+
+<h2>Table of Contents</h2>
+<ul><li><a href="#branch-strategy">Branch Strategy</a></li><li><a href="#commit-conventions">Commit Conventions</a></li><li><a href="#development-workflow-integration">Development Workflow Integration</a></li><li><a href="#pull-request-process">Pull Request Process</a></li><li><a href="#quality-gates--cicd">Quality Gates & CI/CD</a></li><li><a href="#xos-specific-patterns">XOS-Specific Patterns</a></li></ul>
+
+---
+
+<h2>Branch Strategy</h2>
+
+<h3>Branch Naming Conventions</h3>
+
+#### Frontend Modules (XOS Components)
+<div class="code-block"><pre><code>bash
+feature/xos-[module]-frontend          # New XOS component
+feature/xos-[module]-mvvm-refactor     # MVVM pattern improvements  
+bugfix/xos-[module]-input-handling     # Fix keyboard input issues
+bugfix/xos-[module]-data-property      # Fix "Cannot set property Data" errors
+refactor/xos-[module]-vm-cleanup       # ViewModel cleanup
+test/xos-[module]-coverage             # Improve test coverage
+</code></pre></div>
+
+#### Backend Modules
+<div class="code-block"><pre><code>bash
+feature/api-[module]-crud              # CRUD API implementation
+feature/service-[module]-business      # Business logic services
+feature/data-[module]-sql-migration    # Database schema changes
+bugfix/api-[module]-validation         # Fix validation issues
+refactor/service-[module]-patterns     # Service layer refactoring
+perf/api-[module]-optimization         # Performance improvements
+</code></pre></div>
+
+#### Full-Stack Features
+<div class="code-block"><pre><code>bash
+feature/[module]-full-stack            # Complete feature implementation
+feature/[module]-integration           # Frontend-backend integration
+epic/[major-feature]-implementation    # Large multi-module features
+</code></pre></div>
+
+#### Hotfixes & Maintenance
+<div class="code-block"><pre><code>bash
+hotfix/critical-[issue-description]   # Production fixes
+maintenance/dependencies-update        # Dependency updates
+maintenance/security-patches          # Security vulnerability fixes
+</code></pre></div>
+
+<h3>Branch Protection Rules</h3>
+
+#### Main Branch
+<div class="code-block"><pre><code>yaml
+protection_rules:
+  main:
+    require_pr: true
+    require_reviews: 2
+    dismiss_stale_reviews: true
+    require_status_checks: 
+      - "ci/build"
+      - "ci/test-backend" 
+      - "ci/test-frontend"
+      - "ci/xos-compliance-check"
+    restrict_push: true
+    enforce_admins: false
+</code></pre></div>
+
+#### Develop Branch
+<div class="code-block"><pre><code>yaml
+protection_rules:
+  develop:
+    require_pr: true
+    require_reviews: 1
+    require_status_checks:
+      - "ci/test-backend"
+      - "ci/test-frontend"
+      - "ci/xos-patterns-check"
+</code></pre></div>
+
+---
+
+<h2>Commit Conventions</h2>
+
+<h3>XOS-Specific Commit Message Format</h3>
+
+<div class="code-block"><pre><code>
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+</code></pre></div>
+
+#### Types
+<div class="code-block"><pre><code>bash
+feat        # New feature or component
+fix         # Bug fix
+test        # Adding or modifying tests
+docs        # Documentation changes
+refactor    # Code refactoring without feature changes
+perf        # Performance improvements
+style       # Code style changes (formatting, etc.)
+chore       # Maintenance tasks
+</code></pre></div>
+
+#### Scopes for XOS Development
+<div class="code-block"><pre><code>bash
+# Frontend Scopes
+xos-[module]        # XOS component development
+xos-vm              # ViewModel changes
+xos-input           # Input handling fixes
+xos-data            # Data property management
+mvvm                # MVVM pattern implementation
+
+# Backend Scopes  
+api-[module]        # API controller changes
+service-[module]    # Service layer changes
+data-[module]       # Data access changes
+sql                 # SQL queries and database
+auth                # Authentication/authorization
+
+# Infrastructure Scopes
+ci                  # CI/CD pipeline changes
+config              # Configuration changes
+deps                # Dependency updates
+</code></pre></div>
+
+<h3>Commit Message Templates</h3>
+
+#### XOS Frontend Component Commits
+<div class="code-block"><pre><code>bash
+# Initial component creation
+feat(xos-[module]): implement [ComponentName] with MVVM pattern
+
+<ul><li>Add ViewModel extending VMBase</li><li>Create component extending XOSComponent</li><li>Implement three-step event handlers</li><li>Add XOSTextbox components with name props</li><li>Initialize Data properties correctly</li></ul>
+
+# Input handling fixes
+fix(xos-[module]): resolve keyboard input acceptance issues
+
+<ul><li>Add updateUI() calls after state changes</li><li>Fix event handler to use e.value instead of e.target.value</li><li>Ensure all XOSTextbox components have name attribute</li><li>Verify three-step event pattern implementation</li></ul>
+
+# Test implementation
+test(xos-[module]): add comprehensive test suite with 85% coverage
+
+<ul><li>Add ViewModel initialization tests</li><li>Test keyboard input acceptance</li><li>Verify no "Cannot set property Data" errors</li><li>Add integration tests for API calls</li><li>Mock external dependencies properly</li></ul>
+</code></pre></div>
+
+#### Backend Module Commits
+<div class="code-block"><pre><code>bash
+# Service implementation
+feat(service-[module]): implement business logic with raw SQL patterns
+
+<ul><li>Add service interface and implementation</li><li>Use GetEntityDataListAsync pattern</li><li>Implement proper transaction handling</li><li>Add validation and error handling</li><li>Follow XOS data access patterns</li></ul>
+
+# API controller
+feat(api-[module]): add POST-only endpoints with domain type returns
+
+<ul><li>Implement CRUD operations as POST endpoints</li><li>Return domain types directly (not IActionResult)</li><li>Add proper authorization attributes</li><li>Include comprehensive error handling</li><li>Follow XOS API patterns</li></ul>
+</code></pre></div>
+
+---
+
+<h2>Development Workflow Integration</h2>
+
+<h3>TDD Workflow Integration</h3>
+
+#### Step-by-Step Git Integration with TDD
+
+<div class="code-block"><pre><code>bash
+# 1. Initialize feature branch
+git checkout main
+git pull origin main
+git checkout -b feature/[module]-implementation
+
+# 2. After requirements analysis (TDD Step 1)
+git add .
+git commit -m "docs([module]): add requirements analysis and test plan
+
+<ul><li>Document module requirements</li><li>Create test scenarios (50+ cases)</li><li>Define acceptance criteria</li><li>Plan XOS component structure"</li></ul>
+
+# 3. After code skeleton (TDD Step 3)
+git add .
+git commit -m "feat([module]): create code skeleton and structure
+
+<ul><li>Add domain models with properties</li><li>Create service interfaces</li><li>Set up controller with empty methods</li><li>Configure dependency injection</li><li>Code compiles successfully"</li></ul>
+
+# 4. After test suite creation (TDD Step 4)
+git add .
+git commit -m "test([module]): add comprehensive test suite
+
+<ul><li>Create unit tests for all components</li><li>Add integration tests for database operations</li><li>Mock external dependencies</li><li>Follow AAA pattern</li><li>Status: All tests failing (Red phase - expected)"</li></ul>
+
+# 5. After implementation (TDD Step 5)
+git add .
+git commit -m "feat([module]): implement core functionality
+
+Round 1 Implementation:
+<ul><li>Service methods with business logic</li><li>Controller actions with error handling</li><li>XOS framework patterns followed</li><li>Target: 80%+ test pass rate achieved</li><li>Test Results: [X/Y] passing"</li></ul>
+
+# 6. After refinements (TDD Step 7)
+git add .
+git commit -m "fix([module]): complete implementation refinements
+
+Round 2 Results:
+<ul><li>Fixed failing tests from round 1</li><li>Improved implementation quality</li><li>Final Status: [100% pass rate OR documented blockers]</li><li>Test Coverage: [X]%"</li></ul>
+
+# 7. After documentation (TDD Step 8)
+git add .
+git commit -m "docs([module]): add comprehensive module documentation
+
+<ul><li>Add README with usage examples</li><li>Add API documentation with endpoints</li><li>Add test coverage summary</li><li>Add troubleshooting guide</li><li>Update @claude_docs patterns"</li></ul>
+</code></pre></div>
+
+<h3>XOS Frontend Workflow Integration</h3>
+
+<div class="code-block"><pre><code>bash
+# During 9-Step XOS Frontend TDD Cycle
+
+# After Step 2 (SCAFFOLD)
+git add .
+git commit -m "feat(xos-[module]): create MVVM structure with VMBase
+
+<ul><li>Add ViewModel extending VMBase with init() method</li><li>Create component extending XOSComponent</li><li>Set up proper folder structure</li><li>Initialize Data properties using reference pattern"</li></ul>
+
+# After Step 5 (IMPLEMENT)
+git add .
+git commit -m "feat(xos-[module]): implement three-step event handlers
+
+<ul><li>Add handleInputChange with updateUI() calls</li><li>Implement XOSTextbox with name/value props</li><li>Enable keyboard input acceptance</li><li>Add form validation and state management"</li></ul>
+
+# After Step 6 (VERIFY)
+git add .
+git commit -m "test(xos-[module]): verify XOS patterns and functionality
+
+Verification Results:
+<ul><li>? All inputs accept keyboard typing</li><li>? No 'Cannot set property Data' errors</li><li>? updateUI() called appropriately</li><li>? Test coverage: [X]% (Target: 80%+)</li><li>Manual testing confirms XOS compliance"</li></ul>
+
+# After Step 9 (VERSION CONTROL)
+# This step creates the PR - covered in Pull Request Process section
+</code></pre></div>
+
+---
+
+<h2>Pull Request Process</h2>
+
+<h3>PR Templates</h3>
+
+#### XOS Frontend Component PR Template
+
+``<code>markdown
+<h2>XOS Frontend Component Implementation</h2>
+
+<h3>Component Details</h3>
+<ul><li><strong>Name</strong>: [ComponentName]</li><li><strong>Pattern</strong>: XOS MVVM with VMBase</li><li><strong>Location</strong>: </code>src/components/[ModuleName]/<code></li><li><strong>Test Coverage</strong>: [X]% (Target: 80%+)</li></ul>
+
+<h3>XOS Compliance Checklist</h3>
+<ul><li>[ ] ViewModel extends VMBase correctly</li><li>[ ] Uses init() method with Data reference pattern  </li><li>[ ] Implements three-step event handlers</li><li>[ ] All XOSTextbox inputs have 'name' props</li><li>[ ] updateUI() called after state changes</li><li>[ ] No 'Cannot set property Data' errors in console</li><li>[ ] Component extends XOSComponent (not wrapped in XOSContainer)</li><li>[ ] All inputs accept keyboard typing</li><li>[ ] Form validation implemented</li><li>[ ] Error handling with showMessageBox</li></ul>
+
+<h3>Testing Results</h3>
+<ul><li><strong>Unit Tests</strong>: [X/Y] passing</li><li><strong>Integration Tests</strong>: [X/Y] passing</li><li><strong>Manual Testing</strong>: ? Keyboard input verified in browser</li><li><strong>Console Check</strong>: ? No Data property errors</li><li><strong>XOS Patterns</strong>: ? All patterns verified</li></ul>
+
+<h3>Files Changed</h3>
+<ul><li></code>src/components/[ModuleName]/index.jsx<code> - Component implementation</li><li></code>src/components/[ModuleName]/[ModuleName]VM.jsx<code> - ViewModel</li><li></code>src/components/[ModuleName]/__tests__/<code> - Test suite</li><li></code>docs/components/[ModuleName].md<code> - Documentation</li></ul>
+
+<h3>Code Review Focus Areas</h3>
+<ul><li><strong>Data Property Usage</strong>: Verify no direct assignment to this.Data</li><li><strong>Event Handlers</strong>: Confirm three-step pattern implementation</li><li><strong>Input Acceptance</strong>: Test all text fields accept keyboard input</li><li><strong>State Management</strong>: Check updateUI() calls trigger re-renders</li><li><strong>XOS Components</strong>: Verify proper name/value prop usage</li><li><strong>Test Coverage</strong>: Ensure comprehensive testing</li></ul>
+
+<h3>Breaking Changes</h3>
+<ul><li>[ ] None</li><li>[ ] [Describe breaking changes if any]</li></ul>
+
+Closes #[issue-number]
+<div class="code-block"><pre><code>
+
+#### Backend Module PR Template
+
+</code></pre></div>markdown
+<h2>Backend Module Implementation</h2>
+
+<h3>Module Details</h3>
+<ul><li><strong>Name</strong>: [ModuleName]</li><li><strong>Services</strong>: [List service classes]</li><li><strong>Controllers</strong>: [List controller classes]  </li><li><strong>Test Coverage</strong>: [X]% (Target: 80%+)</li></ul>
+
+<h3>TDD Workflow Completed</h3>
+<ul><li>[ ] Requirements analysis and test planning</li><li>[ ] Code skeleton with compilable structure</li><li>[ ] Comprehensive test suite (50+ scenarios)</li><li>[ ] Round 1: Core implementation (80%+ pass rate)</li><li>[ ] Round 2: Refinements (100% pass rate OR documented blockers)</li><li>[ ] Complete documentation package</li></ul>
+
+<h3>XOS Framework Compliance</h3>
+<ul><li>[ ] Uses raw SQL with GetEntityDataListAsync pattern (not Entity Framework)</li><li>[ ] All API endpoints are POST methods</li><li>[ ] Returns domain types directly (not IActionResult)</li><li>[ ] Proper transaction handling implemented</li><li>[ ] SignalR notifications added where appropriate</li><li>[ ] Follows dependency injection patterns</li><li>[ ] Includes comprehensive error handling</li><li>[ ] Uses proper logging throughout</li></ul>
+
+<h3>Test Results</h3>
+<ul><li><strong>Test Coverage</strong>: [X]%</li><li><strong>Pass Rate</strong>: [Y]% ([Z]/[Total] tests passing)</li><li><strong>Blockers</strong>: [None/List specific blockers]</li></ul>
+
+<h3>Database Changes</h3>
+<ul><li>[ ] No database changes</li><li>[ ] Schema migrations included: [List migration files]</li><li>[ ] Test data scripts provided</li><li>[ ] Rollback scripts available</li></ul>
+
+<h3>Files Changed</h3>
+<ul><li></code>Domain/[ModuleName].cs<code> - Domain model</li><li></code>Interfaces/I[ModuleName]Service.cs<code> - Service interface</li><li></code>Services/[ModuleName]Service.cs<code> - Service implementation</li><li></code>Controllers/[ModuleName]Controller.cs<code> - API controller</li><li></code>Tests/<code> - Comprehensive test suite</li><li></code>docs/modules/[ModuleName]/<code> - Documentation</li></ul>
+
+<h3>Code Review Focus Areas</h3>
+<ul><li><strong>SQL Queries</strong>: Verify raw SQL usage and parameter binding</li><li><strong>Transaction Handling</strong>: Check proper commit/rollback patterns</li><li><strong>Error Handling</strong>: Validate exception handling and logging</li><li><strong>Security</strong>: Review authorization and input validation</li><li><strong>Performance</strong>: Check query efficiency and caching</li><li><strong>Testing</strong>: Verify test coverage and quality</li></ul>
+
+Closes #[issue-number]
+<div class="code-block"><pre><code>
+
+<h3>PR Review Process</h3>
+
+#### XOS-Specific Review Checklist
+
+<strong>Frontend Reviews:</strong>
+</code></pre></div>bash
+# Required checks before approval
+? Clone branch and test manually
+? Verify all inputs accept keyboard typing
+? Check browser console for Data property errors
+? Confirm updateUI() called after state changes
+? Test form validation and error handling
+? Verify XOS component usage patterns
+? Check test coverage report
+? Review event handler implementations
+<div class="code-block"><pre><code>
+
+<strong>Backend Reviews:</strong>
+</code></pre></div>bash
+# Required checks before approval  
+? Run all tests and verify pass rate
+? Review SQL queries for security (injection prevention)
+? Check transaction handling patterns
+? Verify error handling and logging
+? Test API endpoints with Postman/similar
+? Review service layer dependency injection
+? Check domain model validation
+? Verify XOS data access patterns
+<div class="code-block"><pre><code>
+
+---
+
+<h2>Quality Gates & CI/CD</h2>
+
+<h3>Pre-commit Hooks</h3>
+
+</code></pre></div>bash
+# .pre-commit-hooks.yaml
+repos:
+  - repo: local
+    hooks:
+      # XOS Frontend Checks
+      - id: xos-component-check
+        name: XOS Component Pattern Check
+        entry: scripts/check-xos-patterns.js
+        language: node
+        files: 'src/components/.<em>\.(jsx|js)
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>
+        
+      - id: xos-viewmodel-check
+        name: XOS ViewModel Pattern Check
+        entry: scripts/check-vmbase-patterns.js
+        language: node
+        files: 'src/components/.</em>/.<em>VM\.jsx
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>
+        
+      # Backend Checks
+      - id: sql-injection-check
+        name: SQL Injection Pattern Check
+        entry: scripts/check-sql-patterns.js
+        language: node
+        files: 'Services/.</em>\.cs$|Controllers/.<em>\.cs
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>
+        
+      # Test Coverage
+      - id: test-coverage-check
+        name: Minimum Test Coverage Check
+        entry: scripts/check-test-coverage.js
+        language: node
+        pass_filenames: false
+        
+      # Documentation
+      - id: docs-update-check
+        name: Documentation Update Check
+        entry: scripts/check-docs-updated.js
+        language: node
+        pass_filenames: false
+<div class="code-block"><pre><code>
+
+<h3>CI/CD Pipeline Configuration</h3>
+
+</code></pre></div>yaml
+# .github/workflows/xos-development.yml
+name: XOS Development Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  xos-compliance-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Check XOS Frontend Patterns
+        run: |
+          npm run xos:check-patterns
+          
+      - name: Verify Input Handling
+        run: |
+          npm run xos:verify-inputs
+          
+      - name: Check Data Property Usage
+        run: |
+          npm run xos:check-data-property
+
+  backend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Run Backend Tests
+        run: |
+          dotnet test --configuration Release --verbosity normal --collect:"XPlat Code Coverage"
+          
+      - name: Check Test Coverage
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator -reports:"</em><em>/coverage.cobertura.xml" -targetdir:"coverage" -reporttypes:"TextSummary"
+          
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          
+      - name: Install Dependencies
+        run: npm ci
+        
+      - name: Run Frontend Tests
+        run: |
+          npm run test:coverage
+          
+      - name: XOS Component Manual Tests
+        run: |
+          npm run test:xos-components
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests]
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Start Test Environment
+        run: |
+          docker-compose -f docker-compose.test.yml up -d
+          
+      - name: Run Integration Tests
+        run: |
+          npm run test:integration
+          
+      - name: Test XOS Full-Stack Scenarios
+        run: |
+          npm run test:xos-integration
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run SQL Injection Scan
+        run: |
+          semgrep --config=auto --json --output=security-report.json
+          
+      - name: Check for Secrets
+        run: |
+          git-secrets --scan --recursive .
+<div class="code-block"><pre><code>
+
+---
+
+<h2>XOS-Specific Patterns</h2>
+
+<h3>Required Git Hooks for XOS Development</h3>
+
+#### Pre-commit Hook: XOS Pattern Validation
+
+</code></pre></div>javascript
+// scripts/check-xos-patterns.js
+const fs = require('fs');
+const path = require('path');
+
+function checkXOSPatterns(filePath) {
+    const content = fs.readFileSync(filePath, 'utf8');
+    const errors = [];
+    
+    // Check for VMBase inheritance
+    if (filePath.includes('VM.jsx')) {
+        if (!content.includes('extends VMBase')) {
+            errors.push(</code>${filePath}: ViewModel must extend VMBase<code>);
+        }
+        
+        if (!content.includes('init()')) {
+            errors.push(</code>${filePath}: ViewModel must implement init() method<code>);
+        }
+        
+        if (content.includes('this.Data = {')) {
+            errors.push(</code>${filePath}: Never assign directly to this.Data, use reference pattern<code>);
+        }
+    }
+    
+    // Check XOS component patterns
+    if (filePath.includes('/index.jsx') && !filePath.includes('__tests__')) {
+        if (!content.includes('extends cntrl.XOSComponent')) {
+            errors.push(</code>${filePath}: Component must extend XOSComponent<code>);
+        }
+        
+        if (content.includes('XOSTextbox') && !content.includes('name=')) {
+            errors.push(</code>${filePath}: XOSTextbox components must have 'name' prop<code>);
+        }
+        
+        if (content.includes('onChange') && !content.includes('updateUI()')) {
+            errors.push(</code>${filePath}: Event handlers must call updateUI()<code>);
+        }
+    }
+    
+    return errors;
+}
+
+// Check all staged files
+const stagedFiles = process.argv.slice(2);
+let allErrors = [];
+
+stagedFiles.forEach(file => {
+    if (file.endsWith('.jsx') || file.endsWith('.js')) {
+        const errors = checkXOSPatterns(file);
+        allErrors = allErrors.concat(errors);
+    }
+});
+
+if (allErrors.length > 0) {
+    console.error('XOS Pattern Violations Found:');
+    allErrors.forEach(error => console.error(</code>? ${error}<code>));
+    process.exit(1);
+} else {
+    console.log('? All XOS patterns validated successfully');
+}
+<div class="code-block"><pre><code>
+
+#### Pre-push Hook: Test Coverage Validation
+
+</code></pre></div>bash
+#!/bin/bash
+# scripts/pre-push-coverage-check.sh
+
+echo "Running test coverage check..."
+
+# Frontend coverage
+npm run test:coverage:silent
+FRONTEND_COVERAGE=$(cat coverage/lcov-report/index.html | grep -o 'Functions[^%]</em>%' | grep -o '[0-9.]<em>' | head -1)
+
+# Backend coverage  
+dotnet test --collect:"XPlat Code Coverage" --verbosity quiet
+BACKEND_COVERAGE=$(dotnet tool run reportgenerator -reports:"</em><em>/coverage.cobertura.xml" -targetdir:"coverage-backend" -reporttypes:"TextSummary" | grep -o 'Line coverage: [0-9.]</em>%' | grep -o '[0-9.]*')
+
+echo "Frontend Coverage: ${FRONTEND_COVERAGE}%"
+echo "Backend Coverage: ${BACKEND_COVERAGE}%"
+
+# Check minimum coverage thresholds
+if (( $(echo "$FRONTEND_COVERAGE < 80" | bc -l) )); then
+    echo "? Frontend coverage (${FRONTEND_COVERAGE}%) below 80% threshold"
+    exit 1
+fi
+
+if (( $(echo "$BACKEND_COVERAGE < 80" | bc -l) )); then
+    echo "? Backend coverage (${BACKEND_COVERAGE}%) below 80% threshold"
+    exit 1
+fi
+
+echo "? Test coverage validation passed"
+<div class="code-block"><pre><code>
+
+<h3>Git Aliases for XOS Development</h3>
+
+</code></pre></div>bash
+# Add to ~/.gitconfig or project .git/config
+
+[alias]
+    # XOS-specific shortcuts
+    xos-branch = "!f() { git checkout -b feature/xos-$1-${2:-frontend}; }; f"
+    xos-commit = "!f() { git add . && git commit -m \"feat(xos-$1): $2\"; }; f"
+    
+    # Quick module workflow
+    module-start = "!f() { git checkout main && git pull && git checkout -b feature/$1-implementation; }; f"
+    module-checkpoint = "!f() { git add . && git commit -m \"$1\"; }; f"
+    module-pr = "!f() { git push -u origin HEAD && gh pr create --template .github/pull_request_template.md; }; f"
+    
+    # Testing shortcuts
+    test-backend = "!dotnet test --verbosity normal"
+    test-frontend = "!npm run test"
+    test-coverage = "!npm run test:coverage && dotnet test --collect:'XPlat Code Coverage'"
+    
+    # XOS pattern validation
+    check-xos = "!node scripts/check-xos-patterns.js"
+    fix-xos = "!node scripts/fix-xos-patterns.js"
+</code>`<code>
+
+---
+
+<h2>Quick Reference</h2>
+
+<h3>Workflow Summary</h3>
+
+<ul><li><strong>Initialize</strong>: </code>git checkout -b feature/[module]-[type]`</li><li><strong>Develop</strong>: Follow TDD workflow with Git checkpoints</li><li><strong>Test</strong>: Verify XOS patterns and coverage thresholds</li><li><strong>Document</strong>: Commit comprehensive documentation</li><li><strong>PR</strong>: Create PR with appropriate template and checklist</li><li><strong>Review</strong>: Address feedback maintaining XOS compliance</li><li><strong>Merge</strong>: Squash merge after approval</li><li><strong>Cleanup</strong>: Delete feature branch and update local main</li></ul>
+
+<h3>Critical XOS Git Patterns</h3>
+
+<ul><li><strong>Never commit</strong> code with "Cannot set property Data" errors</li><li><strong>Always verify</strong> keyboard input acceptance before PR</li><li><strong>Include test coverage</strong> metrics in commit messages</li><li><strong>Document blockers</strong> clearly if 100% pass rate not achieved</li><li><strong>Follow conventional commits</strong> with XOS-specific scopes</li><li><strong>Use Git hooks</strong> to enforce XOS pattern compliance</li></ul>
+
+---
+
+This Git integration workflow ensures that XOS Framework development maintains high quality standards while providing clear version control practices that align with the framework's unique patterns and requirements.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

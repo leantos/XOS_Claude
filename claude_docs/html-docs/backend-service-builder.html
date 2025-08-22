@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>backend-service-builder - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p>---
+name: backend-service-builder
+description: Create XOS framework backend services following established XOS patterns, conventions, and architecture. This agent generates production-ready services that integrate seamlessly with existing XOS applications.
+tools: Read, Write, Edit, Bash, Glob, Grep
+---
+
+# XOS Backend Service Builder Agent
+
+<h2>Purpose</h2>
+Create XOS framework backend services following established XOS patterns, conventions, and architecture. This agent generates production-ready services that integrate seamlessly with existing XOS applications.
+
+<h2>Optimal Prompt</h2>
+
+Create a complete XOS backend service for [ENTITY] that includes:
+
+<strong>CORE REQUIREMENTS:</strong>
+<ul><li>XOSBaseController with proper POST-based API endpoints (Search/Select/Save)</li><li>XOSServiceBase implementation with multi-tenant data access</li><li>Custom XOS Data Framework patterns (no Entity Framework)</li><li>PostgreSQL integration with raw SQL queries via DBUtils</li><li>Nested domain classes with Input/Output/Result patterns</li><li>Multi-tenant ClientID-based data routing</li><li>Comprehensive audit logging with XOS audit patterns</li></ul>
+
+<strong>DELIVERABLES:</strong>
+<ul><li><strong>Controller</strong> - XOSBaseController descendant with Search/Select/Save endpoints</li><li><strong>Service Interface</strong> - Following I[Entity]Service naming convention</li><li><strong>Service Implementation</strong> - XOSServiceBase descendant with business logic</li><li><strong>Domain Model</strong> - Main class with nested Input/Output/SearchResult classes</li><li><strong>Service Registration</strong> - AddTransactionService extension method updates</li><li><strong>Database Schema</strong> - PostgreSQL table structure with multi-tenant support</li></ul>
+
+<strong>TECHNICAL SPECIFICATIONS:</strong>
+<ul><li>Framework: .NET 8.0 with ASP.NET Core</li><li>Database: PostgreSQL with multi-tenant ClientID routing</li><li>Data Access: XOS Data Framework (DBUtils pattern)</li><li>Authentication: JWT with XOS.Web.Security integration</li><li>Logging: Structured logging with Serilog</li><li>Architecture: XOS Service-based with dependency injection</li></ul>
+
+<strong>XOS PATTERNS TO FOLLOW:</strong>
+<ul><li>Controllers inherit from XOSBaseController</li><li>Services inherit from XOSServiceBase</li><li>Use this.DBUtils(clientId, readOnly) for database access</li><li>POST endpoints only: [HttpPost("Search")], [HttpPost("Select")], [HttpPost("Save")]</li><li>Multi-tenant data access with ClientID filtering</li><li>Nested domain classes (SearchInput, SearchResult, SaveOutput)</li><li>Transaction management with GetDBService() and BeginTransaction()</li><li>Audit logging with Audit.SaveMasterAuditAsync()</li><li>Input validation with GetRequestInfo() context</li></ul>
+
+<strong>QUALITY CRITERIA:</strong>
+<ul><li>All database queries parameterized against SQL injection</li><li>Proper exception handling with structured logging</li><li>Transaction rollback on errors</li><li>Multi-tenant data isolation enforced</li><li>Audit trail for all modifications</li><li>Proper disposal patterns implemented</li><li>InputInfo context passed to all service methods</li></ul>
+
+<strong>OUTPUT FORMAT:</strong>
+Generate complete, working code files organized by XOS architecture layers. Include all necessary using statements, proper namespace declarations, and working SQL queries for PostgreSQL.
+
+<h2>XOS Architecture Patterns</h2>
+
+<h3>XOS Controller Pattern</h3>
+<div class="code-block"><pre><code>csharp
+[Route("api/[controller]")]
+[ApiController]  
+public class [ENTITY]Controller : XOSBaseController
+{
+    private I[ENTITY]Service serviceManager;
+    
+    [HttpPost("Search")]
+    public async Task<PageInfo<[ENTITY].SearchResult>> SearchAsync([FromBody] [ENTITY].SearchInput input)
+    {
+        return await this.serviceManager.SearchAsync(input, this.GetRequestInfo()).ConfigureAwait(false);
+    }
+    
+    [HttpPost("Select")]  
+    public async Task<[ENTITY]> SelectAsync([FromBody] [ENTITY] input)
+    {
+        return await this.serviceManager.SelectAsync(this.ClientID, input.ID).ConfigureAwait(false);
+    }
+    
+    [HttpPost("Save")]
+    public async Task<[ENTITY].SaveOutput> SaveAsync([FromBody] [ENTITY] input)
+    {
+        return await this.serviceManager.SaveAsync(input, this.GetRequestInfo()).ConfigureAwait(false);
+    }
+}
+</code></pre></div>
+
+<h3>XOS Service Pattern  </h3>
+<div class="code-block"><pre><code>csharp
+public class [ENTITY]Service : XOSServiceBase, I[ENTITY]Service
+{
+    public [ENTITY]Service(IServiceProvider serviceProvider, ILogger<[ENTITY]Service> logger) 
+        : base(serviceProvider, logger) { }
+        
+    public async Task<PageInfo<[ENTITY].SearchResult>> SearchAsync([ENTITY].SearchInput input, InputInfo loginInfo)
+    {
+        var gridData = new PageInfo<[ENTITY].SearchResult>() { CurrentPage = input.Page };
+        DBParameters dbParams = new DBParameters();
+        StringBuilder query = new StringBuilder();
+        
+        try
+        {
+            query.Append($@"select [columns], count(<em>) over() as TotalRows 
+                           from [table] where clnt_id = @clnt_id");
+            dbParams.Add("clnt_id", loginInfo.ClientID);
+            
+            // Add search filters, pagination, sorting
+            
+            gridData.Items = await this.DBUtils(loginInfo.ClientID.ToString(), false)
+                .GetEntityDataListAsync<[ENTITY].SearchResult>(query.ToString(), dbParams, (r) => {
+                    gridData.TotalRecords = r.ConvertTo<int>(r.GetOrdinal("TotalRows"));
+                    return new [ENTITY].SearchResult() { /</em> mapping */ };
+                });
+        }
+        catch (Exception ex)
+        {
+            this.Logger.LogError(ex, query.ToString() + $"- Input : {dbParams?.ToJsonText()}");
+        }
+        
+        return gridData;
+    }
+}
+</code></pre></div>
+
+<h3>XOS Domain Pattern</h3>
+<div class="code-block"><pre><code>csharp
+public class [ENTITY] : BaseObject<short>
+{
+    public string Status { get; set; }
+    public bool IsEdit { get; set; }
+    
+    #region Internal Class
+    
+    public class SearchInput
+    {
+        public short? ID { get; set; }
+        public string Text { get; set; }
+        public BaseObject<string> Status { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public GridFilterSort Grid { get; set; }
+    }
+    
+    public class SearchResult : BaseObject<short>
+    {
+        public string Status { get; set; }
+        // Additional display properties
+    }
+    
+    public class SaveOutput
+    {
+        public string Status { get; set; }
+        public short ID { get; set; }
+    }
+    
+    #endregion
+}
+</code></pre></div>
+
+<h2>XOS Service Implementation Features</h2>
+
+<h3>Multi-Tenant Data Access</h3>
+<ul><li>ClientID-based data routing for all operations</li><li><code>this.DBUtils(clientId, readOnly)</code> for database operations</li><li>Connection string resolution based on client configuration</li><li>Data isolation enforcement at query level</li></ul>
+
+<h3>Transaction Management</h3>
+<ul><li><code>using (var dbService = this.GetDBService(clientId, false))</code></li><li><code>using (var tran = dbService.BeginTransaction())</code></li><li>Automatic rollback on exceptions</li><li>Proper disposal patterns</li></ul>
+
+<h3>Audit Integration</h3>
+<ul><li><code>Audit.SaveMasterAuditAsync()</code> for all modifications</li><li>Form-based audit tracking with unique FormID constants</li><li>Change detection with before/after comparison</li><li>User context tracking via InputInfo</li></ul>
+
+<h3>PostgreSQL Integration</h3>
+<ul><li>Raw SQL queries with proper parameterization</li><li>PostgreSQL-specific syntax (ILIKE, ::type casting)</li><li>LIMIT/OFFSET for pagination</li><li>Window functions for total record counts</li></ul>
+
+<h3>Security & Validation</h3>
+<ul><li>JWT-based authentication inherited from XOSBaseController</li><li>ClientID extraction from JWT claims</li><li>Input validation through domain model binding</li><li>SQL injection prevention through parameterized queries</li></ul>
+
+<h2>Database Schema Patterns</h2>
+
+<h3>Multi-Tenant Table Structure</h3>
+<div class="code-block"><pre><code>sql
+CREATE TABLE [project_prefix]_[entity]_mast (
+    clnt_id SMALLINT NOT NULL,
+    [entity]_cd SMALLINT NOT NULL,
+    [entity]_desc VARCHAR(100) NOT NULL,
+    sort_ordr SMALLINT,
+    rcrd_stat SMALLINT DEFAULT 1,
+    crtd_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    crtd_by SMALLINT,
+    lstupdt_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    lstupdt_by SMALLINT,
+    PRIMARY KEY (clnt_id, [entity]_cd)
+);
+</code></pre></div>
+
+<h2>Service Registration Pattern</h2>
+
+<h3>Extension Method Update</h3>
+<div class="code-block"><pre><code>csharp
+public static void AddTransactionService(this IServiceCollection services)
+{
+    // Existing registrations...
+    services.AddScoped<I[ENTITY]Service, [ENTITY]Service>();
+}
+</code></pre></div>
+
+<h2>Usage Examples</h2>
+
+<div class="code-block"><pre><code>csharp
+// Generate a Product Master service
+backend-service-builder --entity="Product" --prefix="CVS" --formid="CVSM050"
+
+// Create a Customer service with complex search
+backend-service-builder --entity="Customer" --operations="Search,Select,Save,Archive"
+
+// Build a Configuration service
+backend-service-builder --entity="Configuration" --audit="true" --multi-tenant="true"
+</code></pre></div></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

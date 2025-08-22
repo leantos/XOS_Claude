@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xos-framework-testing - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># XOS Framework Testing Guide</p><p>A comprehensive guide for testing applications built with the XOS Component Framework, covering MVVM patterns, state management, and framework-specific utilities.</p><p><h2>Table of Contents</h2>
+<ul><li><a href="#overview">Overview</a></li><li><a href="#setup-and-configuration">Setup and Configuration</a></li><li><a href="#testing-xos-components">Testing XOS Components</a></li><li><a href="#testing-viewmodels">Testing ViewModels</a></li><li><a href="#mocking-framework-utilities">Mocking Framework Utilities</a></li><li><a href="#state-management-testing">State Management Testing</a></li><li><a href="#navigation-and-context-testing">Navigation and Context Testing</a></li><li><a href="#integration-testing">Integration Testing</a></li><li><a href="#real-world-examples">Real-World Examples</a></li><li><a href="#best-practices">Best Practices</a></li></ul></p><p><h2>Overview</h2></p><p>The XOS framework introduces unique testing challenges due to its MVVM architecture, custom state management, and tightly integrated utilities. This guide provides patterns and examples for effectively testing XOS-based applications.</p><p><h3>Key Testing Considerations</h3></p><p><ul><li><strong>MVVM Pattern</strong>: Components and ViewModels are separate but tightly coupled</li><li><strong>State Management</strong>: Direct mutation with <code>this.Data</code> and manual <code>updateUI()</code> calls</li><li><strong>Framework Utilities</strong>: <code>Utils.ajax</code>, <code>showMessageBox</code>, navigation methods</li><li><strong>Lifecycle Methods</strong>: <code>onLoad</code>, <code>onClosing</code>, <code>onActive</code>, <code>onInactive</code></li><li><strong>Context Dependencies</strong>: Components rely on XOS context for navigation and messaging</li></ul></p><p><h2>Setup and Configuration</h2></p><p><h3>Required Dependencies</h3></p><p><div class="code-block"><pre><code>json
+{
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.0.0",
+    "@types/jest": "^29.0.0"
+  }
+}
+</code></pre></div></p><p><h3>Jest Configuration for XOS</h3></p><p><div class="code-block"><pre><code>javascript
+// jest.config.js
+module.exports = {
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
+  moduleNameMapper: {
+    '^@/xos-components(.<em>)
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>: '<rootDir>/src/xos-components$1',
+    '\\.(css|less|scss)
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>: 'identity-obj-proxy',
+  },
+  transform: {
+    '^.+\\.(js|jsx)
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>: 'babel-jest',
+  },
+  testMatch: [
+    '<strong>/__tests__/</strong>/</em>.test.js',
+    '*<em>/?(</em>.)+(spec|test).js'
+  ],
+};
+</code></pre></div></p><p><h3>Setup File</h3></p><p><div class="code-block"><pre><code>javascript
+// setupTests.js
+import '@testing-library/jest-dom';</p><p>// Mock XOS globals
+global.XOSMessageboxTypes = {
+  error: 'error',
+  info: 'info',
+  warning: 'warning',
+  question: 'question',
+  none: 'none'
+};</p><p>// Mock window methods used by XOS
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+</code></pre></div></p><p><h2>Testing XOS Components</h2></p><p><h3>Basic Component Test Structure</h3></p><p><div class="code-block"><pre><code>javascript
+// __tests__/MyComponent.test.js
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MyComponent } from '../modules/MyComponent';
+import { MyComponentVM } from '../modules/MyComponentVM';</p><p>// Mock the ViewModel
+jest.mock('../modules/MyComponentVM');</p><p>// Mock XOS context
+const mockContext = {
+  showMessageBox: jest.fn(),
+  showWindow: jest.fn(),
+  addTab: jest.fn(),
+  close: jest.fn(),
+  updateUI: jest.fn(),
+};</p><p>// Helper to render with XOS context
+const renderWithXOS = (component, vmData = {}) => {
+  // Setup VM mock
+  MyComponentVM.mockImplementation(() => ({
+    Data: {
+      Input: {},
+      DataSource: [],
+      ...vmData
+    },
+    onLoad: jest.fn(),
+    save: jest.fn(),
+    validate: jest.fn(() => true),
+  }));</p><p>  // Render with context
+  return render(
+    <XOSContext.Provider value={mockContext}>
+      {component}
+    </XOSContext.Provider>
+  );
+};</p><p>describe('MyComponent', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });</p><p>  it('renders initial UI correctly', () => {
+    renderWithXOS(<MyComponent />);
+    
+    expect(screen.getByText('Component Title')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Description')).toBeInTheDocument();
+  });</p><p>  it('calls onLoad when component mounts', () => {
+    const mockVM = {
+      onLoad: jest.fn(),
+    };
+    
+    renderWithXOS(<MyComponent />, {}, mockVM);
+    
+    expect(mockVM.onLoad).toHaveBeenCalledTimes(1);
+  });</p><p>  it('updates input fields and triggers updateUI', async () => {
+    const user = userEvent.setup();
+    const { rerender } = renderWithXOS(<MyComponent />);
+    
+    const nameInput = screen.getByLabelText('Name');
+    await user.type(nameInput, 'Test Value');
+    
+    // Verify updateUI was called
+    await waitFor(() => {
+      expect(mockContext.updateUI).toHaveBeenCalled();
+    });
+  });</p><p>  it('shows validation error when required fields are empty', async () => {
+    const user = userEvent.setup();
+    renderWithXOS(<MyComponent />, {
+      Input: {
+        Name: '',
+        Description: ''
+      }
+    });
+    
+    const saveButton = screen.getByRole('button', { name: /save/i });
+    await user.click(saveButton);
+    
+    expect(mockContext.showMessageBox).toHaveBeenCalledWith({
+      text: expect.stringContaining('required'),
+      messageboxType: 'warning'
+    });
+  });
+});
+</code></pre></div></p><p><h3>Testing Component Lifecycle</h3></p><p><div class="code-block"><pre><code>javascript
+describe('XOS Component Lifecycle', () => {
+  it('calls onActive when component becomes active', () => {
+    const mockOnActive = jest.fn();
+    
+    class TestComponent extends XOSComponent {
+      onActive() {
+        mockOnActive();
+      }
+    }
+    
+    const { rerender } = render(<TestComponent isActive={false} />);
+    rerender(<TestComponent isActive={true} />);
+    
+    expect(mockOnActive).toHaveBeenCalledTimes(1);
+  });</p><p>  it('calls onClosing and prevents close when returning false', async () => {
+    const mockOnClosing = jest.fn(() => false);
+    
+    class TestComponent extends XOSComponent {
+      onClosing() {
+        return mockOnClosing();
+      }
+    }
+    
+    const component = render(<TestComponent />);
+    
+    // Attempt to close
+    const closeResult = component.unmount();
+    
+    expect(mockOnClosing).toHaveBeenCalled();
+    // Component should still be mounted
+    expect(screen.getByTestId('test-component')).toBeInTheDocument();
+  });</p><p>  it('calls destroy on unmount', () => {
+    const mockDestroy = jest.fn();
+    
+    class TestComponent extends XOSComponent {
+      destroy() {
+        mockDestroy();
+      }
+    }
+    
+    const { unmount } = render(<TestComponent />);
+    unmount();
+    
+    expect(mockDestroy).toHaveBeenCalledTimes(1);
+  });
+});
+</code></pre></div></p><p><h2>Testing ViewModels</h2></p><p><h3>Basic ViewModel Test</h3></p><p>``<code>javascript
+// __tests__/MyComponentVM.test.js
+import { MyComponentVM } from '../modules/MyComponentVM';
+import { Utils } from '../xos-components/Utils';</p><p>// Mock Utils
+jest.mock('../xos-components/Utils', () => ({
+  Utils: {
+    ajax: jest.fn(),
+    getMessage: jest.fn((code) => </code>Message ${code}<code>),
+    isNullOrEmpty: jest.fn((val) => !val || val.trim() === ''),
+    generateGUID: jest.fn(() => 'test-guid-123'),
+  }
+}));</p><p>describe('MyComponentVM ViewModel', () => {
+  let vm;
+  let mockComponent;</p><p>  beforeEach(() => {
+    mockComponent = {
+      updateUI: jest.fn(),
+      showMessageBox: jest.fn(),
+      close: jest.fn(),
+      context: {
+        showWindow: jest.fn(),
+      }
+    };
+    
+    vm = new MyComponentVM();
+    vm.ComponentRef = mockComponent;
+  });</p><p>  afterEach(() => {
+    jest.clearAllMocks();
+  });</p><p>  describe('Data Initialization', () => {
+    it('initializes with correct default data structure', () => {
+      expect(vm.Data).toHaveProperty('Input');
+      expect(vm.Data).toHaveProperty('DataSource');
+      expect(vm.Data.Input).toEqual({
+        Name: '',
+        Description: '',
+        Email: '',
+        Phone: '',
+        Address: '',
+        IsActive: true
+      });
+    });
+  });</p><p>  describe('onLoad', () => {
+    it('loads initial data on component load', async () => {
+      const mockItems = [
+        { Id: 1, Name: 'Item 1' },
+        { Id: 2, Name: 'Item 2' }
+      ];
+      
+      Utils.ajax.mockImplementation((options, callback) => {
+        callback({ IsValid: true, Data: mockItems });
+      });</p><p>      await vm.onLoad();</p><p>      expect(Utils.ajax).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: 'api/items'
+        }),
+        expect.any(Function)
+      );
+      
+      expect(vm.Data.DataSource).toEqual(mockItems);
+      expect(mockComponent.updateUI).toHaveBeenCalled();
+    });</p><p>    it('handles load error gracefully', async () => {
+      Utils.ajax.mockImplementation((options, callback) => {
+        callback({ IsValid: false, Message: 'Load failed' });
+      });</p><p>      await vm.onLoad();</p><p>      expect(mockComponent.showMessageBox).toHaveBeenCalledWith({
+        text: 'Load failed',
+        messageboxType: 'error'
+      });
+    });
+  });</p><p>  describe('save', () => {
+    it('validates before saving', async () => {
+      vm.Data.Input = {
+        Name: '',
+        Description: '',
+      };</p><p>      await vm.save();</p><p>      expect(mockComponent.showMessageBox).toHaveBeenCalledWith({
+        text: expect.stringContaining('required'),
+        messageboxType: 'warning'
+      });
+      
+      expect(Utils.ajax).not.toHaveBeenCalled();
+    });</p><p>    it('saves valid data successfully', async () => {
+      vm.Data.Input = {
+        Name: 'Test Item',
+        Description: 'Test Description',
+        Email: 'test@example.com'
+      };</p><p>      Utils.ajax.mockImplementation((options, callback) => {
+        callback({ IsValid: true, Data: { Id: 1, ...vm.Data.Input } });
+      });</p><p>      await vm.save();</p><p>      expect(Utils.ajax).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: 'api/save',
+          data: vm.Data.Input
+        }),
+        expect.any(Function)
+      );</p><p>      expect(mockComponent.showMessageBox).toHaveBeenCalledWith({
+        text: 'Message 4', // Saved successfully
+        messageboxType: 'info',
+        onClose: expect.any(Function)
+      });
+    });</p><p>    it('handles save error', async () => {
+      vm.Data.Input = {
+        Name: 'Test Item',
+        Description: 'Test Description'
+      };</p><p>      Utils.ajax.mockImplementation((options, callback) => {
+        callback({ IsValid: false, Message: 'Duplicate entry' });
+      });</p><p>      await vm.save();</p><p>      expect(mockComponent.showMessageBox).toHaveBeenCalledWith({
+        text: 'Duplicate entry',
+        messageboxType: 'error'
+      });
+    });
+  });</p><p>  describe('State Management', () => {
+    it('updates state and triggers UI refresh', () => {
+      vm.Data.Input.Name = 'New Name';
+      vm.updateUI();</p><p>      expect(mockComponent.updateUI).toHaveBeenCalledTimes(1);
+    });</p><p>    it('maintains state consistency during operations', async () => {
+      const initialState = { ...vm.Data };
+      
+      vm.Data.Input.Name = 'Modified';
+      expect(vm.Data.Input.Name).toBe('Modified');
+      
+      vm.resetForm();
+      expect(vm.Data.Input.Name).toBe('');
+    });
+  });
+});
+<div class="code-block"><pre><code></p><p><h2>Mocking Framework Utilities</h2></p><p><h3>Mocking Utils.ajax</h3></p><p></code></pre></div>javascript
+// __mocks__/xos-ajax.js
+export const mockAjax = {
+  success: (data) => {
+    return jest.fn((options, callback) => {
+      setTimeout(() => {
+        callback({ IsValid: true, Data: data });
+      }, 0);
+    });
+  },
+  
+  failure: (message) => {
+    return jest.fn((options, callback) => {
+      setTimeout(() => {
+        callback({ IsValid: false, Message: message });
+      }, 0);
+    });
+  },
+  
+  loading: () => {
+    return jest.fn((options, callback) => {
+      // Never calls callback - simulates loading state
+    });
+  },
+  
+  sequence: (...responses) => {
+    let callCount = 0;
+    return jest.fn((options, callback) => {
+      const response = responses[callCount % responses.length];
+      callCount++;
+      setTimeout(() => {
+        callback(response);
+      }, 0);
+    });
+  }
+};</p><p>// Usage in tests
+import { mockAjax } from '../__mocks__/xos-ajax';</p><p>describe('Component with API calls', () => {
+  it('handles successful API response', async () => {
+    Utils.ajax = mockAjax.success({ id: 1, name: 'Test' });
+    
+    // Component will receive successful response
+    renderWithXOS(<MyComponent />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Test')).toBeInTheDocument();
+    });
+  });</p><p>  it('handles API error', async () => {
+    Utils.ajax = mockAjax.failure('Network error');
+    
+    renderWithXOS(<MyComponent />);
+    
+    await waitFor(() => {
+      expect(mockContext.showMessageBox).toHaveBeenCalledWith({
+        text: 'Network error',
+        messageboxType: 'error'
+      });
+    });
+  });</p><p>  it('handles sequence of API calls', async () => {
+    Utils.ajax = mockAjax.sequence(
+      { IsValid: true, Data: [] },  // First call - empty
+      { IsValid: true, Data: [{ id: 1 }] }  // Second call - with data
+    );
+    
+    const { rerender } = renderWithXOS(<MyComponent />);
+    
+    // First load
+    await waitFor(() => {
+      expect(screen.getByText('No data')).toBeInTheDocument();
+    });
+    
+    // Trigger refresh
+    const refreshButton = screen.getByRole('button', { name: /refresh/i });
+    await userEvent.click(refreshButton);
+    
+    // Second load
+    await waitFor(() => {
+      expect(screen.queryByText('No data')).not.toBeInTheDocument();
+    });
+  });
+});
+<div class="code-block"><pre><code></p><p><h3>Mocking showMessageBox</h3></p><p></code></pre></div>javascript
+// __mocks__/xos-messagebox.js
+export const createMessageBoxMock = () => {
+  const mock = jest.fn();
+  
+  mock.expectError = (text) => {
+    expect(mock).toHaveBeenCalledWith({
+      text,
+      messageboxType: 'error',
+      ...expect.any(Object)
+    });
+  };
+  
+  mock.expectSuccess = (text) => {
+    expect(mock).toHaveBeenCalledWith({
+      text,
+      messageboxType: 'info',
+      ...expect.any(Object)
+    });
+  };
+  
+  mock.expectConfirmation = (text) => {
+    expect(mock).toHaveBeenCalledWith({
+      text,
+      messageboxType: 'question',
+      buttons: expect.arrayContaining([
+        expect.objectContaining({ text: expect.stringMatching(/yes/i) }),
+        expect.objectContaining({ text: expect.stringMatching(/no/i) })
+      ]),
+      ...expect.any(Object)
+    });
+  };
+  
+  mock.simulateClose = (buttonValue) => {
+    const lastCall = mock.mock.calls[mock.mock.calls.length - 1];
+    if (lastCall && lastCall[0].onClose) {
+      lastCall[0].onClose({ buttonValue });
+    }
+  };
+  
+  return mock;
+};</p><p>// Usage
+import { createMessageBoxMock } from '../__mocks__/xos-messagebox';</p><p>describe('Delete confirmation', () => {
+  it('shows confirmation and deletes on Yes', async () => {
+    const showMessageBox = createMessageBoxMock();
+    mockContext.showMessageBox = showMessageBox;
+    
+    renderWithXOS(<MyComponent />);
+    
+    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    await userEvent.click(deleteButton);
+    
+    // Verify confirmation dialog
+    showMessageBox.expectConfirmation('Are you sure you want to delete?');
+    
+    // Simulate clicking Yes
+    showMessageBox.simulateClose('yes');
+    
+    await waitFor(() => {
+      expect(Utils.ajax).toHaveBeenCalledWith(
+        expect.objectContaining({ url: 'api/delete' }),
+        expect.any(Function)
+      );
+    });
+  });
+});
+<div class="code-block"><pre><code></p><p><h2>State Management Testing</h2></p><p><h3>Testing Data Mutations and updateUI</h3></p><p></code></pre></div>javascript
+describe('XOS State Management', () => {
+  let vm;
+  let component;
+  
+  beforeEach(() => {
+    vm = new TestVM();
+    component = {
+      updateUI: jest.fn(),
+      setState: jest.fn(),
+      _isUnmounted: false
+    };
+    vm.ComponentRef = component;
+  });</p><p>  it('mutates data directly without setState', () => {
+    const initialData = { ...vm.Data };
+    
+    vm.Data.Input.value = 'new value';
+    
+    // Data is mutated directly
+    expect(vm.Data.Input.value).toBe('new value');
+    // setState is not called
+    expect(component.setState).not.toHaveBeenCalled();
+  });</p><p>  it('triggers UI update through updateUI method', () => {
+    vm.Data.Input.value = 'new value';
+    vm.updateUI();
+    
+    expect(component.updateUI).toHaveBeenCalledTimes(1);
+    // Component's updateUI will call setState({})
+    expect(component.setState).toHaveBeenCalledWith({});
+  });</p><p>  it('batches multiple data changes before single updateUI', () => {
+    vm.Data.Input.field1 = 'value1';
+    vm.Data.Input.field2 = 'value2';
+    vm.Data.Input.field3 = 'value3';
+    
+    // Single updateUI call after all mutations
+    vm.updateUI();
+    
+    expect(component.updateUI).toHaveBeenCalledTimes(1);
+  });</p><p>  it('prevents updateUI when component is unmounted', () => {
+    component._isUnmounted = true;
+    
+    vm.updateUI();
+    
+    expect(component.setState).not.toHaveBeenCalled();
+  });</p><p>  it('maintains reference equality for nested objects', () => {
+    const originalRef = vm.Data.DataSource;
+    
+    vm.Data.DataSource.push({ id: 1 });
+    
+    // Same reference, mutated in place
+    expect(vm.Data.DataSource).toBe(originalRef);
+  });
+});
+<div class="code-block"><pre><code></p><p><h3>Testing Complex State Operations</h3></p><p></code></pre></div>javascript
+describe('Complex State Operations', () => {
+  it('handles grid data manipulation', async () => {
+    const vm = new GridVM();
+    vm.Data.GridData = [
+      { id: 1, name: 'Item 1', selected: false },
+      { id: 2, name: 'Item 2', selected: false },
+      { id: 3, name: 'Item 3', selected: false }
+    ];</p><p>    // Select all items
+    vm.selectAll();
+    
+    expect(vm.Data.GridData.every(item => item.selected)).toBe(true);
+    expect(component.updateUI).toHaveBeenCalledTimes(1);</p><p>    // Delete selected items
+    vm.deleteSelected();
+    
+    expect(vm.Data.GridData).toHaveLength(0);
+    expect(component.updateUI).toHaveBeenCalledTimes(2);
+  });</p><p>  it('handles form state with validation', () => {
+    const vm = new FormVM();
+    
+    // Set invalid data
+    vm.Data.Input = {
+      email: 'invalid-email',
+      phone: '123'
+    };
+    
+    const errors = vm.validate();
+    
+    expect(errors).toEqual({
+      email: 'Invalid email format',
+      phone: 'Phone must be 10 digits'
+    });
+    
+    expect(vm.Data.Errors).toEqual(errors);
+    expect(component.updateUI).toHaveBeenCalled();
+  });</p><p>  it('handles async state updates', async () => {
+    const vm = new AsyncVM();
+    
+    vm.loadData();
+    
+    // Loading state
+    expect(vm.Data.loading).toBe(true);
+    expect(component.updateUI).toHaveBeenCalledTimes(1);
+    
+    // Wait for async operation
+    await waitFor(() => {
+      expect(vm.Data.loading).toBe(false);
+    });
+    
+    expect(vm.Data.items).toHaveLength(5);
+    expect(component.updateUI).toHaveBeenCalledTimes(2);
+  });
+});
+<div class="code-block"><pre><code></p><p><h2>Navigation and Context Testing</h2></p><p><h3>Testing Navigation Methods</h3></p><p></code></pre></div>javascript
+describe('XOS Navigation', () => {
+  let mockContext;
+  
+  beforeEach(() => {
+    mockContext = {
+      showWindow: jest.fn(),
+      addTab: jest.fn(),
+      close: jest.fn(),
+      showMessageBox: jest.fn()
+    };
+  });</p><p>  it('opens window with correct parameters', async () => {
+    const vm = new NavigationVM();
+    vm.ComponentRef = { context: mockContext };
+    
+    vm.openDetails(123);
+    
+    expect(mockContext.showWindow).toHaveBeenCalledWith({
+      url: 'modules/DetailView',
+      data: { itemId: 123, mode: 'view' },
+      style: 'slideRight',
+      onClose: expect.any(Function)
+    });
+  });</p><p>  it('adds tab with data', () => {
+    const vm = new TabVM();
+    vm.ComponentRef = { context: mockContext };
+    
+    vm.openInNewTab('Report', { reportId: 1 });
+    
+    expect(mockContext.addTab).toHaveBeenCalledWith({
+      title: 'Report',
+      key: expect.stringMatching(/report-\d+/),
+      url: 'Reports/Viewer',
+      destroyOnHide: false,
+      isClosable: true,
+      data: { reportId: 1 }
+    });
+  });</p><p>  it('handles window close with result', async () => {
+    const onCloseCallback = jest.fn();
+    
+    mockContext.showWindow.mockImplementation(({ onClose }) => {
+      // Simulate window closing with result
+      setTimeout(() => {
+        onClose({ saved: true, id: 123 });
+      }, 0);
+    });
+    
+    const vm = new WindowVM();
+    vm.ComponentRef = { context: mockContext };
+    
+    await vm.openEditWindow(onCloseCallback);
+    
+    await waitFor(() => {
+      expect(onCloseCallback).toHaveBeenCalledWith({ saved: true, id: 123 });
+    });
+  });</p><p>  it('prevents navigation when form has unsaved changes', () => {
+    const vm = new FormVM();
+    vm.ComponentRef = { 
+      context: mockContext,
+      showMessageBox: mockContext.showMessageBox
+    };
+    
+    vm.Data.isDirty = true;
+    
+    const canClose = vm.onClosing();
+    
+    expect(canClose).toBe(false);
+    expect(mockContext.showMessageBox).toHaveBeenCalledWith({
+      text: 'You have unsaved changes. Do you want to save?',
+      messageboxType: 'question',
+      buttons: expect.any(Array)
+    });
+  });
+});
+<div class="code-block"><pre><code></p><p><h3>Testing Context Provider</h3></p><p></code></pre></div>javascript
+// XOSContextProvider.test.js
+import { render, screen } from '@testing-library/react';
+import { XOSContextProvider, useXOSContext } from '../xos-components/XOSContext';</p><p>const TestComponent = () => {
+  const context = useXOSContext();
+  
+  return (
+    <div>
+      <button onClick={() => context.showWindow({ url: 'test' })}>
+        Open Window
+      </button>
+      <button onClick={() => context.addTab({ title: 'Test' })}>
+        Add Tab
+      </button>
+    </div>
+  );
+};</p><p>describe('XOSContextProvider', () => {
+  it('provides context methods to children', () => {
+    const mockShowWindow = jest.fn();
+    const mockAddTab = jest.fn();
+    
+    render(
+      <XOSContextProvider 
+        showWindow={mockShowWindow}
+        addTab={mockAddTab}
+      >
+        <TestComponent />
+      </XOSContextProvider>
+    );
+    
+    const openButton = screen.getByText('Open Window');
+    userEvent.click(openButton);
+    
+    expect(mockShowWindow).toHaveBeenCalledWith({ url: 'test' });
+  });</p><p>  it('throws error when context is used outside provider', () => {
+    // Suppress error output
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    
+    expect(() => {
+      render(<TestComponent />);
+    }).toThrow('useXOSContext must be used within XOSContextProvider');
+    
+    spy.mockRestore();
+  });
+});
+<div class="code-block"><pre><code></p><p><h2>Integration Testing</h2></p><p><h3>Testing Complete Workflows</h3></p><p></code></pre></div>javascript
+describe('Data Management Workflow', () => {
+  let mockContext;
+  let mockUtils;
+  
+  beforeEach(() => {
+    mockContext = {
+      showWindow: jest.fn(),
+      showMessageBox: createMessageBoxMock(),
+      close: jest.fn()
+    };
+    
+    mockUtils = {
+      ajax: jest.fn(),
+      getMessage: jest.fn(code => </code>Message ${code}<code>),
+      isNullOrEmpty: jest.fn(val => !val)
+    };
+    
+    Utils.ajax = mockUtils.ajax;
+  });</p><p>  it('completes full CRUD workflow', async () => {
+    const user = userEvent.setup();
+    
+    // 1. Render list component
+    renderWithXOS(<DataList />, {
+      DataSource: []
+    });
+    
+    // 2. Click Add button to open form
+    const addButton = screen.getByRole('button', { name: /add new/i });
+    await user.click(addButton);
+    
+    expect(mockContext.showWindow).toHaveBeenCalledWith({
+      url: 'modules/DataForm',
+      data: { mode: 'add' },
+      style: 'slideRight',
+      onClose: expect.any(Function)
+    });
+    
+    // 3. Simulate form window opening
+    const { rerender } = renderWithXOS(<DataForm mode="add" />);
+    
+    // 4. Fill form
+    await user.type(screen.getByLabelText('Code'), 'CODE001');
+    await user.type(screen.getByLabelText('Name'), 'Test Item');
+    await user.type(screen.getByLabelText('Email'), 'test@example.com');
+    
+    // 5. Save
+    mockUtils.ajax.mockImplementation((options, callback) => {
+      callback({ 
+        IsValid: true, 
+        Data: { 
+          Id: 1, 
+          Code: 'CODE001',
+          Name: 'Test Item' 
+        } 
+      });
+    });
+    
+    const saveButton = screen.getByRole('button', { name: /save/i });
+    await user.click(saveButton);
+    
+    // 6. Verify save API call
+    expect(mockUtils.ajax).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: 'api/save',
+        data: expect.objectContaining({
+          Code: 'CODE001',
+          Name: 'Test Item'
+        })
+      }),
+      expect.any(Function)
+    );
+    
+    // 7. Verify success message
+    expect(mockContext.showMessageBox).toHaveBeenCalledWith({
+      text: 'Message 4', // Saved successfully
+      messageboxType: 'info',
+      onClose: expect.any(Function)
+    });
+    
+    // 8. Simulate closing form
+    mockContext.showMessageBox.simulateClose();
+    
+    expect(mockContext.close).toHaveBeenCalledWith({
+      Id: 1,
+      Code: 'CODE001',
+      Name: 'Test Item'
+    });
+  });</p><p>  it('handles validation workflow', async () => {
+    const user = userEvent.setup();
+    
+    renderWithXOS(<DataForm mode="add" />);
+    
+    // Try to save without required fields
+    const saveButton = screen.getByRole('button', { name: /save/i });
+    await user.click(saveButton);
+    
+    // Should show validation message
+    expect(mockContext.showMessageBox).toHaveBeenCalledWith({
+      text: expect.stringContaining('required'),
+      messageboxType: 'warning'
+    });
+    
+    // Should not make API call
+    expect(mockUtils.ajax).not.toHaveBeenCalled();
+    
+    // Fill required fields
+    await user.type(screen.getByLabelText('Code'), 'CODE001');
+    await user.type(screen.getByLabelText('Name'), 'Test');
+    
+    // Try save again
+    await user.click(saveButton);
+    
+    // Now should make API call
+    expect(mockUtils.ajax).toHaveBeenCalled();
+  });
+});
+<div class="code-block"><pre><code></p><p><h2>Real-World Examples</h2></p><p><h3>Testing a Transaction Module (CVST017)</h3></p><p></code></pre></div>javascript
+// CVST017.test.js - Purchase Order Module
+describe('CVST017 - Purchase Order Module', () => {
+  let vm;
+  let component;
+  
+  beforeEach(() => {
+    component = {
+      updateUI: jest.fn(),
+      showMessageBox: createMessageBoxMock(),
+      context: {
+        showWindow: jest.fn()
+      }
+    };
+    
+    vm = new CVST017VM();
+    vm.ComponentRef = component;
+  });</p><p>  describe('Purchase Order Creation', () => {
+    it('calculates totals correctly when items are added', () => {
+      vm.Data.Input.Items = [];
+      
+      // Add first item
+      vm.addItem({
+        ProductCode: 'PROD001',
+        Description: 'Product 1',
+        Quantity: 10,
+        UnitPrice: 100,
+        TaxRate: 10
+      });
+      
+      expect(vm.Data.Input.Items).toHaveLength(1);
+      expect(vm.Data.Input.Items[0].LineTotal).toBe(1000);
+      expect(vm.Data.Input.Items[0].TaxAmount).toBe(100);
+      expect(vm.Data.Input.Items[0].TotalWithTax).toBe(1100);
+      
+      // Add second item
+      vm.addItem({
+        ProductCode: 'PROD002',
+        Description: 'Product 2',
+        Quantity: 5,
+        UnitPrice: 200,
+        TaxRate: 10
+      });
+      
+      // Check grand totals
+      expect(vm.Data.Input.SubTotal).toBe(2000);
+      expect(vm.Data.Input.TotalTax).toBe(200);
+      expect(vm.Data.Input.GrandTotal).toBe(2200);
+      
+      expect(component.updateUI).toHaveBeenCalled();
+    });</p><p>    it('validates purchase order before submission', () => {
+      vm.Data.Input = {
+        PONumber: '',
+        VendorCode: '',
+        Items: []
+      };
+      
+      const isValid = vm.validatePurchaseOrder();
+      
+      expect(isValid).toBe(false);
+      expect(component.showMessageBox).toHaveBeenCalledWith({
+        text: expect.stringContaining('PO Number is required'),
+        messageboxType: 'warning'
+      });
+    });</p><p>    it('generates PO number automatically', async () => {
+      Utils.ajax = mockAjax.success({ PONumber: 'PO-2024-001' });
+      
+      await vm.generatePONumber();
+      
+      expect(Utils.ajax).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: 'PurchaseOrder/GenerateNumber'
+        }),
+        expect.any(Function)
+      );
+      
+      expect(vm.Data.Input.PONumber).toBe('PO-2024-001');
+      expect(component.updateUI).toHaveBeenCalled();
+    });</p><p>    it('handles vendor selection', async () => {
+      const vendor = {
+        VendorCode: 'VEND001',
+        VendorName: 'Test Vendor',
+        PaymentTerms: 30
+      };
+      
+      await vm.selectVendor(vendor);
+      
+      expect(vm.Data.Input.VendorCode).toBe('VEND001');
+      expect(vm.Data.Input.VendorName).toBe('Test Vendor');
+      expect(vm.Data.Input.PaymentTerms).toBe(30);
+      
+      // Should load vendor products
+      expect(Utils.ajax).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: 'Vendor/GetProducts',
+          data: { vendorCode: 'VEND001' }
+        }),
+        expect.any(Function)
+      );
+    });
+  });</p><p>  describe('Purchase Order Workflow', () => {
+    it('completes full PO creation workflow', async () => {
+      // Setup initial data
+      vm.Data.Input = {
+        PONumber: 'PO-2024-001',
+        VendorCode: 'VEND001',
+        VendorName: 'Test Vendor',
+        Items: [
+          {
+            ProductCode: 'PROD001',
+            Quantity: 10,
+            UnitPrice: 100,
+            LineTotal: 1000
+          }
+        ],
+        SubTotal: 1000,
+        TotalTax: 100,
+        GrandTotal: 1100
+      };
+      
+      // Mock successful save
+      Utils.ajax = mockAjax.success({ 
+        Id: 123, 
+        PONumber: 'PO-2024-001',
+        Status: 'Draft'
+      });
+      
+      // Save PO
+      await vm.savePurchaseOrder();
+      
+      expect(Utils.ajax).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: 'PurchaseOrder/Save',
+          data: expect.objectContaining({
+            PONumber: 'PO-2024-001',
+            GrandTotal: 1100
+          })
+        }),
+        expect.any(Function)
+      );
+      
+      // Should show success message
+      expect(component.showMessageBox).toHaveBeenCalledWith({
+        text: expect.stringContaining('saved'),
+        messageboxType: 'info',
+        onClose: expect.any(Function)
+      });
+      
+      // Simulate approval workflow
+      vm.Data.Input.Id = 123;
+      vm.Data.Input.Status = 'Draft';
+      
+      await vm.submitForApproval();
+      
+      expect(Utils.ajax).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: 'PurchaseOrder/SubmitForApproval',
+          data: { id: 123 }
+        }),
+        expect.any(Function)
+      );
+    });
+  });
+});
+<div class="code-block"><pre><code></p><p><h3>Testing Grid Operations (CVSM005)</h3></p><p></code></pre></div>javascript
+// CVSM005.test.js - User Management Grid
+describe('CVSM005 - User Management Grid', () => {
+  it('handles grid selection and bulk operations', async () => {
+    const vm = new CVSM005VM();
+    const component = {
+      updateUI: jest.fn(),
+      showMessageBox: createMessageBoxMock()
+    };
+    vm.ComponentRef = component;
+    
+    // Load grid data
+    vm.Data.GridData = [
+      { Id: 1, UserName: 'user1', Selected: false, IsActive: true },
+      { Id: 2, UserName: 'user2', Selected: false, IsActive: true },
+      { Id: 3, UserName: 'user3', Selected: false, IsActive: false }
+    ];
+    
+    // Select specific users
+    vm.toggleSelection(0);
+    vm.toggleSelection(2);
+    
+    expect(vm.Data.GridData[0].Selected).toBe(true);
+    expect(vm.Data.GridData[2].Selected).toBe(true);
+    
+    // Perform bulk deactivate
+    Utils.ajax = mockAjax.success({ UpdatedCount: 2 });
+    
+    await vm.bulkDeactivate();
+    
+    expect(Utils.ajax).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: 'api/bulkDeactivate',
+        data: { ids: [1, 3] }
+      }),
+      expect.any(Function)
+    );
+    
+    // Should refresh grid after operation
+    expect(vm.Data.GridData[0].IsActive).toBe(false);
+    expect(vm.Data.GridData[2].IsActive).toBe(false);
+  });</p><p>  it('handles grid filtering and sorting', () => {
+    const vm = new CVSM005VM();
+    
+    vm.Data.GridData = [
+      { Id: 1, UserName: 'alice', Role: 'admin' },
+      { Id: 2, UserName: 'bob', Role: 'user' },
+      { Id: 3, UserName: 'charlie', Role: 'admin' }
+    ];
+    
+    // Apply filter
+    vm.applyFilter('role', 'admin');
+    
+    expect(vm.Data.FilteredData).toHaveLength(2);
+    expect(vm.Data.FilteredData[0].UserName).toBe('alice');
+    
+    // Apply sort
+    vm.sortBy('userName', 'desc');
+    
+    expect(vm.Data.FilteredData[0].UserName).toBe('charlie');
+    expect(vm.Data.FilteredData[1].UserName).toBe('alice');
+  });
+});
+<div class="code-block"><pre><code></p><p><h2>Best Practices</h2></p><p><h3>1. Test File Organization</h3></p><p></code></pre></div>
+__tests__/
++-- components/
+¦   +-- CVSM001.test.js
+¦   +-- CVST017.test.js
++-- viewmodels/
+¦   +-- CVSM001VM.test.js
+¦   +-- CVST017VM.test.js
++-- integration/
+¦   +-- workflows.test.js
++-- utils/
+¦   +-- test-helpers.js
++-- __mocks__/
+    +-- xos-ajax.js
+    +-- xos-messagebox.js
+<div class="code-block"><pre><code></p><p><h3>2. Common Test Utilities</h3></p><p></code></pre></div>javascript
+// test-helpers.js
+export const createXOSTestEnvironment = () => {
+  const context = {
+    showMessageBox: createMessageBoxMock(),
+    showWindow: jest.fn(),
+    addTab: jest.fn(),
+    close: jest.fn()
+  };
+  
+  const utils = {
+    ajax: jest.fn(),
+    getMessage: jest.fn(code => </code>Message ${code}<code>),
+    isNullOrEmpty: jest.fn(val => !val),
+    formatDate: jest.fn(date => date?.toISOString()),
+    generateGUID: jest.fn(() => 'test-guid')
+  };
+  
+  const component = {
+    updateUI: jest.fn(),
+    setState: jest.fn(),
+    context,
+    showMessageBox: context.showMessageBox,
+    _isUnmounted: false
+  };
+  
+  return { context, utils, component };
+};</p><p>// Usage
+describe('Component Test', () => {
+  let env;
+  
+  beforeEach(() => {
+    env = createXOSTestEnvironment();
+    Utils.ajax = env.utils.ajax;
+  });
+  
+  it('test case', () => {
+    const vm = new TestVM();
+    vm.ComponentRef = env.component;
+    // ... test implementation
+  });
+});
+<div class="code-block"><pre><code></p><p><h3>3. Testing Checklist</h3></p><p><ul><li>[ ] Test component lifecycle methods (onLoad, onClosing, onActive)</li><li>[ ] Test ViewModel data initialization</li><li>[ ] Test state mutations and updateUI calls</li><li>[ ] Test validation logic</li><li>[ ] Test API integration with Utils.ajax</li><li>[ ] Test user notifications with showMessageBox</li><li>[ ] Test navigation flows</li><li>[ ] Test error handling</li><li>[ ] Test loading states</li><li>[ ] Test cleanup/destroy methods</li></ul></p><p><h3>4. Common Pitfalls to Avoid</h3></p><p><ul><li><strong>Don't test XOS framework internals</strong> - Focus on your business logic</li><li><strong>Mock framework utilities properly</strong> - Utils.ajax, showMessageBox, etc.</li><li><strong>Handle async operations</strong> - Use waitFor for API calls and state updates</li><li><strong>Test the ViewModel separately</strong> - Don't always need full component render</li><li><strong>Clean up after tests</strong> - Clear mocks, reset state, unmount components</li></ul></p><p><h3>5. Performance Optimization</h3></p><p></code></pre></div>javascript
+// Reuse expensive setup
+describe('Heavy Component', () => {
+  let vm;
+  let mockData;
+  
+  // One-time setup
+  beforeAll(() => {
+    mockData = generateLargeDataset();
+  });
+  
+  // Fresh VM for each test
+  beforeEach(() => {
+    vm = new HeavyVM();
+    vm.Data.LargeDataset = [...mockData]; // Clone for isolation
+  });
+  
+  // Cleanup
+  afterEach(() => {
+    vm.destroy();
+    jest.clearAllMocks();
+  });
+});
+<div class="code-block"><pre><code></p><p><h2>Debugging Tests</h2></p><p><h3>Enable Verbose Logging</h3></p><p></code></pre></div>javascript
+// Add to test for debugging
+describe('Debugging Test', () => {
+  it('shows component state', () => {
+    const vm = new TestVM();
+    
+    // Log state changes
+    const originalUpdateUI = vm.updateUI;
+    vm.updateUI = function() {
+      console.log('State before update:', JSON.stringify(this.Data, null, 2));
+      originalUpdateUI.call(this);
+    };
+    
+    // Log API calls
+    Utils.ajax = jest.fn((options, callback) => {
+      console.log('API Call:', options.url, options.data);
+      callback({ IsValid: true });
+    });
+    
+    // Test implementation
+  });
+});
+<div class="code-block"><pre><code></p><p><h3>Debug in VS Code</h3></p><p></code></pre></div>json
+// .vscode/launch.json
+{
+  "type": "node",
+  "request": "launch",
+  "name": "Debug XOS Tests",
+  "runtimeExecutable": "npm",
+  "runtimeArgs": [
+    "test",
+    "--",
+    "--runInBand",
+    "--no-cache",
+    "${relativeFile}"
+  ],
+  "console": "integratedTerminal",
+  "internalConsoleOptions": "neverOpen"
+}
+</code>``</p><p><h2>Summary</h2></p><p>Testing XOS framework applications requires understanding of:</p><p><ul><li><strong>MVVM Architecture</strong> - Test ViewModels and Components separately</li><li><strong>State Management</strong> - Direct mutations with manual updateUI calls</li><li><strong>Framework Utilities</strong> - Proper mocking of Utils.ajax and showMessageBox</li><li><strong>Lifecycle Methods</strong> - Testing XOS-specific lifecycle hooks</li><li><strong>Context Integration</strong> - Mocking navigation and messaging context</li></ul></p><p>The key is to focus on testing business logic while properly mocking the framework's infrastructure. Use the patterns and utilities provided in this guide to write maintainable, reliable tests for your XOS applications.</p><p><h2>Additional Resources</h2></p><p><ul><li><a href="https://jestjs.io/">Jest Documentation</a></li><li><a href="https://testing-library.com/react">React Testing Library</a></li><li><a href="./testing-best-practices.html">Testing Best Practices</a></li><li><a href="./frontend-testing-guide.html">Frontend Testing Guide</a></li><li><a href="./backend-testing-guide.html">Backend Testing Guide</a></li></ul></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

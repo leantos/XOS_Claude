@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>import-system - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Claude Docs Import System</p><p><h2>Overview</h2>
+System for importing and syncing claude_docs across multiple projects.</p><p><h2>Import Methods</h2></p><p><h3>Method 1: Git Submodule (Recommended)</h3>
+<div class="code-block"><pre><code>bash
+# In your project root
+git submodule add https://github.com/yourorg/claude-docs-enterprise.git claude_docs
+git submodule update --init --recursive
+</code></pre></div></p><p><h3>Method 2: NPM Package</h3>
+<div class="code-block"><pre><code>json
+// package.json
+{
+  "devDependencies": {
+    "@yourorg/claude-docs": "^1.0.0"
+  }
+}
+</code></pre></div></p><p><h3>Method 3: Direct Copy with Sync Script</h3>
+<div class="code-block"><pre><code>powershell
+# sync-claude-docs.ps1
+$SOURCE = "\\shared\claude-docs-enterprise"
+$DEST = ".\claude_docs"</p><p>robocopy $SOURCE $DEST /E /XD .git /XF .gitignore
+</code></pre></div></p><p><h2>Directory Structure After Import</h2></p><p><div class="code-block"><pre><code>
+your-project/
++-- CLAUDE.md (project-specific, extends imported docs)
++-- claude_docs/ (imported from enterprise)
+¦   +-- hooks/
+¦   +-- context/
+¦   +-- frontend/
+¦   +-- backend/
+¦   +-- ...
++-- claude_local/ (project-specific additions)
+    +-- custom-patterns.md
+    +-- project-issues.md
+</code></pre></div></p><p><h2>Configuration File</h2></p><p>Create <code>claude.config.json</code> in project root:</p><p><div class="code-block"><pre><code>json
+{
+  "extends": "claude_docs",
+  "projectType": "fullstack",
+  "techStack": {
+    "frontend": ["react", "xos-components"],
+    "backend": ["dotnet", "postgresql"]
+  },
+  "hooks": {
+    "enabled": true,
+    "customHooks": "./claude_local/hooks"
+  },
+  "overrides": {
+    "component-registry": "./claude_local/components.json"
+  }
+}
+</code></pre></div></p><p><h2>Sync Strategy</h2></p><p><h3>Automatic Sync on Project Open</h3>
+<div class="code-block"><pre><code>javascript
+// .vscode/tasks.json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Sync Claude Docs",
+      "type": "shell",
+      "command": "npm run sync-claude-docs",
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    }
+  ]
+}
+</code></pre></div></p><p><h3>Manual Sync Command</h3>
+<div class="code-block"><pre><code>bash
+# Add to package.json scripts
+"scripts": {
+  "sync-claude": "node scripts/sync-claude-docs.js",
+  "claude-update": "npm update @yourorg/claude-docs"
+}
+</code></pre></div></p><p><h2>Version Control</h2></p><p><h3>Versioning Strategy</h3>
+<div class="code-block"><pre><code>
+claude-docs-enterprise/
++-- version.json
+¦   {
+¦     "version": "1.2.0",
+¦     "lastUpdated": "2024-01-15",
+¦     "breaking": false
+¦   }
++-- CHANGELOG.md
++-- migrations/
+    +-- 1.1-to-1.2.md
+</code></pre></div></p><p><h3>Update Notifications</h3>
+When Claude detects outdated docs:
+<div class="code-block"><pre><code>
+?? Claude Docs Update Available (v1.2.0)
+<ul><li>New XOS components added to registry</li><li>Updated MVVM patterns</li><li>Bug fixes in validation rules</li></ul></p><p>Run: npm run claude-update
+</code></pre></div></p><p><h2>Project-Specific Extensions</h2></p><p><h3>Extending Component Registry</h3>
+<div class="code-block"><pre><code>json
+// claude_local/components-extend.json
+{
+  "extends": "../claude_docs/context/component-registry.json",
+  "project_components": {
+    "custom": ["MyCustomComponent", "ProjectSpecificWidget"]
+  }
+}
+</code></pre></div></p><p><h3>Adding Project Hooks</h3>
+<div class="code-block"><pre><code>json
+// claude_local/hooks/project-validation.json
+{
+  "extends": "../claude_docs/hooks/validation-rules.json",
+  "additional_rules": {
+    "project_specific": {
+      "rules": [...]
+    }
+  }
+}
+</code></pre></div></p><p><h2>Integration with CI/CD</h2></p><p><h3>GitHub Action</h3>
+<div class="code-block"><pre><code>yaml
+name: Validate Claude Docs
+on: [push, pull_request]</p><p>jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check Claude Docs
+        run: |
+          if [ ! -f "CLAUDE.html" ]; then
+            echo "ERROR: CLAUDE.md is missing"
+            exit 1
+          fi
+          if [ ! -d "claude_docs" ]; then
+            echo "ERROR: claude_docs directory is missing"
+            exit 1
+          fi
+      - name: Validate Structure
+        run: npm run validate-claude-structure
+</code></pre></div></p><p><h2>Benefits of This System</h2></p><p><ul><li><strong>Consistency</strong>: Same patterns across all projects</li><li><strong>Updates</strong>: Central updates propagate to all projects</li><li><strong>Customization</strong>: Projects can extend base docs</li><li><strong>Version Control</strong>: Track doc versions separately</li><li><strong>Team Sync</strong>: Everyone uses same documentation</li><li><strong>Reduced Errors</strong>: Validated patterns prevent mistakes</li></ul></p><p><h2>Quick Start for New Projects</h2></p><p><div class="code-block"><pre><code>bash
+# 1. Create new project
+mkdir my-new-project && cd my-new-project</p><p># 2. Import claude docs
+npx @yourorg/claude-docs init</p><p># 3. Answer prompts
+? Project type? (fullstack/frontend/backend)
+? Use XOS components? (Y/n)
+? Database type? (postgresql/mysql/none)</p><p># 4. Done! CLAUDE.md and claude_docs/ are ready
+</code></pre></div></p><p><h2>Maintenance</h2></p><p><h3>Updating Enterprise Docs</h3>
+<div class="code-block"><pre><code>bash
+# In claude-docs-enterprise repo
+npm version patch
+git push --tags
+npm publish
+</code></pre></div></p><p><h3>Project Updates</h3>
+<div class="code-block"><pre><code>bash
+# In project using claude_docs
+npm update @yourorg/claude-docs
+git add claude_docs
+git commit -m "Update Claude docs to latest version"
+</code></pre></div></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

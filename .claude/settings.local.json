@@ -30,7 +30,9 @@
       "Bash(then echo \"=== $file has broken search code ===\")",
       "Bash(npx live-server:*)",
       "WebFetch(domain:www.anthropic.com)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(powershell:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

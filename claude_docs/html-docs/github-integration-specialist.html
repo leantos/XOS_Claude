@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>github-integration-specialist - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># GitHub Integration Specialist Subagent</p><p><h2>Overview</h2>
+The GitHub Integration Specialist is a dedicated subagent for automating GitHub platform operations, API integrations, and project management workflows. It handles GitHub-specific features like repositories, pull requests, issues, projects, and organizational management.</p><p><h2>Core Responsibilities</h2></p><p><h3>1. Repository Management</h3>
+<ul><li>Repository creation, configuration, and maintenance</li><li>Branch protection rules and access controls</li><li>Repository settings and webhook configuration</li><li>Multi-repository coordination and synchronization</li></ul></p><p><h3>2. Pull Request Automation</h3>
+<ul><li>Automated PR creation, review, and merging</li><li>PR template management and enforcement</li><li>Review assignment and approval workflows</li><li>Conflict detection and resolution assistance</li></ul></p><p><h3>3. Issue & Project Management</h3>
+<ul><li>Issue lifecycle automation (creation, labeling, assignment)</li><li>Project board management and card automation</li><li>Milestone tracking and release planning</li><li>Cross-repository issue linking and dependencies</li></ul></p><p><h3>4. GitHub API Integration</h3>
+<ul><li>RESTful API operations and GraphQL queries</li><li>Webhook processing and event handling</li><li>Rate limiting and error handling</li><li>Authentication and permission management</li></ul></p><p><h2>Optimal Prompt Template</h2></p><p><div class="code-block"><pre><code>
+You are the GitHub Integration Specialist ??</p><p>TASK: Implement GitHub automation for [REPOSITORY/ORGANIZATION] with these requirements:</p><p>REPOSITORY CONFIGURATION:
+<ul><li>Repository settings: [public/private, features enabled]</li><li>Branch protection: [required reviews, status checks, admin enforcement]</li><li>Access controls: [teams, collaborators, permissions]</li><li>Webhook endpoints: [CI/CD, notifications, integrations]</li></ul></p><p>API INTEGRATION REQUIREMENTS:
+<ul><li>Authentication: [Personal tokens, GitHub Apps, OAuth]</li><li>Rate limiting: [requests per hour, caching strategy]</li><li>Error handling: [retry logic, fallback mechanisms]</li><li>Data synchronization: [real-time, batch processing]</li></ul></p><p>WORKFLOW AUTOMATION:
+<ul><li>Pull Request Management:</li></ul>
+   - Auto-creation from feature branches
+   - Review assignment based on code ownership
+   - Automated testing and status checks
+   - Merge strategies and branch cleanup</p><p><ul><li>Issue Management:</li></ul>
+   - Auto-labeling based on content analysis
+   - Assignment to appropriate team members
+   - Project board card creation and movement
+   - Cross-reference linking and dependencies</p><p><ul><li>Project Coordination:</li></ul>
+   - Milestone creation and tracking
+   - Release planning and coordination
+   - Cross-repository synchronization
+   - Team notification and communication</p><p>DELIVERABLES:
+<ul><li>GitHub API client configuration</li><li>Webhook handlers for event processing</li><li>Automated workflows for PR/issue management</li><li>Repository configuration templates</li><li>Team and permission management scripts</li><li>Integration documentation and runbooks</li><li>Monitoring and alerting setup</li></ul></p><p>INTEGRATION POINTS:
+<ul><li>External Tools: [Jira, Slack, Discord, Teams]</li><li>CI/CD Systems: [GitHub Actions, Jenkins, CircleCI]</li><li>Project Management: [GitHub Projects, external tools]</li><li>Communication: [Email, chat platforms, notifications]</li></ul></p><p>SECURITY CONSIDERATIONS:
+<ul><li>Token management and rotation</li><li>Webhook signature verification</li><li>Access control and permissions</li><li>Audit logging and compliance</li></ul></p><p>ERROR HANDLING:
+<ul><li>API rate limit management</li><li>Network failure recovery</li><li>Invalid webhook payload handling</li><li>Permission denied scenarios</li></ul></p><p>OUTPUT FORMAT:
+Provide working code examples, API configurations, and comprehensive documentation for each integration component.
+</code></pre></div></p><p><h2>Advanced Features</h2></p><p><h3>Repository Automation</h3>
+<div class="code-block"><pre><code>yaml
+repository_templates:
+  new_project:
+    description: "Template for new projects"
+    private: false
+    has_issues: true
+    has_projects: true
+    has_wiki: false
+    auto_init: true
+    gitignore_template: "Node"
+    license_template: "mit"
+    
+    branch_protection:
+      main:
+        required_status_checks:
+          strict: true
+          contexts: ["ci/build", "ci/test"]
+        enforce_admins: false
+        required_pull_request_reviews:
+          required_approving_review_count: 2
+          dismiss_stale_reviews: true
+          require_code_owner_reviews: true
+        restrictions:
+          users: []
+          teams: ["core-team"]</p><p>webhook_configuration:
+  endpoints:
+    - url: "https://api.company.com/github/webhook"
+      events: ["push", "pull_request", "issues"]
+      secret: "${WEBHOOK_SECRET}"
+      active: true
+</code></pre></div></p><p><h3>Pull Request Automation</h3>
+<div class="code-block"><pre><code>typescript
+interface PRAutomationConfig {
+  templates: {
+    feature: {
+      title: string;
+      body: string;
+      labels: string[];
+      assignees: string[];
+      reviewers: string[];
+    };
+  };
+  
+  auto_merge: {
+    enabled: boolean;
+    required_checks: string[];
+    required_reviews: number;
+    strategy: 'merge' | 'squash' | 'rebase';
+  };
+  
+  review_assignment: {
+    algorithm: 'round-robin' | 'load-balanced' | 'code-owners';
+    team_reviewers: string[];
+    skip_draft: boolean;
+  };
+}</p><p>// Example automation workflow
+const prAutomation = {
+  onPROpened: async (pr: PullRequest) => {
+    // Auto-assign reviewers based on changed files
+    const reviewers = await getCodeOwners(pr.changed_files);
+    await assignReviewers(pr.number, reviewers);
+    
+    // Add labels based on PR content
+    const labels = await analyzeLabels(pr.title, pr.body);
+    await addLabels(pr.number, labels);
+    
+    // Create project card
+    await createProjectCard(pr);
+  },
+  
+  onReviewSubmitted: async (review: Review) => {
+    if (review.state === 'approved' && await allChecksPass(review.pr)) {
+      await autoMerge(review.pr);
+    }
+  }
+};
+</code></pre></div></p><p><h3>Issue Management System</h3>
+<div class="code-block"><pre><code>javascript
+class IssueAutomation {
+  constructor(github, config) {
+    this.github = github;
+    this.config = config;
+  }
+  
+  async onIssueOpened(issue) {
+    // Auto-label based on content analysis
+    const labels = await this.analyzeIssueContent(issue);
+    await this.github.issues.addLabels({
+      issue_number: issue.number,
+      labels: labels
+    });
+    
+    // Auto-assign based on component
+    const assignee = await this.getComponentOwner(issue);
+    if (assignee) {
+      await this.github.issues.addAssignees({
+        issue_number: issue.number,
+        assignees: [assignee]
+      });
+    }
+    
+    // Create project card
+    await this.addToProjectBoard(issue);
+    
+    // Send notifications
+    await this.notifyTeam(issue, 'new_issue');
+  }
+  
+  async triageIssues() {
+    const issues = await this.getUntriagedIssues();
+    
+    for (const issue of issues) {
+      const priority = await this.analyzePriority(issue);
+      const category = await this.categorizeIssue(issue);
+      
+      await this.github.issues.update({
+        issue_number: issue.number,
+        labels: [...issue.labels, priority, category]
+      });
+    }
+  }
+}
+</code></pre></div></p><p><h3>Project Board Integration</h3>
+<div class="code-block"><pre><code>yaml
+project_automation:
+  board_columns:
+    - name: "Backlog"
+      automation: "to_do"
+    - name: "In Progress"
+      automation: "in_progress"
+    - name: "Review"
+      automation: "in_review"
+    - name: "Done"
+      automation: "done"
+  
+  card_movement_rules:
+    - trigger: "pr_opened"
+      from: "In Progress"
+      to: "Review"
+    - trigger: "pr_merged"
+      from: "Review"
+      to: "Done"
+    - trigger: "issue_closed"
+      from: "*"
+      to: "Done"
+  
+  automation_triggers:
+    - event: "issues.assigned"
+      action: "move_to_in_progress"
+    - event: "pull_request.opened"
+      action: "create_review_card"
+    - event: "pull_request.closed"
+      action: "archive_cards"
+</code></pre></div></p><p><h2>API Integration Examples</h2></p><p><h3>GitHub GraphQL Client</h3>
+``<code>typescript
+import { Octokit } from "@octokit/rest";
+import { graphql } from "@octokit/graphql";</p><p>class GitHubClient {
+  private octokit: Octokit;
+  private graphqlClient: typeof graphql;
+  
+  constructor(auth: string) {
+    this.octokit = new Octokit({ auth });
+    this.graphqlClient = graphql.defaults({
+      headers: { authorization: </code>token ${auth}<code> }
+    });
+  }
+  
+  async getRepositoryInfo(owner: string, name: string) {
+    const query = </code>
+      query($owner: String!, $name: String!) {
+        repository(owner: $owner, name: $name) {
+          id
+          name
+          description
+          stargazerCount
+          forkCount
+          pullRequests(states: OPEN) {
+            totalCount
+          }
+          issues(states: OPEN) {
+            totalCount
+          }
+          releases(first: 5) {
+            nodes {
+              name
+              tagName
+              publishedAt
+            }
+          }
+        }
+      }
+    <code>;
+    
+    return await this.graphqlClient(query, { owner, name });
+  }
+  
+  async bulkUpdateIssues(issues: Array<{number: number, labels: string[]}>) {
+    const mutations = issues.map((issue, index) => ({
+      query: </code>
+        mutation UpdateIssue${index}($issueId: ID!, $labelIds: [ID!]!) {
+          updateIssue(input: {id: $issueId, labelIds: $labelIds}) {
+            issue {
+              id
+              number
+            }
+          }
+        }
+      <code>,
+      variables: {
+        issueId: issue.id,
+        labelIds: issue.labels
+      }
+    }));
+    
+    // Execute mutations in batches to avoid rate limits
+    return await this.executeMutationBatch(mutations);
+  }
+}
+<div class="code-block"><pre><code></p><p><h3>Webhook Processing</h3>
+</code></pre></div>typescript
+import { createHmac } from 'crypto';
+import express from 'express';</p><p>class WebhookProcessor {
+  private app: express.Application;
+  private secret: string;
+  
+  constructor(secret: string) {
+    this.app = express();
+    this.secret = secret;
+    this.setupRoutes();
+  }
+  
+  private verifySignature(payload: string, signature: string): boolean {
+    const hmac = createHmac('sha256', this.secret);
+    hmac.update(payload, 'utf8');
+    const calculatedSignature = </code>sha256=${hmac.digest('hex')}<code>;
+    return signature === calculatedSignature;
+  }
+  
+  private setupRoutes() {
+    this.app.use(express.raw({ type: 'application/json' }));
+    
+    this.app.post('/webhook', async (req, res) => {
+      const signature = req.headers['x-hub-signature-256'] as string;
+      const payload = req.body.toString('utf8');
+      
+      if (!this.verifySignature(payload, signature)) {
+        return res.status(403).send('Invalid signature');
+      }
+      
+      const event = req.headers['x-github-event'] as string;
+      const data = JSON.parse(payload);
+      
+      try {
+        await this.processEvent(event, data);
+        res.status(200).send('OK');
+      } catch (error) {
+        console.error('Webhook processing error:', error);
+        res.status(500).send('Internal Server Error');
+      }
+    });
+  }
+  
+  private async processEvent(event: string, data: any) {
+    switch (event) {
+      case 'push':
+        await this.handlePushEvent(data);
+        break;
+      case 'pull_request':
+        await this.handlePullRequestEvent(data);
+        break;
+      case 'issues':
+        await this.handleIssueEvent(data);
+        break;
+      case 'release':
+        await this.handleReleaseEvent(data);
+        break;
+      default:
+        console.log(</code>Unhandled event: ${event}<code>);
+    }
+  }
+}
+<div class="code-block"><pre><code></p><p><h3>Multi-Repository Coordination</h3>
+</code></pre></div>typescript
+class MultiRepoManager {
+  private repos: string[];
+  private github: GitHubClient;
+  
+  constructor(repos: string[], github: GitHubClient) {
+    this.repos = repos;
+    this.github = github;
+  }
+  
+  async syncLabels() {
+    const masterRepo = this.repos[0];
+    const masterLabels = await this.github.getLabels(masterRepo);
+    
+    for (const repo of this.repos.slice(1)) {
+      await this.github.syncLabels(repo, masterLabels);
+    }
+  }
+  
+  async createCrossRepoIssue(title: string, body: string, repos: string[]) {
+    const issues = [];
+    
+    for (const repo of repos) {
+      const issue = await this.github.createIssue(repo, {
+        title: </code>[Cross-repo] ${title}<code>,
+        body: </code>${body}\n\nRelated issues: ${issues.map(i => <code>${i.repo}#${i.number}</code>).join(', ')}<code>
+      });
+      
+      issues.push({ repo, number: issue.number });
+    }
+    
+    // Link all issues together
+    for (const issue of issues) {
+      const otherIssues = issues.filter(i => i !== issue);
+      await this.github.addComment(issue.repo, issue.number, 
+        </code>Related issues: ${otherIssues.map(i => <code>${i.repo}#${i.number}</code>).join(', ')}<code>
+      );
+    }
+    
+    return issues;
+  }
+  
+  async coordinateRelease(version: string) {
+    const releaseData = {
+      tag_name: version,
+      name: </code>Release ${version}<code>,
+      body: await this.generateReleaseNotes(version)
+    };
+    
+    const releases = [];
+    for (const repo of this.repos) {
+      const release = await this.github.createRelease(repo, releaseData);
+      releases.push({ repo, release });
+    }
+    
+    return releases;
+  }
+}
+<div class="code-block"><pre><code></p><p><h2>Integration Patterns</h2></p><p><h3>GitHub Apps Integration</h3>
+</code></pre></div>typescript
+import { App } from "@octokit/app";</p><p>class GitHubAppIntegration {
+  private app: App;
+  
+  constructor(appId: string, privateKey: string) {
+    this.app = new App({
+      appId,
+      privateKey,
+    });
+  }
+  
+  async installationHandler(installationId: number) {
+    const octokit = await this.app.getInstallationOctokit(installationId);
+    
+    // Get repositories for this installation
+    const { data: repositories } = await octokit.apps.listReposAccessibleToInstallation();
+    
+    // Setup automation for each repository
+    for (const repo of repositories.repositories) {
+      await this.setupRepositoryAutomation(octokit, repo);
+    }
+  }
+  
+  private async setupRepositoryAutomation(octokit: any, repo: any) {
+    // Setup branch protection
+    await this.setupBranchProtection(octokit, repo);
+    
+    // Create initial labels if they don't exist
+    await this.setupLabels(octokit, repo);
+    
+    // Setup project boards
+    await this.setupProjectBoards(octokit, repo);
+    
+    // Configure issue templates
+    await this.setupIssueTemplates(octokit, repo);
+  }
+}
+<div class="code-block"><pre><code></p><p><h3>Slack Integration</h3>
+</code></pre></div>typescript
+class SlackGitHubIntegration {
+  private slack: WebClient;
+  private github: GitHubClient;
+  
+  async onPullRequestOpened(pr: PullRequest) {
+    const message = {
+      channel: '#development',
+      text: </code>New Pull Request: ${pr.title}<code>,
+      attachments: [{
+        color: 'good',
+        fields: [
+          { title: 'Repository', value: pr.base.repo.full_name, short: true },
+          { title: 'Author', value: pr.user.login, short: true },
+          { title: 'Changes', value: </code>+${pr.additions} -${pr.deletions}<code>, short: true }
+        ],
+        actions: [{
+          type: 'button',
+          text: 'View PR',
+          url: pr.html_url
+        }]
+      }]
+    };
+    
+    await this.slack.chat.postMessage(message);
+  }
+  
+  async onIssueOpened(issue: Issue) {
+    if (issue.labels.some(label => label.name === 'critical')) {
+      await this.slack.chat.postMessage({
+        channel: '#alerts',
+        text: </code>?? Critical Issue: ${issue.title}<code>,
+        attachments: [{
+          color: 'danger',
+          text: issue.body,
+          fields: [
+            { title: 'Repository', value: issue.repository.full_name },
+            { title: 'Reporter', value: issue.user.login }
+          ]
+        }]
+      });
+    }
+  }
+}
+</code>``</p><p><h2>Best Practices</h2></p><p><h3>API Usage Optimization</h3>
+<ul><li><strong>Rate Limiting</strong>: Implement exponential backoff and request batching</li><li><strong>Caching</strong>: Cache frequently accessed data to reduce API calls</li><li><strong>GraphQL</strong>: Use GraphQL for complex queries to reduce round trips</li><li><strong>Webhooks</strong>: Prefer webhooks over polling for real-time updates</li></ul></p><p><h3>Security & Compliance</h3>
+<ul><li><strong>Token Management</strong>: Use short-lived tokens and proper rotation</li><li><strong>Webhook Security</strong>: Always verify webhook signatures</li><li><strong>Access Controls</strong>: Implement least-privilege access patterns</li><li><strong>Audit Logging</strong>: Log all automated actions for compliance</li></ul></p><p><h3>Error Handling & Reliability</h3>
+<ul><li><strong>Retry Logic</strong>: Implement intelligent retry for transient failures</li><li><strong>Circuit Breakers</strong>: Prevent cascade failures in integrations</li><li><strong>Monitoring</strong>: Track API usage, error rates, and performance</li><li><strong>Fallback</strong>: Provide manual fallback options for critical operations</li></ul></p><p>This GitHub Integration Specialist provides comprehensive automation for GitHub platform operations while maintaining security, reliability, and team productivity.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

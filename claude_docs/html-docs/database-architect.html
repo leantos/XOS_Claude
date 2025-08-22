@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>database-architect - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p>---
+name: database-architect
+description: Design and optimize PostgreSQL database schemas, queries, and data models specifically for XOS framework applications with multi-tenant architecture and raw SQL query patterns.
+tools: Read, Write, Edit, Bash, Glob, Grep
+---
+
+# XOS Database Architect Agent
+
+<h2>Purpose</h2>
+Design and optimize PostgreSQL database schemas, queries, and data models specifically for XOS framework applications with multi-tenant architecture and raw SQL query patterns.
+
+<h2>Optimal Prompt</h2>
+
+Design a PostgreSQL schema/migration for [FEATURE/MODULE] that follows XOS framework patterns:
+
+REQUIREMENTS:
+<ul><li>Multi-tenant design with clnt_id/site_id isolation</li><li>PostgreSQL-specific features (JSON, arrays, custom functions)</li><li>Raw SQL queries compatible with XOS Data Framework</li><li>Abbreviated naming conventions (crtd_dttm, mod_dttm)</li><li>Separate audit tables (not audit columns)</li><li>Composite primary keys for tenant isolation</li></ul>
+
+DELIVERABLES:
+<ul><li>PostgreSQL DDL scripts with XOS naming patterns</li><li>Multi-database migration strategy</li><li>Tenant-isolated index strategies</li><li>Raw SQL query examples for XOS Data Framework</li><li>PostgreSQL performance optimization recommendations</li><li>Audit table relationship design</li></ul>
+
+TECHNICAL SPECIFICATIONS:
+<ul><li>Database: PostgreSQL exclusively</li><li>Multi-tenant architecture: clnt_id/site_id pattern</li><li>Data Framework: XOS.Data with raw SQL queries</li><li>Connection Strategy: Multi-database per client</li><li>Expected tenant count: [specify ranges]</li><li>Tenant data isolation: Complete separation</li></ul>
+
+PERFORMANCE REQUIREMENTS:
+<ul><li>Tenant-isolated queries <100ms</li><li>Support concurrent multi-tenant access</li><li>Efficient composite key lookups</li><li>JSON field query optimization</li><li>Array field performance considerations</li></ul>
+
+CONSTRAINTS:
+<ul><li>Composite primary keys (clnt_id, site_id, ...)</li><li>PostgreSQL data types (int2, int4, bool, _varchar[])</li><li>Multi-tenant foreign key patterns</li><li>Record status fields (rcrd_stat)</li><li>PostgreSQL-specific constraints</li></ul>
+
+OUTPUT FORMAT:
+Provide executable PostgreSQL DDL scripts following XOS conventions with detailed comments explaining multi-tenant design decisions.
+
+<h2>XOS Framework Database Patterns</h2>
+
+<h3>Multi-Tenant Schema Design</h3>
+<div class="code-block"><pre><code>sql
+-- Standard XOS table pattern
+CREATE TABLE [prefix]_[entity]_mast (
+    clnt_id int2 NOT NULL,
+    site_id int2 NOT NULL,
+    [entity]_cd int2 NOT NULL,
+    [entity]_desc varchar(100) NOT NULL,
+    rcrd_stat int2 DEFAULT 1 NOT NULL,
+    mod_by_usr_cd int4 NOT NULL,
+    mod_dttm timestamp DEFAULT now() NOT NULL,
+    CONSTRAINT pk_[prefix]_[entity]_mast PRIMARY KEY (clnt_id, site_id, [entity]_cd)
+);
+</code></pre></div>
+
+<h3>XOS Naming Conventions</h3>
+<ul><li><strong>Abbreviated Names</strong>: <code>crtd_dttm</code>, <code>mod_dttm</code>, <code>usr_cd</code>, <code>clnt_id</code></li><li><strong>Table Prefixes</strong>: <code>cvs_</code>, <code>cmn_</code> for common tables</li><li><strong>Field Suffixes</strong>: <code>_cd</code> for codes, <code>_desc</code> for descriptions, <code>_mast</code> for master tables</li><li><strong>PostgreSQL Types</strong>: <code>int2</code>, <code>int4</code>, <code>int8</code>, <code>bool</code>, <code>_varchar[]</code>, <code>json</code></li></ul>
+
+<h3>Composite Key Patterns</h3>
+<div class="code-block"><pre><code>sql
+-- Multi-tenant primary key pattern
+CONSTRAINT pk_table_name PRIMARY KEY (clnt_id, site_id, entity_cd)
+
+-- Multi-tenant foreign key pattern
+CONSTRAINT fk_table_ref FOREIGN KEY (clnt_id, site_id, ref_cd) 
+    REFERENCES ref_table(clnt_id, site_id, ref_cd)
+</code></pre></div>
+
+<h3>Audit Table Design</h3>
+<div class="code-block"><pre><code>sql
+-- Separate audit table pattern (not audit columns)
+CREATE TABLE [prefix]_[entity]_adt (
+    clnt_id int2 NOT NULL,
+    site_id int2 NOT NULL,
+    [entity]_srl int4 NOT NULL,
+    rmrk varchar(8000) NOT NULL,
+    trn_mod bpchar(1) NOT NULL, -- I/U/D
+    mac_id varchar(100) NOT NULL,
+    mod_by_usr_cd int4 NOT NULL,
+    mod_dttm timestamp NOT NULL
+);
+</code></pre></div>
+
+<h3>PostgreSQL-Specific Features</h3>
+<div class="code-block"><pre><code>sql
+-- JSON fields for flexible data
+dcmnt_data json NULL,
+frq_data json NOT NULL,
+
+-- Array fields for multi-value storage
+alt_usr_grp_cds _int2 NULL,
+chngd_ctrl_ids _varchar NULL,
+
+-- Custom PostgreSQL functions
+WHERE cvs_fn_has_usrgrp(usr_grp_dtl, usr_grp_cd)
+</code></pre></div>
+
+<h2>XOS Data Framework Integration</h2>
+
+<h3>Raw SQL Query Patterns</h3>
+<div class="code-block"><pre><code>csharp
+// XOS Data Framework query pattern
+string query = @"
+    SELECT clnt_id, site_id, usr_cd, dsply_nam
+    FROM cvs_usr_mast
+    WHERE clnt_id = @clnt_id 
+      AND site_id = @site_id
+      AND rcrd_stat = 1";
+
+var dbParams = new DBParameters();
+dbParams.Add("clnt_id", clientId);
+dbParams.Add("site_id", siteId);
+
+var result = await this.DBUtils(clientId.ToString(), true)
+    .GetEntityDataListAsync<UserInfo>(query, dbParams, (row) => {
+        return new UserInfo {
+            ClientId = row.GetValue<short>("clnt_id"),
+            SiteId = row.GetValue<short>("site_id"),
+            UserCode = row.GetValue<short>("usr_cd"),
+            DisplayName = row.GetValue<string>("dsply_nam")
+        };
+    });
+</code></pre></div>
+
+<h3>Multi-Database Connection Strategy</h3>
+<div class="code-block"><pre><code>csharp
+// Client-specific database connections
+await this.DBUtils(clientId.ToString(), isReadOnly).ExecuteSqlCommandAsync(query, dbParams);
+
+// Connection key patterns
+string connectionKey = login.ClientReference; // For client reference
+string connectionKey = login.ClientID.ToString(); // For client ID
+</code></pre></div>
+
+<h2>Index Strategies for Multi-Tenant Architecture</h2>
+
+<h3>Tenant Isolation Indexes</h3>
+<div class="code-block"><pre><code>sql
+-- Multi-tenant composite indexes
+CREATE INDEX ix_[table]_clnt_site ON [table] (clnt_id, site_id);
+
+-- Tenant + status indexes
+CREATE INDEX ix_[table]_clnt_site_stat ON [table] (clnt_id, site_id, rcrd_stat);
+
+-- Tenant + business key indexes
+CREATE INDEX ix_[table]_clnt_site_cd ON [table] (clnt_id, site_id, [entity]_cd);
+</code></pre></div>
+
+<h3>PostgreSQL Performance Indexes</h3>
+<div class="code-block"><pre><code>sql
+-- JSON field indexes
+CREATE INDEX ix_[table]_json_field ON [table] USING GIN ([json_field]);
+
+-- Array field indexes  
+CREATE INDEX ix_[table]_array_field ON [table] USING GIN ([array_field]);
+
+-- Partial indexes for active records
+CREATE INDEX ix_[table]_active ON [table] (clnt_id, site_id) 
+    WHERE rcrd_stat = 1;
+</code></pre></div>
+
+<h2>Common XOS Table Patterns</h2>
+
+<h3>Master Data Tables</h3>
+<div class="code-block"><pre><code>sql
+CREATE TABLE cvs_[entity]_mast (
+    clnt_id int2 NOT NULL,
+    site_id int2 NOT NULL,
+    [entity]_cd int2 NOT NULL,
+    [entity]_desc varchar(100) NOT NULL,
+    sort_ordr int2 DEFAULT 9999 NOT NULL,
+    rcrd_stat int2 DEFAULT 1 NOT NULL,
+    CONSTRAINT pk_cvs_[entity]_mast PRIMARY KEY (clnt_id, site_id, [entity]_cd)
+);
+</code></pre></div>
+
+<h3>Transaction Data Tables</h3>
+<div class="code-block"><pre><code>sql
+CREATE TABLE cvs_[entity]_hdr (
+    clnt_id int2 NOT NULL,
+    site_id int2 NOT NULL,
+    [entity]_srl int4 NOT NULL,
+    [entity]_data json NULL,
+    mod_by_usr_cd int4 NOT NULL,
+    mod_dttm timestamp DEFAULT now() NOT NULL,
+    rcrd_stat int2 DEFAULT 1 NOT NULL,
+    CONSTRAINT pk_cvs_[entity]_hdr PRIMARY KEY (clnt_id, site_id, [entity]_srl)
+);
+
+CREATE TABLE cvs_[entity]_dtls (
+    clnt_id int2 NOT NULL,
+    site_id int2 NOT NULL,
+    [entity]_srl int4 NOT NULL,
+    [entity]_dtl_srl int2 NOT NULL,
+    [business_fields] varchar(100) NOT NULL,
+    CONSTRAINT pk_cvs_[entity]_dtls PRIMARY KEY (clnt_id, site_id, [entity]_srl, [entity]_dtl_srl),
+    CONSTRAINT fk_cvs_[entity]_dtls_hdr FOREIGN KEY (clnt_id, site_id, [entity]_srl) 
+        REFERENCES cvs_[entity]_hdr(clnt_id, site_id, [entity]_srl)
+);
+</code></pre></div>
+
+<h3>User Access Control Pattern</h3>
+<div class="code-block"><pre><code>sql
+CREATE TABLE cvs_usr_grp_accs_dtls (
+    clnt_id int4 NOT NULL,
+    site_id int2 NOT NULL,
+    usr_grp_cd int2 NOT NULL,
+    fnctn_cd varchar(20) NOT NULL,
+    [entity]_cd int2 NOT NULL,
+    ctrl_id varchar(50) NOT NULL,
+    CONSTRAINT pk_cvs_usr_grp_accs_dtls PRIMARY KEY (clnt_id, site_id, usr_grp_cd, fnctn_cd, [entity]_cd, ctrl_id)
+);
+</code></pre></div>
+
+<h2>Migration Strategy for XOS Applications</h2>
+
+<h3>DDL Script Versioning</h3>
+<div class="code-block"><pre><code>sql
+-- Version-based migration scripts
+-- Migration: v1.0.1_add_[feature]_tables.sql
+
+-- Add new table with full XOS pattern
+CREATE TABLE cvs_[new_entity]_mast (
+    clnt_id int2 NOT NULL,
+    site_id int2 NOT NULL,
+    [entity]_cd int2 NOT NULL,
+    [entity]_desc varchar(100) NOT NULL,
+    rcrd_stat int2 DEFAULT 1 NOT NULL,
+    CONSTRAINT pk_cvs_[new_entity]_mast PRIMARY KEY (clnt_id, site_id, [entity]_cd)
+);
+
+-- Create indexes
+CREATE INDEX ix_cvs_[new_entity]_mast_clnt_site ON cvs_[new_entity]_mast (clnt_id, site_id);
+CREATE INDEX ix_cvs_[new_entity]_mast_active ON cvs_[new_entity]_mast (clnt_id, site_id) 
+    WHERE rcrd_stat = 1;
+
+-- Update existing table (add column)
+ALTER TABLE cvs_existing_table ADD COLUMN new_field_cd int2 NULL;
+</code></pre></div>
+
+<h3>Multi-Database Deployment</h3>
+<div class="code-block"><pre><code>sql
+-- Client-specific deployment pattern
+-- Each client has separate database
+-- Schema changes applied per client database
+-- Connection string pattern: "Host=server;Database=cvs_client_{clnt_id};..."
+</code></pre></div>
+
+<h2>Performance Optimization</h2>
+
+<h3>PostgreSQL-Specific Optimizations</h3>
+<div class="code-block"><pre><code>sql
+-- Analyze tables for query planning
+ANALYZE cvs_[table_name];
+
+-- Vacuum for performance
+VACUUM ANALYZE cvs_[table_name];
+
+-- Enable query plan caching
+SET plan_cache_mode = force_generic_plan;
+</code></pre></div>
+
+<h3>Multi-Tenant Query Patterns</h3>
+<div class="code-block"><pre><code>sql
+-- Always include tenant isolation in WHERE clauses
+WHERE clnt_id = @clnt_id AND site_id = @site_id
+
+-- Use composite indexes effectively
+SELECT * FROM cvs_entity_mast 
+WHERE clnt_id = @clnt_id AND site_id = @site_id AND rcrd_stat = 1
+ORDER BY sort_ordr, entity_desc;
+</code></pre></div>
+
+<h2>Usage Examples</h2>
+
+<div class="code-block"><pre><code>sql
+-- Design user management for XOS
+-- Tables: cvs_usr_mast, cvs_usr_site_dtls, cvs_usr_grp_mast, cvs_usr_grp_accs_dtls
+
+-- Create workflow system for XOS  
+-- Tables: cvs_dcmnt_mast, cvs_dcmnt_dtls, cvs_dcmnt_data_hdr, cvs_dcmnt_routng_mast
+
+-- Add audit system for XOS
+-- Pattern: Separate audit tables with transaction mode tracking
+</code></pre></div></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

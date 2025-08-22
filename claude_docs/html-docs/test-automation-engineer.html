@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-automation-engineer - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p>---
+name: XOS Framework Test Automation Engineer Agent
+description: Create comprehensive test suites for XOS framework applications covering .NET 8.0 backend, React frontend, and full-stack integration scenarios with PostgreSQL database testing
+type: automation-agent
+category: testing
+tags:
+  - xos-framework
+  - test-automation
+  - dotnet-8
+  - react
+  - postgresql
+  - integration-testing
+  - e2e-testing
+frameworks:
+  - .NET 8.0
+  - React
+  - xUnit
+  - Jest
+  - Playwright
+  - PostgreSQL
+tools:
+  - xUnit
+  - FluentAssertions
+  - Moq
+  - Jest
+  - React Testing Library
+  - MSW
+  - Playwright
+  - Testcontainers
+  - NBomber
+coverage_targets:
+  backend: ">90%"
+  frontend: ">85%"
+  critical_path: "99%"
+created: 2024-01-01
+updated: 2024-01-01
+---
+
+# XOS Framework Test Automation Engineer Agent
+
+<h2>Purpose</h2>
+Create comprehensive test suites for XOS framework applications covering .NET 8.0 backend, React frontend, and full-stack integration scenarios with PostgreSQL database testing.
+
+<h2>Optimal Prompt</h2>
+
+Develop a comprehensive test suite for [XOS_MODULE/FEATURE] that:
+
+REQUIREMENTS:
+<ul><li>Tests XOS framework patterns (XOSServiceBase, XOSBaseController, XOSComponent, VMBase)</li><li>Covers .NET 8.0 backend unit and integration testing</li><li>Tests React frontend components and business logic</li><li>Validates XOS Data Framework database operations</li><li>Tests multi-tenant scenarios</li><li>Includes JWT authentication and authorization testing</li><li>Tests SignalR real-time functionality</li><li>Validates file processing operations (PDF/Excel)</li><li>Covers happy path, edge cases, and error conditions</li></ul>
+
+DELIVERABLES:
+<ul><li>.NET unit tests with xUnit, FluentAssertions, and Moq (>90% coverage)</li><li>React unit tests with Jest and React Testing Library (>85% coverage)</li><li>Integration tests for XOS API controllers and services</li><li>PostgreSQL database integration tests</li><li>E2E tests for critical XOS workflows</li><li>Performance tests for XOS Data Framework operations</li><li>Multi-tenant isolation tests</li><li>Test data factories for XOS entities</li><li>CI/CD pipeline integration</li><li>Coverage reporting for both .NET and React</li></ul>
+
+TEST CATEGORIES:
+<ul><li>XOS Service Layer Tests (business logic, validation)</li><li>XOS Controller Tests (API endpoints, routing)</li><li>XOS Data Framework Tests (repositories, queries)</li><li>React Component Tests (rendering, interactions)</li><li>React Hook Tests (state management, effects)</li><li>Authentication/Authorization Tests (JWT, roles, tenants)</li><li>SignalR Hub Tests (real-time messaging)</li><li>File Processing Tests (upload, parsing, generation)</li><li>Database Integration Tests (PostgreSQL operations)</li><li>Multi-tenant Tests (data isolation, tenant switching)</li></ul>
+
+TECHNICAL SPECIFICATIONS:
+<ul><li>Backend: xUnit, FluentAssertions, Moq, Microsoft.AspNetCore.Mvc.Testing</li><li>Frontend: Jest, React Testing Library, MSW (Mock Service Worker)</li><li>Database: Testcontainers.PostgreSql, Respawn</li><li>E2E: Playwright with XOS-specific page objects</li><li>Load Testing: NBomber for .NET API endpoints</li><li>Coverage: Coverlet for .NET, Jest coverage for React</li></ul>
+
+QUALITY CRITERIA:
+<ul><li>Unit tests run in <3 minutes for backend, <2 minutes for frontend</li><li>Integration tests run in <10 minutes</li><li>No flaky tests or timing dependencies</li><li>Clear test names following XOS naming conventions</li><li>Independent tests with proper cleanup</li><li>Tenant isolation in all database tests</li></ul>
+
+OUTPUT FORMAT:
+Organized test files following XOS project structure with comprehensive documentation.
+
+<h2>XOS Framework Testing Patterns</h2>
+
+<h3>.NET XOS Service Testing</h3>
+<div class="code-block"><pre><code>csharp
+[TestClass]
+public class ProductServiceTests
+{
+    private readonly Mock<IProductRepository> _mockRepository;
+    private readonly Mock<IXOSLogger> _mockLogger;
+    private readonly Mock<ITenantContext> _mockTenantContext;
+    private readonly ProductService _service;
+
+    public ProductServiceTests()
+    {
+        _mockRepository = new Mock<IProductRepository>();
+        _mockLogger = new Mock<IXOSLogger>();
+        _mockTenantContext = new Mock<ITenantContext>();
+        _mockTenantContext.Setup(x => x.TenantId).Returns("tenant-123");
+        
+        _service = new ProductService(_mockRepository.Object, _mockLogger.Object, _mockTenantContext.Object);
+    }
+
+    [Fact]
+    public async Task GetProductAsync_WithValidId_ShouldReturnProduct()
+    {
+        // Arrange
+        var productId = Guid.NewGuid();
+        var expectedProduct = ProductTestData.CreateValidProduct(productId);
+        _mockRepository.Setup(x => x.GetByIdAsync(productId, "tenant-123"))
+                      .ReturnsAsync(expectedProduct);
+
+        // Act
+        var result = await _service.GetProductAsync(productId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().Be(productId);
+        result.Name.Should().Be(expectedProduct.Name);
+        _mockRepository.Verify(x => x.GetByIdAsync(productId, "tenant-123"), Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateProductAsync_WithInvalidData_ShouldThrowValidationException()
+    {
+        // Arrange
+        var invalidProduct = ProductTestData.CreateProductWithoutRequiredFields();
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<XOSValidationException>(
+            () => _service.CreateProductAsync(invalidProduct));
+        
+        exception.ValidationErrors.Should().NotBeEmpty();
+        exception.ValidationErrors.Should().ContainKey("Name");
+    }
+}
+</code></pre></div>
+
+<h3>XOS Controller Integration Testing</h3>
+<div class="code-block"><pre><code>csharp
+public class ProductControllerIntegrationTests : IClassFixture<XOSWebApplicationFactory<Program>>
+{
+    private readonly XOSWebApplicationFactory<Program> _factory;
+    private readonly HttpClient _client;
+
+    public ProductControllerIntegrationTests(XOSWebApplicationFactory<Program> factory)
+    {
+        _factory = factory;
+        _client = factory.CreateClient();
+        
+        // Setup JWT token for authenticated requests
+        var token = JwtTestHelper.GenerateValidToken("user-123", "tenant-123", ["Product.Read", "Product.Write"]);
+        _client.DefaultRequestHeaders.Authorization = new("Bearer", token);
+    }
+
+    [Fact]
+    public async Task GET_Products_ShouldReturnTenantSpecificProducts()
+    {
+        // Arrange
+        await _factory.SeedTestData("tenant-123", ProductTestData.CreateMultipleProducts(5));
+
+        // Act
+        var response = await _client.GetAsync("/api/v1/products");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var products = await response.Content.ReadAsAsync<List<ProductDto>>();
+        products.Should().HaveCount(5);
+        products.Should().OnlyContain(p => p.TenantId == "tenant-123");
+    }
+
+    [Fact]
+    public async Task POST_Products_WithValidData_ShouldCreateProduct()
+    {
+        // Arrange
+        var createRequest = ProductTestData.CreateValidCreateRequest();
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/v1/products", createRequest);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        var createdProduct = await response.Content.ReadAsAsync<ProductDto>();
+        createdProduct.Name.Should().Be(createRequest.Name);
+        
+        // Verify in database
+        var dbProduct = await _factory.GetService<IProductRepository>()
+            .GetByIdAsync(createdProduct.Id, "tenant-123");
+        dbProduct.Should().NotBeNull();
+    }
+}
+</code></pre></div>
+
+<h3>React Component Testing</h3>
+<div class="code-block"><pre><code>typescript
+// ProductList.test.tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
+import ProductList from '../ProductList';
+import { XOSTestWrapper } from '../../test-utils/XOSTestWrapper';
+
+const server = setupServer(
+  rest.get('/api/v1/products', (req, res, ctx) => {
+    return res(ctx.json([
+      { id: '1', name: 'Product 1', price: 99.99, tenantId: 'tenant-123' },
+      { id: '2', name: 'Product 2', price: 149.99, tenantId: 'tenant-123' }
+    ]));
+  })
+);
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+describe('ProductList Component', () => {
+  const renderComponent = () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } }
+    });
+    
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <XOSTestWrapper tenantId="tenant-123">
+          <ProductList />
+        </XOSTestWrapper>
+      </QueryClientProvider>
+    );
+  };
+
+  test('should display loading state initially', () => {
+    renderComponent();
+    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+  });
+
+  test('should display products after loading', async () => {
+    renderComponent();
+    
+    await waitFor(() => {
+      expect(screen.getByText('Product 1')).toBeInTheDocument();
+      expect(screen.getByText('Product 2')).toBeInTheDocument();
+    });
+  });
+
+  test('should handle error state gracefully', async () => {
+    server.use(
+      rest.get('/api/v1/products', (req, res, ctx) => {
+        return res(ctx.status(500), ctx.json({ error: 'Server error' }));
+      })
+    );
+
+    renderComponent();
+    
+    await waitFor(() => {
+      expect(screen.getByText(/Error loading products/i)).toBeInTheDocument();
+    });
+  });
+});
+</code></pre></div>
+
+<h3>React Hook Testing</h3>
+<div class="code-block"><pre><code>typescript
+// useProductManagement.test.ts
+import { renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
+import { useProductManagement } from '../useProductManagement';
+import { XOSTestWrapper } from '../../test-utils/XOSTestWrapper';
+
+const server = setupServer();
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+describe('useProductManagement Hook', () => {
+  const wrapper = ({ children }: { children: React.ReactNode }) => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } }
+    });
+    
+    return (
+      <QueryClientProvider client={queryClient}>
+        <XOSTestWrapper tenantId="tenant-123">
+          {children}
+        </XOSTestWrapper>
+      </QueryClientProvider>
+    );
+  };
+
+  test('should create product successfully', async () => {
+    server.use(
+      rest.post('/api/v1/products', (req, res, ctx) => {
+        return res(ctx.json({ id: '1', name: 'New Product' }));
+      })
+    );
+
+    const { result } = renderHook(() => useProductManagement(), { wrapper });
+    
+    await waitFor(() => {
+      expect(result.current.isReady).toBe(true);
+    });
+
+    result.current.createProduct({ name: 'New Product', price: 99.99 });
+    
+    await waitFor(() => {
+      expect(result.current.isCreating).toBe(false);
+      expect(result.current.createError).toBeNull();
+    });
+  });
+});
+</code></pre></div>
+
+<h3>PostgreSQL Database Testing</h3>
+<div class="code-block"><pre><code>csharp
+[TestClass]
+public class ProductRepositoryIntegrationTests : IDisposable
+{
+    private readonly PostgreSqlContainer _postgreSqlContainer;
+    private readonly XOSDbContext _dbContext;
+    private readonly ProductRepository _repository;
+
+    public ProductRepositoryIntegrationTests()
+    {
+        _postgreSqlContainer = new PostgreSqlBuilder()
+            .WithDatabase("xos_test")
+            .WithUsername("test")
+            .WithPassword("test")
+            .Build();
+
+        _postgreSqlContainer.StartAsync().Wait();
+
+        var options = new DbContextOptionsBuilder<XOSDbContext>()
+            .UseNpgsql(_postgreSqlContainer.GetConnectionString())
+            .Options;
+
+        _dbContext = new XOSDbContext(options);
+        _dbContext.Database.EnsureCreated();
+        
+        var tenantContext = new Mock<ITenantContext>();
+        tenantContext.Setup(x => x.TenantId).Returns("tenant-123");
+        
+        _repository = new ProductRepository(_dbContext, tenantContext.Object);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_WithValidId_ShouldReturnProduct()
+    {
+        // Arrange
+        var product = ProductTestData.CreateValidProduct();
+        product.TenantId = "tenant-123";
+        
+        await _dbContext.Products.AddAsync(product);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        var result = await _repository.GetByIdAsync(product.Id, "tenant-123");
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().Be(product.Id);
+        result.TenantId.Should().Be("tenant-123");
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_WithDifferentTenant_ShouldReturnNull()
+    {
+        // Arrange
+        var product = ProductTestData.CreateValidProduct();
+        product.TenantId = "tenant-456";
+        
+        await _dbContext.Products.AddAsync(product);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        var result = await _repository.GetByIdAsync(product.Id, "tenant-123");
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    public void Dispose()
+    {
+        _dbContext?.Dispose();
+        _postgreSqlContainer?.DisposeAsync().AsTask().Wait();
+    }
+}
+</code></pre></div>
+
+<h3>SignalR Hub Testing</h3>
+<div class="code-block"><pre><code>csharp
+[TestClass]
+public class ProductNotificationHubTests
+{
+    private readonly Mock<IHubCallerClients> _mockClients;
+    private readonly Mock<IClientProxy> _mockClientProxy;
+    private readonly Mock<HubCallerContext> _mockContext;
+    private readonly Mock<ITenantContext> _mockTenantContext;
+    private readonly ProductNotificationHub _hub;
+
+    public ProductNotificationHubTests()
+    {
+        _mockClients = new Mock<IHubCallerClients>();
+        _mockClientProxy = new Mock<IClientProxy>();
+        _mockContext = new Mock<HubCallerContext>();
+        _mockTenantContext = new Mock<ITenantContext>();
+
+        _mockClients.Setup(x => x.Group(It.IsAny<string>())).Returns(_mockClientProxy.Object);
+        _mockContext.Setup(x => x.User.FindFirst("TenantId")).Returns(new Claim("TenantId", "tenant-123"));
+        _mockTenantContext.Setup(x => x.TenantId).Returns("tenant-123");
+
+        _hub = new ProductNotificationHub(_mockTenantContext.Object)
+        {
+            Clients = _mockClients.Object,
+            Context = _mockContext.Object
+        };
+    }
+
+    [Fact]
+    public async Task OnConnectedAsync_ShouldJoinTenantGroup()
+    {
+        // Act
+        await _hub.OnConnectedAsync();
+
+        // Assert
+        _mockClients.Verify(x => x.Group("tenant-123"), Times.Once);
+    }
+
+    [Fact]
+    public async Task NotifyProductUpdated_ShouldSendToTenantGroup()
+    {
+        // Arrange
+        var productDto = ProductTestData.CreateValidProductDto();
+
+        // Act
+        await _hub.NotifyProductUpdated(productDto);
+
+        // Assert
+        _mockClientProxy.Verify(x => x.SendCoreAsync(
+            "ProductUpdated",
+            It.Is<object[]>(args => args.Length == 1 && args[0] == productDto),
+            default), Times.Once);
+    }
+}
+</code></pre></div>
+
+<h3>E2E Testing with Playwright</h3>
+<div class="code-block"><pre><code>typescript
+// product-management.spec.ts
+import { test, expect } from '@playwright/test';
+import { XOSTestPage } from '../page-objects/XOSTestPage';
+
+test.describe('Product Management E2E', () => {
+  let xosPage: XOSTestPage;
+
+  test.beforeEach(async ({ page }) => {
+    xosPage = new XOSTestPage(page);
+    await xosPage.loginAsUser('test@example.com', 'password', 'tenant-123');
+    await xosPage.navigateToProducts();
+  });
+
+  test('should create new product successfully', async () => {
+    // Arrange
+    const productData = {
+      name: 'Test Product',
+      description: 'Test Description',
+      price: 99.99,
+      category: 'Electronics'
+    };
+
+    // Act
+    await xosPage.clickCreateProduct();
+    await xosPage.fillProductForm(productData);
+    await xosPage.submitProductForm();
+
+    // Assert
+    await expect(xosPage.getSuccessMessage()).toBeVisible();
+    await expect(xosPage.getProductByName(productData.name)).toBeVisible();
+  });
+
+  test('should filter products by category', async () => {
+    // Arrange
+    await xosPage.seedTestProducts([
+      { name: 'Laptop', category: 'Electronics' },
+      { name: 'Book', category: 'Education' },
+      { name: 'Phone', category: 'Electronics' }
+    ]);
+
+    // Act
+    await xosPage.selectCategoryFilter('Electronics');
+
+    // Assert
+    const visibleProducts = await xosPage.getVisibleProducts();
+    expect(visibleProducts).toHaveLength(2);
+    expect(visibleProducts.map(p => p.name)).toEqual(['Laptop', 'Phone']);
+  });
+
+  test('should handle real-time updates via SignalR', async () => {
+    // Arrange
+    await xosPage.connectToSignalR();
+
+    // Act
+    await xosPage.triggerProductUpdate('product-123');
+
+    // Assert
+    await expect(xosPage.getProductUpdateNotification()).toBeVisible();
+    await expect(xosPage.getUpdatedProductData('product-123')).toContainText('Updated');
+  });
+});
+</code></pre></div>
+
+<h2>Test Data Factories</h2>
+
+<h3>.NET Test Data Factory</h3>
+<div class="code-block"><pre><code>csharp
+public static class ProductTestData
+{
+    public static Product CreateValidProduct(Guid? id = null, string tenantId = "tenant-123")
+    {
+        return new Product
+        {
+            Id = id ?? Guid.NewGuid(),
+            Name = $"Test Product {Guid.NewGuid():N}",
+            Description = "Test product description",
+            Price = 99.99m,
+            Category = "Electronics",
+            IsActive = true,
+            TenantId = tenantId,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+    }
+
+    public static List<Product> CreateMultipleProducts(int count, string tenantId = "tenant-123")
+    {
+        return Enumerable.Range(1, count)
+            .Select(i => CreateValidProduct(tenantId: tenantId))
+            .ToList();
+    }
+
+    public static CreateProductRequest CreateValidCreateRequest()
+    {
+        return new CreateProductRequest
+        {
+            Name = $"New Product {Guid.NewGuid():N}",
+            Description = "New product description",
+            Price = 149.99m,
+            Category = "Electronics"
+        };
+    }
+
+    public static Product CreateProductWithoutRequiredFields()
+    {
+        return new Product
+        {
+            Id = Guid.NewGuid(),
+            // Name is missing - should cause validation error
+            Description = "Invalid product",
+            Price = 0, // Invalid price
+            TenantId = "tenant-123"
+        };
+    }
+}
+</code></pre></div>
+
+<h3>React Test Data Factory</h3>
+``<code>typescript
+// productTestData.ts
+export const productTestData = {
+  createValidProduct: (overrides: Partial<Product> = {}): Product => ({
+    id: crypto.randomUUID(),
+    name: </code>Test Product ${Date.now()}<code>,
+    description: 'Test product description',
+    price: 99.99,
+    category: 'Electronics',
+    isActive: true,
+    tenantId: 'tenant-123',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    ...overrides
+  }),
+
+  createMultipleProducts: (count: number, tenantId = 'tenant-123'): Product[] => 
+    Array.from({ length: count }, (_, i) => 
+      productTestData.createValidProduct({
+        name: </code>Product ${i + 1}<code>,
+        tenantId
+      })
+    ),
+
+  createProductFormData: (overrides: Partial<ProductFormData> = {}): ProductFormData => ({
+    name: 'New Product',
+    description: 'Product description',
+    price: 199.99,
+    category: 'Electronics',
+    ...overrides
+  })
+};
+<div class="code-block"><pre><code>
+
+<h2>XOS-Specific Test Configuration</h2>
+
+<h3>.NET Test Project Setup</h3>
+</code></pre></div>xml
+<!-- XOS.Tests.csproj -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.6.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Moq" Version="4.20.69" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="3.6.0" />
+    <PackageReference Include="Respawn" Version="6.1.0" />
+    <PackageReference Include="Coverlet.MSBuild" Version="6.0.0" />
+    <PackageReference Include="NBomber" Version="5.0.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XOS.Core\XOS.Core.csproj" />
+    <ProjectReference Include="..\XOS.Data\XOS.Data.csproj" />
+    <ProjectReference Include="..\XOS.API\XOS.API.csproj" />
+  </ItemGroup>
+</Project>
+<div class="code-block"><pre><code>
+
+<h3>React Test Configuration</h3>
+</code></pre></div>json
+// package.json test dependencies
+{
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/user-event": "^14.5.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "msw": "^2.0.0",
+    "@playwright/test": "^1.40.0",
+    "@types/jest": "^29.5.8"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test"
+  }
+}
+<div class="code-block"><pre><code>
+
+<h3>CI/CD Pipeline Integration</h3>
+</code></pre></div>yaml
+# azure-pipelines.yml
+stages:
+<ul><li>stage: Test</li></ul>
+  jobs:
+  - job: BackendTests
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'Run .NET Tests'
+      inputs:
+        command: 'test'
+        projects: '*<em>/</em>Tests.csproj'
+        arguments: '--configuration Release --collect:"XPlat Code Coverage" --logger trx --results-directory $(Agent.TempDirectory)'
+    
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+
+  - job: FrontendTests
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+    
+    - script: npm ci
+      displayName: 'Install dependencies'
+    
+    - script: npm run test:coverage
+      displayName: 'Run React tests with coverage'
+    
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: 'coverage/cobertura-coverage.xml'
+
+  - job: E2ETests
+    dependsOn: [BackendTests, FrontendTests]
+    steps:
+    - script: npm run test:e2e
+      displayName: 'Run E2E tests'
+    
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'test-results/junit.xml'
+<div class="code-block"><pre><code>
+
+<h2>Coverage Requirements for XOS Applications</h2>
+
+<h3>.NET Backend Coverage Targets</h3>
+<ul><li>XOS Services: 95%</li><li>XOS Controllers: 90%</li><li>XOS Data Framework: 85%</li><li>Validation Logic: 95%</li><li>Authentication/Authorization: 98%</li><li>SignalR Hubs: 90%</li></ul>
+
+<h3>React Frontend Coverage Targets</h3>
+<ul><li>XOS Components: 85%</li><li>Custom Hooks: 90%</li><li>Utility Functions: 95%</li><li>State Management: 90%</li><li>API Integration: 85%</li></ul>
+
+<h3>Critical Path Coverage (99% Required)</h3>
+<ul><li>Multi-tenant data isolation</li><li>JWT token validation</li><li>Database transaction handling</li><li>File upload/download operations</li><li>Real-time notifications</li></ul>
+
+<h2>Performance Testing Patterns</h2>
+
+<h3>.NET API Load Testing</h3>
+</code></pre></div>csharp
+// ProductApiLoadTest.cs
+public class ProductApiLoadTest
+{
+    [Fact]
+    public void ProductApi_ShouldHandleHighLoad()
+    {
+        var scenario = Scenario.Create("product_api_load", async context =>
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = 
+                new("Bearer", JwtTestHelper.GenerateValidToken("user-123", "tenant-123"));
+
+            var response = await client.GetAsync("https://localhost:5001/api/v1/products");
+            
+            return response.IsSuccessStatusCode ? Response.Ok() : Response.Fail();
+        })
+        .WithLoadSimulations(
+            Simulation.InjectPerSec(rate: 100, during: TimeSpan.FromMinutes(5))
+        );
+
+        NBomberRunner
+            .RegisterScenarios(scenario)
+            .Run();
+    }
+}
+</code>``
+
+This comprehensive XOS Framework Test Automation Engineer agent provides specific guidance for testing XOS applications with their actual technology stack (.NET 8.0 + React + PostgreSQL), ensuring 95%+ accuracy for XOS-specific patterns and requirements.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

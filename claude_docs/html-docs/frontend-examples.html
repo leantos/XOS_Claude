@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>frontend-examples - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Frontend Testing Examples - Real-World React Tests</p><p>Practical examples of testing React components with TypeScript using Jest and React Testing Library, following patterns suitable for modern React applications.</p><p><h2>Table of Contents</h2>
+<ul><li><a href="#component-testing">Component Testing</a></li><li><a href="#custom-hook-testing">Custom Hook Testing</a></li><li><a href="#service-testing">Service Testing</a></li><li><a href="#integration-testing">Integration Testing</a></li><li><a href="#form-testing">Form Testing</a></li><li><a href="#state-management-testing">State Management Testing</a></li></ul></p><p><h2>Component Testing</h2></p><p><h3>UserCard Component Tests</h3></p><p>``<code>typescript
+// UserCard.tsx
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'user';
+  isActive: boolean;
+  lastLogin?: Date;
+}</p><p>interface UserCardProps {
+  user: User;
+  onEdit?: (id: number) => void;
+  onDelete?: (id: number) => void;
+  onToggleActive?: (id: number, isActive: boolean) => void;
+  showActions?: boolean;
+}</p><p>const UserCard: React.FC<UserCardProps> = ({
+  user,
+  onEdit,
+  onDelete,
+  onToggleActive,
+  showActions = true
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);</p><p>  const formatLastLogin = (date?: Date) => {
+    if (!date) return 'Never';
+    return new Intl.DateTimeFormat('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    }).format(date);
+  };</p><p>  const getRoleBadgeColor = (role: string) => {
+    return role === 'admin' ? 'bg-red-500' : 'bg-blue-500';
+  };</p><p>  return (
+    <div 
+      className="user-card border rounded-lg p-4 shadow-sm"
+      data-testid={</code>user-card-${user.id}<code>}
+    >
+      <div className="flex justify-between items-start">
+        <div>
+          <h3 className="text-lg font-semibold">{user.name}</h3>
+          <p className="text-gray-600">{user.email}</p>
+          <span 
+            className={</code>inline-block px-2 py-1 rounded text-xs text-white ${getRoleBadgeColor(user.role)}<code>}
+          >
+            {user.role.toUpperCase()}
+          </span>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <span 
+            className={</code>px-2 py-1 rounded text-xs ${
+              user.isActive 
+                ? 'bg-green-100 text-green-800' 
+                : 'bg-gray-100 text-gray-800'
+            }<code>}
+          >
+            {user.isActive ? 'Active' : 'Inactive'}
+          </span>
+          
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-expanded={isExpanded}
+            aria-label={</code>${isExpanded ? 'Collapse' : 'Expand'} user details<code>}
+          >
+            {isExpanded ? '?' : '?'}
+          </button>
+        </div>
+      </div></p><p>      {isExpanded && (
+        <div className="mt-4 pt-4 border-t" data-testid="expanded-details">
+          <p>
+            <span className="font-medium">User ID:</span> {user.id}
+          </p>
+          <p>
+            <span className="font-medium">Last Login:</span> {formatLastLogin(user.lastLogin)}
+          </p>
+        </div>
+      )}</p><p>      {showActions && (
+        <div className="mt-4 flex gap-2" data-testid="action-buttons">
+          {onEdit && (
+            <button
+              onClick={() => onEdit(user.id)}
+              className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+            >
+              Edit
+            </button>
+          )}
+          
+          {onToggleActive && (
+            <button
+              onClick={() => onToggleActive(user.id, !user.isActive)}
+              className={</code>px-3 py-1 text-white rounded text-sm ${
+                user.isActive 
+                  ? 'bg-yellow-500 hover:bg-yellow-600' 
+                  : 'bg-green-500 hover:bg-green-600'
+              }<code>}
+            >
+              {user.isActive ? 'Deactivate' : 'Activate'}
+            </button>
+          )}
+          
+          {onDelete && (
+            <button
+              onClick={() => onDelete(user.id)}
+              className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+            >
+              Delete
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};</p><p>// UserCard.test.tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { UserCard } from './UserCard';</p><p>const mockUser: User = {
+  id: 1,
+  name: 'John Doe',
+  email: 'john@example.com',
+  role: 'user',
+  isActive: true,
+  lastLogin: new Date('2024-01-15T10:30:00Z')
+};</p><p>const mockAdminUser: User = {
+  ...mockUser,
+  id: 2,
+  name: 'Jane Admin',
+  email: 'jane@example.com',
+  role: 'admin'
+};</p><p>describe('UserCard', () => {
+  it('renders user information correctly', () => {
+    render(<UserCard user={mockUser} />);</p><p>    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('john@example.com')).toBeInTheDocument();
+    expect(screen.getByText('USER')).toBeInTheDocument();
+    expect(screen.getByText('Active')).toBeInTheDocument();
+  });</p><p>  it('displays admin badge with correct styling for admin users', () => {
+    render(<UserCard user={mockAdminUser} />);</p><p>    const adminBadge = screen.getByText('ADMIN');
+    expect(adminBadge).toBeInTheDocument();
+    expect(adminBadge).toHaveClass('bg-red-500');
+  });</p><p>  it('displays user badge with correct styling for regular users', () => {
+    render(<UserCard user={mockUser} />);</p><p>    const userBadge = screen.getByText('USER');
+    expect(userBadge).toBeInTheDocument();
+    expect(userBadge).toHaveClass('bg-blue-500');
+  });</p><p>  it('shows inactive status for inactive users', () => {
+    const inactiveUser = { ...mockUser, isActive: false };
+    render(<UserCard user={inactiveUser} />);</p><p>    expect(screen.getByText('Inactive')).toBeInTheDocument();
+    expect(screen.getByText('Inactive')).toHaveClass('bg-gray-100');
+  });</p><p>  it('toggles expanded state when expand button is clicked', async () => {
+    const user = userEvent.setup();
+    render(<UserCard user={mockUser} />);</p><p>    // Initially collapsed
+    expect(screen.queryByTestId('expanded-details')).not.toBeInTheDocument();</p><p>    // Click to expand
+    const expandButton = screen.getByLabelText('Expand user details');
+    await user.click(expandButton);</p><p>    expect(screen.getByTestId('expanded-details')).toBeInTheDocument();
+    expect(screen.getByText('User ID:')).toBeInTheDocument();
+    expect(screen.getByText('Last Login:')).toBeInTheDocument();</p><p>    // Click to collapse
+    const collapseButton = screen.getByLabelText('Collapse user details');
+    await user.click(collapseButton);</p><p>    expect(screen.queryByTestId('expanded-details')).not.toBeInTheDocument();
+  });</p><p>  it('formats last login date correctly', async () => {
+    const user = userEvent.setup();
+    render(<UserCard user={mockUser} />);</p><p>    await user.click(screen.getByLabelText('Expand user details'));</p><p>    // Check that date is formatted (exact format may vary by locale)
+    expect(screen.getByText(/Jan 15, 2024/)).toBeInTheDocument();
+  });</p><p>  it('shows "Never" when user has not logged in', async () => {
+    const userWithoutLogin = { ...mockUser, lastLogin: undefined };
+    const user = userEvent.setup();
+    
+    render(<UserCard user={userWithoutLogin} />);</p><p>    await user.click(screen.getByLabelText('Expand user details'));</p><p>    expect(screen.getByText(/Never/)).toBeInTheDocument();
+  });</p><p>  it('calls onEdit when edit button is clicked', async () => {
+    const handleEdit = jest.fn();
+    const user = userEvent.setup();</p><p>    render(<UserCard user={mockUser} onEdit={handleEdit} />);</p><p>    await user.click(screen.getByText('Edit'));</p><p>    expect(handleEdit).toHaveBeenCalledWith(1);
+    expect(handleEdit).toHaveBeenCalledTimes(1);
+  });</p><p>  it('calls onDelete when delete button is clicked', async () => {
+    const handleDelete = jest.fn();
+    const user = userEvent.setup();</p><p>    render(<UserCard user={mockUser} onDelete={handleDelete} />);</p><p>    await user.click(screen.getByText('Delete'));</p><p>    expect(handleDelete).toHaveBeenCalledWith(1);
+    expect(handleDelete).toHaveBeenCalledTimes(1);
+  });</p><p>  it('calls onToggleActive with correct parameters for active user', async () => {
+    const handleToggleActive = jest.fn();
+    const user = userEvent.setup();</p><p>    render(<UserCard user={mockUser} onToggleActive={handleToggleActive} />);</p><p>    await user.click(screen.getByText('Deactivate'));</p><p>    expect(handleToggleActive).toHaveBeenCalledWith(1, false);
+  });</p><p>  it('calls onToggleActive with correct parameters for inactive user', async () => {
+    const inactiveUser = { ...mockUser, isActive: false };
+    const handleToggleActive = jest.fn();
+    const user = userEvent.setup();</p><p>    render(<UserCard user={inactiveUser} onToggleActive={handleToggleActive} />);</p><p>    await user.click(screen.getByText('Activate'));</p><p>    expect(handleToggleActive).toHaveBeenCalledWith(1, true);
+  });</p><p>  it('does not render action buttons when showActions is false', () => {
+    render(
+      <UserCard 
+        user={mockUser} 
+        onEdit={jest.fn()} 
+        onDelete={jest.fn()} 
+        showActions={false} 
+      />
+    );</p><p>    expect(screen.queryByTestId('action-buttons')).not.toBeInTheDocument();
+    expect(screen.queryByText('Edit')).not.toBeInTheDocument();
+    expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+  });</p><p>  it('does not render action buttons when no handlers are provided', () => {
+    render(<UserCard user={mockUser} />);</p><p>    expect(screen.queryByText('Edit')).not.toBeInTheDocument();
+    expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+    expect(screen.queryByText('Activate')).not.toBeInTheDocument();
+  });</p><p>  it('has accessible expand/collapse button', () => {
+    render(<UserCard user={mockUser} />);</p><p>    const button = screen.getByLabelText('Expand user details');
+    expect(button).toHaveAttribute('aria-expanded', 'false');
+  });
+});
+<div class="code-block"><pre><code></p><p><h3>DataTable Component Tests</h3></p><p></code></pre></div>typescript
+// DataTable.tsx
+interface Column<T> {
+  key: keyof T;
+  label: string;
+  sortable?: boolean;
+  render?: (value: T[keyof T], item: T) => React.ReactNode;
+}</p><p>interface DataTableProps<T> {
+  data: T[];
+  columns: Column<T>[];
+  loading?: boolean;
+  error?: string;
+  emptyMessage?: string;
+  onSort?: (key: keyof T, direction: 'asc' | 'desc') => void;
+  sortConfig?: { key: keyof T; direction: 'asc' | 'desc' };
+}</p><p>const DataTable = <T extends { id: number | string }>({
+  data,
+  columns,
+  loading = false,
+  error,
+  emptyMessage = 'No data available',
+  onSort,
+  sortConfig
+}: DataTableProps<T>) => {
+  const handleSort = (column: Column<T>) => {
+    if (!column.sortable || !onSort) return;</p><p>    const direction = 
+      sortConfig?.key === column.key && sortConfig.direction === 'asc' 
+        ? 'desc' 
+        : 'asc';
+    
+    onSort(column.key, direction);
+  };</p><p>  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8" data-testid="loading">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
+  }</p><p>  if (error) {
+    return (
+      <div 
+        className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded" 
+        role="alert"
+        data-testid="error"
+      >
+        Error: {error}
+      </div>
+    );
+  }</p><p>  if (data.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500" data-testid="empty">
+        {emptyMessage}
+      </div>
+    );
+  }</p><p>  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full bg-white border border-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            {columns.map((column) => (
+              <th
+                key={String(column.key)}
+                className={</code>px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
+                  column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''
+                }<code>}
+                onClick={() => handleSort(column)}
+              >
+                <div className="flex items-center">
+                  {column.label}
+                  {column.sortable && (
+                    <span className="ml-2">
+                      {sortConfig?.key === column.key ? (
+                        sortConfig.direction === 'asc' ? '?' : '?'
+                      ) : (
+                        '?'
+                      )}
+                    </span>
+                  )}
+                </div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {data.map((item, index) => (
+            <tr key={item.id} data-testid={</code>table-row-${index}<code>}>
+              {columns.map((column) => (
+                <td
+                  key={String(column.key)}
+                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                >
+                  {column.render
+                    ? column.render(item[column.key], item)
+                    : String(item[column.key] ?? '')
+                  }
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};</p><p>// DataTable.test.tsx
+interface TestUser {
+  id: number;
+  name: string;
+  email: string;
+  status: 'active' | 'inactive';
+  createdAt: Date;
+}</p><p>const testUsers: TestUser[] = [
+  {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com',
+    status: 'active',
+    createdAt: new Date('2024-01-01')
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    status: 'inactive',
+    createdAt: new Date('2024-01-02')
+  }
+];</p><p>const columns: Column<TestUser>[] = [
+  { key: 'name', label: 'Name', sortable: true },
+  { key: 'email', label: 'Email' },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (status) => (
+      <span className={status === 'active' ? 'text-green-600' : 'text-red-600'}>
+        {status}
+      </span>
+    )
+  },
+  {
+    key: 'createdAt',
+    label: 'Created',
+    sortable: true,
+    render: (date) => (date as Date).toLocaleDateString()
+  }
+];</p><p>describe('DataTable', () => {
+  it('renders table with data correctly', () => {
+    render(<DataTable data={testUsers} columns={columns} />);</p><p>    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('jane@example.com')).toBeInTheDocument();
+    
+    // Check that custom render function works
+    expect(screen.getByText('active')).toHaveClass('text-green-600');
+    expect(screen.getByText('inactive')).toHaveClass('text-red-600');
+  });</p><p>  it('displays loading state', () => {
+    render(<DataTable data={[]} columns={columns} loading={true} />);</p><p>    expect(screen.getByTestId('loading')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });</p><p>  it('displays error message', () => {
+    const errorMessage = 'Failed to load data';
+    render(<DataTable data={[]} columns={columns} error={errorMessage} />);</p><p>    const errorElement = screen.getByTestId('error');
+    expect(errorElement).toBeInTheDocument();
+    expect(errorElement).toHaveTextContent(</code>Error: ${errorMessage}<code>);
+    expect(errorElement).toHaveAttribute('role', 'alert');
+  });</p><p>  it('displays empty message when no data', () => {
+    render(<DataTable data={[]} columns={columns} />);</p><p>    expect(screen.getByTestId('empty')).toBeInTheDocument();
+    expect(screen.getByText('No data available')).toBeInTheDocument();
+  });</p><p>  it('displays custom empty message', () => {
+    const customMessage = 'No users found';
+    render(<DataTable data={[]} columns={columns} emptyMessage={customMessage} />);</p><p>    expect(screen.getByText(customMessage)).toBeInTheDocument();
+  });</p><p>  it('renders sortable columns with sort indicators', () => {
+    render(<DataTable data={testUsers} columns={columns} />);</p><p>    // Name column is sortable
+    expect(screen.getByText('Name').closest('th')).toHaveClass('cursor-pointer');
+    expect(screen.getByText('Name').parentElement).toHaveTextContent('?');
+    
+    // Email column is not sortable
+    expect(screen.getByText('Email').closest('th')).not.toHaveClass('cursor-pointer');
+  });</p><p>  it('calls onSort when sortable column header is clicked', async () => {
+    const handleSort = jest.fn();
+    const user = userEvent.setup();</p><p>    render(<DataTable data={testUsers} columns={columns} onSort={handleSort} />);</p><p>    await user.click(screen.getByText('Name'));</p><p>    expect(handleSort).toHaveBeenCalledWith('name', 'asc');
+  });</p><p>  it('toggles sort direction on subsequent clicks', async () => {
+    const handleSort = jest.fn();
+    const user = userEvent.setup();</p><p>    const { rerender } = render(
+      <DataTable 
+        data={testUsers} 
+        columns={columns} 
+        onSort={handleSort}
+        sortConfig={{ key: 'name', direction: 'asc' }}
+      />
+    );</p><p>    // Should show ascending indicator
+    expect(screen.getByText('Name').parentElement).toHaveTextContent('?');</p><p>    await user.click(screen.getByText('Name'));</p><p>    expect(handleSort).toHaveBeenCalledWith('name', 'desc');
+  });</p><p>  it('does not call onSort for non-sortable columns', async () => {
+    const handleSort = jest.fn();
+    const user = userEvent.setup();</p><p>    render(<DataTable data={testUsers} columns={columns} onSort={handleSort} />);</p><p>    await user.click(screen.getByText('Email'));</p><p>    expect(handleSort).not.toHaveBeenCalled();
+  });</p><p>  it('renders correct number of rows', () => {
+    render(<DataTable data={testUsers} columns={columns} />);</p><p>    // Should have 2 data rows
+    expect(screen.getAllByTestId(/table-row-/)).toHaveLength(2);
+  });</p><p>  it('handles missing/null values gracefully', () => {
+    const usersWithMissingData = [
+      { ...testUsers[0], email: null as any },
+      { ...testUsers[1], name: undefined as any }
+    ];</p><p>    render(<DataTable data={usersWithMissingData} columns={columns} />);</p><p>    // Should not crash and display empty strings for missing values
+    expect(screen.getByTestId('table-row-0')).toBeInTheDocument();
+    expect(screen.getByTestId('table-row-1')).toBeInTheDocument();
+  });
+});
+<div class="code-block"><pre><code></p><p><h2>Custom Hook Testing</h2></p><p><h3>useApi Hook Tests</h3></p><p></code></pre></div>typescript
+// useApi.ts
+import { useState, useEffect, useCallback } from 'react';</p><p>interface UseApiState<T> {
+  data: T | null;
+  loading: boolean;
+  error: string | null;
+}</p><p>interface UseApiOptions {
+  immediate?: boolean;
+  onSuccess?: (data: any) => void;
+  onError?: (error: string) => void;
+}</p><p>export function useApi<T>(
+  apiCall: () => Promise<T>,
+  dependencies: React.DependencyList = [],
+  options: UseApiOptions = {}
+) {
+  const { immediate = true, onSuccess, onError } = options;
+  
+  const [state, setState] = useState<UseApiState<T>>({
+    data: null,
+    loading: immediate,
+    error: null,
+  });</p><p>  const execute = useCallback(async () => {
+    setState(prev => ({ ...prev, loading: true, error: null }));
+    
+    try {
+      const result = await apiCall();
+      setState({ data: result, loading: false, error: null });
+      onSuccess?.(result);
+      return result;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
+      setState({ data: null, loading: false, error: errorMessage });
+      onError?.(errorMessage);
+      throw error;
+    }
+  }, [apiCall, onSuccess, onError]);</p><p>  useEffect(() => {
+    if (immediate) {
+      execute();
+    }
+  }, dependencies);</p><p>  const retry = useCallback(() => {
+    execute();
+  }, [execute]);</p><p>  return {
+    ...state,
+    execute,
+    retry,
+  };
+}</p><p>// useApi.test.ts
+import { renderHook, waitFor } from '@testing-library/react';
+import { useApi } from './useApi';</p><p>describe('useApi', () => {
+  it('executes API call immediately by default', async () => {
+    const mockApiCall = jest.fn().mockResolvedValue({ id: 1, name: 'Test' });
+    
+    const { result } = renderHook(() => useApi(mockApiCall));</p><p>    // Initially loading
+    expect(result.current.loading).toBe(true);
+    expect(result.current.data).toBeNull();
+    expect(result.current.error).toBeNull();</p><p>    // Wait for API call to complete
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });</p><p>    expect(result.current.data).toEqual({ id: 1, name: 'Test' });
+    expect(result.current.error).toBeNull();
+    expect(mockApiCall).toHaveBeenCalledTimes(1);
+  });</p><p>  it('does not execute immediately when immediate is false', () => {
+    const mockApiCall = jest.fn().mockResolvedValue({ data: 'test' });
+    
+    const { result } = renderHook(() => 
+      useApi(mockApiCall, [], { immediate: false })
+    );</p><p>    expect(result.current.loading).toBe(false);
+    expect(result.current.data).toBeNull();
+    expect(mockApiCall).not.toHaveBeenCalled();
+  });</p><p>  it('handles API errors correctly', async () => {
+    const errorMessage = 'API Error';
+    const mockApiCall = jest.fn().mockRejectedValue(new Error(errorMessage));
+    
+    const { result } = renderHook(() => useApi(mockApiCall));</p><p>    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });</p><p>    expect(result.current.data).toBeNull();
+    expect(result.current.error).toBe(errorMessage);
+  });</p><p>  it('calls onSuccess callback when API call succeeds', async () => {
+    const mockData = { id: 1, name: 'Test' };
+    const mockApiCall = jest.fn().mockResolvedValue(mockData);
+    const onSuccess = jest.fn();
+    
+    renderHook(() => useApi(mockApiCall, [], { onSuccess }));</p><p>    await waitFor(() => {
+      expect(onSuccess).toHaveBeenCalledWith(mockData);
+    });
+  });</p><p>  it('calls onError callback when API call fails', async () => {
+    const errorMessage = 'API Error';
+    const mockApiCall = jest.fn().mockRejectedValue(new Error(errorMessage));
+    const onError = jest.fn();
+    
+    renderHook(() => useApi(mockApiCall, [], { onError }));</p><p>    await waitFor(() => {
+      expect(onError).toHaveBeenCalledWith(errorMessage);
+    });
+  });</p><p>  it('executes manual API call using execute function', async () => {
+    const mockApiCall = jest.fn().mockResolvedValue({ data: 'manual' });
+    
+    const { result } = renderHook(() => 
+      useApi(mockApiCall, [], { immediate: false })
+    );</p><p>    // Manually execute
+    const promise = result.current.execute();</p><p>    expect(result.current.loading).toBe(true);</p><p>    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });</p><p>    expect(result.current.data).toEqual({ data: 'manual' });
+    
+    // Should return the result
+    await expect(promise).resolves.toEqual({ data: 'manual' });
+  });</p><p>  it('retries API call using retry function', async () => {
+    const mockApiCall = jest.fn()
+      .mockRejectedValueOnce(new Error('First error'))
+      .mockResolvedValue({ data: 'retry success' });
+    
+    const { result } = renderHook(() => useApi(mockApiCall));</p><p>    // Wait for initial failure
+    await waitFor(() => {
+      expect(result.current.error).toBe('First error');
+    });</p><p>    // Retry
+    result.current.retry();</p><p>    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });</p><p>    expect(result.current.data).toEqual({ data: 'retry success' });
+    expect(result.current.error).toBeNull();
+    expect(mockApiCall).toHaveBeenCalledTimes(2);
+  });</p><p>  it('re-executes when dependencies change', async () => {
+    const mockApiCall = jest.fn().mockResolvedValue({ data: 'test' });
+    let userId = 1;
+    
+    const { rerender } = renderHook(({ userId }) => 
+      useApi(() => mockApiCall(userId), [userId]), 
+      { initialProps: { userId } }
+    );</p><p>    await waitFor(() => {
+      expect(mockApiCall).toHaveBeenCalledWith(1);
+    });</p><p>    // Change dependency
+    userId = 2;
+    rerender({ userId });</p><p>    await waitFor(() => {
+      expect(mockApiCall).toHaveBeenCalledWith(2);
+    });</p><p>    expect(mockApiCall).toHaveBeenCalledTimes(2);
+  });</p><p>  it('handles non-Error thrown values', async () => {
+    const mockApiCall = jest.fn().mockRejectedValue('String error');
+    
+    const { result } = renderHook(() => useApi(mockApiCall));</p><p>    await waitFor(() => {
+      expect(result.current.error).toBe('An error occurred');
+    });
+  });
+});
+<div class="code-block"><pre><code></p><p><h3>useLocalStorage Hook Tests</h3></p><p></code></pre></div>typescript
+// useLocalStorage.ts
+import { useState, useEffect, useCallback } from 'react';</p><p>type SetValue<T> = T | ((prev: T) => T);</p><p>export function useLocalStorage<T>(
+  key: string,
+  initialValue: T
+): [T, (value: SetValue<T>) => void, () => void] {
+  // Get initial value from localStorage or use provided initial value
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window === 'undefined') {
+      return initialValue;
+    }
+    
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(</code>Error reading localStorage key "${key}":<code>, error);
+      return initialValue;
+    }
+  });</p><p>  // Update localStorage when state changes
+  const setValue = useCallback((value: SetValue<T>) => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      }
+    } catch (error) {
+      console.error(</code>Error setting localStorage key "${key}":<code>, error);
+    }
+  }, [key, storedValue]);</p><p>  // Remove item from localStorage
+  const removeValue = useCallback(() => {
+    try {
+      setStoredValue(initialValue);
+      if (typeof window !== 'undefined') {
+        window.localStorage.removeItem(key);
+      }
+    } catch (error) {
+      console.error(</code>Error removing localStorage key "${key}":<code>, error);
+    }
+  }, [key, initialValue]);</p><p>  // Listen for changes in localStorage from other tabs
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === key && e.newValue !== null) {
+        try {
+          setStoredValue(JSON.parse(e.newValue));
+        } catch (error) {
+          console.error(</code>Error parsing localStorage value for key "${key}":<code>, error);
+        }
+      } else if (e.key === key && e.newValue === null) {
+        setStoredValue(initialValue);
+      }
+    };</p><p>    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [key, initialValue]);</p><p>  return [storedValue, setValue, removeValue];
+}</p><p>// useLocalStorage.test.ts
+import { renderHook, act } from '@testing-library/react';
+import { useLocalStorage } from './useLocalStorage';</p><p>// Mock localStorage
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};</p><p>  return {
+    getItem: jest.fn((key: string) => store[key] || null),
+    setItem: jest.fn((key: string, value: string) => {
+      store[key] = value.toString();
+    }),
+    removeItem: jest.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: jest.fn(() => {
+      store = {};
+    }),
+  };
+})();</p><p>Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+});</p><p>describe('useLocalStorage', () => {
+  beforeEach(() => {
+    localStorageMock.clear();
+    jest.clearAllMocks();
+  });</p><p>  it('initializes with initial value when localStorage is empty', () => {
+    const { result } = renderHook(() => 
+      useLocalStorage('test-key', 'initial-value')
+    );</p><p>    expect(result.current[0]).toBe('initial-value');
+  });</p><p>  it('initializes with value from localStorage if it exists', () => {
+    localStorageMock.setItem('test-key', JSON.stringify('stored-value'));</p><p>    const { result } = renderHook(() => 
+      useLocalStorage('test-key', 'initial-value')
+    );</p><p>    expect(result.current[0]).toBe('stored-value');
+  });</p><p>  it('sets value in both state and localStorage', () => {
+    const { result } = renderHook(() => 
+      useLocalStorage('test-key', 'initial')
+    );</p><p>    act(() => {
+      result.current<a href="'new-value'">1</a>;
+    });</p><p>    expect(result.current[0]).toBe('new-value');
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      'test-key',
+      JSON.stringify('new-value')
+    );
+  });</p><p>  it('handles function updates', () => {
+    const { result } = renderHook(() => 
+      useLocalStorage('counter', 0)
+    );</p><p>    act(() => {
+      result.current<a href="prev => prev + 1">1</a>;
+    });</p><p>    expect(result.current[0]).toBe(1);
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      'counter',
+      JSON.stringify(1)
+    );
+  });</p><p>  it('removes value from localStorage and resets to initial', () => {
+    const { result } = renderHook(() => 
+      useLocalStorage('test-key', 'initial')
+    );</p><p>    // Set a value first
+    act(() => {
+      result.current<a href="'some-value'">1</a>;
+    });</p><p>    // Then remove it
+    act(() => {
+      result.current[2]();
+    });</p><p>    expect(result.current[0]).toBe('initial');
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith('test-key');
+  });</p><p>  it('handles complex objects', () => {
+    const initialUser = { name: '', email: '' };
+    const { result } = renderHook(() => 
+      useLocalStorage('user', initialUser)
+    );</p><p>    const newUser = { name: 'John', email: 'john@example.com' };</p><p>    act(() => {
+      result.current<a href="newUser">1</a>;
+    });</p><p>    expect(result.current[0]).toEqual(newUser);
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      'user',
+      JSON.stringify(newUser)
+    );
+  });</p><p>  it('handles localStorage errors gracefully', () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    localStorageMock.getItem.mockImplementation(() => {
+      throw new Error('localStorage error');
+    });</p><p>    const { result } = renderHook(() => 
+      useLocalStorage('test-key', 'fallback')
+    );</p><p>    expect(result.current[0]).toBe('fallback');
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Error reading localStorage key "test-key":',
+      expect.any(Error)
+    );</p><p>    consoleSpy.mockRestore();
+  });</p><p>  it('handles JSON parse errors gracefully', () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    localStorageMock.getItem.mockReturnValue('invalid-json{');</p><p>    const { result } = renderHook(() => 
+      useLocalStorage('test-key', 'fallback')
+    );</p><p>    expect(result.current[0]).toBe('fallback');
+    expect(consoleSpy).toHaveBeenCalled();</p><p>    consoleSpy.mockRestore();
+  });</p><p>  it('updates when localStorage changes in another tab', () => {
+    const { result } = renderHook(() => 
+      useLocalStorage('test-key', 'initial')
+    );</p><p>    // Simulate storage event from another tab
+    act(() => {
+      const event = new StorageEvent('storage', {
+        key: 'test-key',
+        newValue: JSON.stringify('updated-from-another-tab'),
+      });
+      window.dispatchEvent(event);
+    });</p><p>    expect(result.current[0]).toBe('updated-from-another-tab');
+  });</p><p>  it('resets to initial value when storage event indicates removal', () => {
+    const { result } = renderHook(() => 
+      useLocalStorage('test-key', 'initial')
+    );</p><p>    // Set a value first
+    act(() => {
+      result.current<a href="'some-value'">1</a>;
+    });</p><p>    // Simulate removal from another tab
+    act(() => {
+      const event = new StorageEvent('storage', {
+        key: 'test-key',
+        newValue: null,
+      });
+      window.dispatchEvent(event);
+    });</p><p>    expect(result.current[0]).toBe('initial');
+  });
+});
+<div class="code-block"><pre><code></p><p><h2>Service Testing</h2></p><p><h3>UserService Tests</h3></p><p></code></pre></div>typescript
+// userService.ts
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'user';
+  isActive: boolean;
+}</p><p>export interface CreateUserRequest {
+  name: string;
+  email: string;
+  role: 'admin' | 'user';
+}</p><p>export interface UpdateUserRequest {
+  name?: string;
+  email?: string;
+  role?: 'admin' | 'user';
+  isActive?: boolean;
+}</p><p>export class UserService {
+  constructor(private apiClient: ApiClient) {}</p><p>  async getUsers(): Promise<User[]> {
+    try {
+      const response = await this.apiClient.get<User[]>('/users');
+      return response.data;
+    } catch (error) {
+      throw new Error(</code>Failed to fetch users: ${error.message}<code>);
+    }
+  }</p><p>  async getUser(id: number): Promise<User> {
+    try {
+      const response = await this.apiClient.get<User>(</code>/users/${id}<code>);
+      return response.data;
+    } catch (error) {
+      if (error.status === 404) {
+        throw new Error(</code>User with ID ${id} not found<code>);
+      }
+      throw new Error(</code>Failed to fetch user: ${error.message}<code>);
+    }
+  }</p><p>  async createUser(userData: CreateUserRequest): Promise<User> {
+    this.validateUserData(userData);
+    
+    try {
+      const response = await this.apiClient.post<User>('/users', userData);
+      return response.data;
+    } catch (error) {
+      if (error.status === 409) {
+        throw new Error('A user with this email already exists');
+      }
+      throw new Error(</code>Failed to create user: ${error.message}<code>);
+    }
+  }</p><p>  async updateUser(id: number, userData: UpdateUserRequest): Promise<User> {
+    if (Object.keys(userData).length === 0) {
+      throw new Error('No update data provided');
+    }</p><p>    try {
+      const response = await this.apiClient.put<User>(</code>/users/${id}<code>, userData);
+      return response.data;
+    } catch (error) {
+      if (error.status === 404) {
+        throw new Error(</code>User with ID ${id} not found<code>);
+      }
+      throw new Error(</code>Failed to update user: ${error.message}<code>);
+    }
+  }</p><p>  async deleteUser(id: number): Promise<void> {
+    try {
+      await this.apiClient.delete(</code>/users/${id}<code>);
+    } catch (error) {
+      if (error.status === 404) {
+        throw new Error(</code>User with ID ${id} not found<code>);
+      }
+      throw new Error(</code>Failed to delete user: ${error.message}<code>);
+    }
+  }</p><p>  async searchUsers(query: string): Promise<User[]> {
+    if (!query.trim()) {
+      return [];
+    }</p><p>    try {
+      const response = await this.apiClient.get<User[]>(</code>/users/search<code>, {
+        params: { q: query }
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(</code>Failed to search users: ${error.message}<code>);
+    }
+  }</p><p>  private validateUserData(userData: CreateUserRequest): void {
+    if (!userData.name?.trim()) {
+      throw new Error('Name is required');
+    }
+    
+    if (!userData.email?.trim()) {
+      throw new Error('Email is required');
+    }</p><p>    if (!this.isValidEmail(userData.email)) {
+      throw new Error('Invalid email format');
+    }</p><p>    if (!['admin', 'user'].includes(userData.role)) {
+      throw new Error('Invalid role. Must be either "admin" or "user"');
+    }
+  }</p><p>  private isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+}</p><p>// userService.test.ts
+import { UserService } from './userService';</p><p>const mockApiClient = {
+  get: jest.fn(),
+  post: jest.fn(),
+  put: jest.fn(),
+  delete: jest.fn(),
+};</p><p>const mockUsers: User[] = [
+  { id: 1, name: 'John Doe', email: 'john@example.com', role: 'user', isActive: true },
+  { id: 2, name: 'Jane Admin', email: 'jane@example.com', role: 'admin', isActive: true },
+];</p><p>describe('UserService', () => {
+  let userService: UserService;</p><p>  beforeEach(() => {
+    userService = new UserService(mockApiClient as any);
+    jest.clearAllMocks();
+  });</p><p>  describe('getUsers', () => {
+    it('returns users successfully', async () => {
+      mockApiClient.get.mockResolvedValue({ data: mockUsers });</p><p>      const result = await userService.getUsers();</p><p>      expect(result).toEqual(mockUsers);
+      expect(mockApiClient.get).toHaveBeenCalledWith('/users');
+    });</p><p>    it('throws error when API call fails', async () => {
+      const error = new Error('Network error');
+      mockApiClient.get.mockRejectedValue(error);</p><p>      await expect(userService.getUsers()).rejects.toThrow(
+        'Failed to fetch users: Network error'
+      );
+    });
+  });</p><p>  describe('getUser', () => {
+    it('returns user by ID successfully', async () => {
+      const user = mockUsers[0];
+      mockApiClient.get.mockResolvedValue({ data: user });</p><p>      const result = await userService.getUser(1);</p><p>      expect(result).toEqual(user);
+      expect(mockApiClient.get).toHaveBeenCalledWith('/users/1');
+    });</p><p>    it('throws specific error for 404 responses', async () => {
+      const error = { status: 404, message: 'Not found' };
+      mockApiClient.get.mockRejectedValue(error);</p><p>      await expect(userService.getUser(999)).rejects.toThrow(
+        'User with ID 999 not found'
+      );
+    });</p><p>    it('throws generic error for other failures', async () => {
+      const error = { status: 500, message: 'Server error' };
+      mockApiClient.get.mockRejectedValue(error);</p><p>      await expect(userService.getUser(1)).rejects.toThrow(
+        'Failed to fetch user: Server error'
+      );
+    });
+  });</p><p>  describe('createUser', () => {
+    const validUserData: CreateUserRequest = {
+      name: 'New User',
+      email: 'new@example.com',
+      role: 'user'
+    };</p><p>    it('creates user successfully with valid data', async () => {
+      const createdUser = { ...validUserData, id: 3, isActive: true };
+      mockApiClient.post.mockResolvedValue({ data: createdUser });</p><p>      const result = await userService.createUser(validUserData);</p><p>      expect(result).toEqual(createdUser);
+      expect(mockApiClient.post).toHaveBeenCalledWith('/users', validUserData);
+    });</p><p>    it('throws error for duplicate email (409 response)', async () => {
+      const error = { status: 409, message: 'Conflict' };
+      mockApiClient.post.mockRejectedValue(error);</p><p>      await expect(userService.createUser(validUserData)).rejects.toThrow(
+        'A user with this email already exists'
+      );
+    });</p><p>    it('validates required name field', async () => {
+      const invalidData = { ...validUserData, name: '' };</p><p>      await expect(userService.createUser(invalidData)).rejects.toThrow(
+        'Name is required'
+      );
+      expect(mockApiClient.post).not.toHaveBeenCalled();
+    });</p><p>    it('validates required email field', async () => {
+      const invalidData = { ...validUserData, email: '' };</p><p>      await expect(userService.createUser(invalidData)).rejects.toThrow(
+        'Email is required'
+      );
+    });</p><p>    it('validates email format', async () => {
+      const invalidData = { ...validUserData, email: 'invalid-email' };</p><p>      await expect(userService.createUser(invalidData)).rejects.toThrow(
+        'Invalid email format'
+      );
+    });</p><p>    it('validates role field', async () => {
+      const invalidData = { ...validUserData, role: 'invalid' as any };</p><p>      await expect(userService.createUser(invalidData)).rejects.toThrow(
+        'Invalid role. Must be either "admin" or "user"'
+      );
+    });
+  });</p><p>  describe('updateUser', () => {
+    it('updates user successfully', async () => {
+      const updateData = { name: 'Updated Name' };
+      const updatedUser = { ...mockUsers[0], ...updateData };
+      mockApiClient.put.mockResolvedValue({ data: updatedUser });</p><p>      const result = await userService.updateUser(1, updateData);</p><p>      expect(result).toEqual(updatedUser);
+      expect(mockApiClient.put).toHaveBeenCalledWith('/users/1', updateData);
+    });</p><p>    it('throws error when no update data provided', async () => {
+      await expect(userService.updateUser(1, {})).rejects.toThrow(
+        'No update data provided'
+      );
+      expect(mockApiClient.put).not.toHaveBeenCalled();
+    });</p><p>    it('throws specific error for 404 responses', async () => {
+      const error = { status: 404, message: 'Not found' };
+      mockApiClient.put.mockRejectedValue(error);</p><p>      await expect(
+        userService.updateUser(999, { name: 'Test' })
+      ).rejects.toThrow('User with ID 999 not found');
+    });
+  });</p><p>  describe('deleteUser', () => {
+    it('deletes user successfully', async () => {
+      mockApiClient.delete.mockResolvedValue({});</p><p>      await userService.deleteUser(1);</p><p>      expect(mockApiClient.delete).toHaveBeenCalledWith('/users/1');
+    });</p><p>    it('throws specific error for 404 responses', async () => {
+      const error = { status: 404, message: 'Not found' };
+      mockApiClient.delete.mockRejectedValue(error);</p><p>      await expect(userService.deleteUser(999)).rejects.toThrow(
+        'User with ID 999 not found'
+      );
+    });
+  });</p><p>  describe('searchUsers', () => {
+    it('searches users successfully', async () => {
+      const searchResults = [mockUsers[0]];
+      mockApiClient.get.mockResolvedValue({ data: searchResults });</p><p>      const result = await userService.searchUsers('john');</p><p>      expect(result).toEqual(searchResults);
+      expect(mockApiClient.get).toHaveBeenCalledWith('/users/search', {
+        params: { q: 'john' }
+      });
+    });</p><p>    it('returns empty array for empty query', async () => {
+      const result = await userService.searchUsers('');</p><p>      expect(result).toEqual([]);
+      expect(mockApiClient.get).not.toHaveBeenCalled();
+    });</p><p>    it('returns empty array for whitespace-only query', async () => {
+      const result = await userService.searchUsers('   ');</p><p>      expect(result).toEqual([]);
+      expect(mockApiClient.get).not.toHaveBeenCalled();
+    });</p><p>    it('throws error when search fails', async () => {
+      const error = new Error('Search failed');
+      mockApiClient.get.mockRejectedValue(error);</p><p>      await expect(userService.searchUsers('john')).rejects.toThrow(
+        'Failed to search users: Search failed'
+      );
+    });
+  });
+});
+</code>``</p><p>These examples demonstrate comprehensive testing patterns for React applications, covering component behavior, custom hooks, services, forms, and integration scenarios with realistic test cases suitable for modern React development.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

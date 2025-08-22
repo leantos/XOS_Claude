@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCS-UPDATE-SYSTEM - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># claude_docs Update System
+
+Automated system for checking and applying updates to your claude_docs documentation. Works with main repositories, submodules, and local copies.
+
+<h2>Quick Start</h2>
+
+<h3>?? Check for Updates (Interactive)</h3>
+<div class="code-block"><pre><code>bash
+# Double-click or run:
+check-docs-updates.bat
+
+# Or PowerShell directly:
+.\check-docs-updates.ps1
+</code></pre></div>
+
+<h3>? Command Line Options</h3>
+<div class="code-block"><pre><code>powershell
+# Just check, don't update
+.\check-docs-updates.ps1 -CheckOnly
+
+# Check and show changelog
+.\check-docs-updates.ps1 -CheckOnly -ShowLog
+
+# Auto-update without prompts (use carefully!)
+.\check-docs-updates.ps1 -AutoUpdate
+
+# Silent mode for scripts/scheduling
+.\check-docs-updates.ps1 -Scheduled
+</code></pre></div>
+
+<h2>Features</h2>
+
+<h3>? <strong>Smart Detection</strong></h3>
+<ul><li><strong>Main Repository</strong>: Updates via <code>git pull</code> + regenerates HTML</li><li><strong>Submodule</strong>: Updates via <code>git submodule update --remote</code></li><li><strong>Local Copy</strong>: Updates via <code>git pull</code></li><li><strong>Auto-detects</strong> setup type and uses appropriate update method</li></ul>
+
+<h3>? <strong>Interactive Updates</strong></h3>
+<ul><li><strong>Changelog Display</strong>: See exactly what's new before updating</li><li><strong>Selective Updates</strong>: Choose when to update or skip versions  </li><li><strong>Commit Integration</strong>: Automatically commits submodule updates</li><li><strong>HTML Regeneration</strong>: Updates HTML docs after markdown changes</li></ul>
+
+<h3>? <strong>Scheduling Support</strong></h3>
+<ul><li><strong>Windows Task Scheduler</strong>: Built-in scheduler setup</li><li><strong>Silent Operation</strong>: Runs in background without interruption</li><li><strong>Status Reporting</strong>: Returns exit codes for monitoring</li><li><strong>Configurable Frequency</strong>: Daily, weekly, or monthly checks</li></ul>
+
+<h2>Interactive Menu Options</h2>
+
+When updates are available, you'll see:
+
+<div class="code-block"><pre><code>
+?? Update Options:
+  [1] ?? Show detailed changelog
+  [2] ?? Apply updates now  
+  [3] ? Remind me later
+  [4] ?? Skip this version
+</code></pre></div>
+
+<h3>Option Details:</h3>
+
+<ul><li><strong>?? Show Changelog</strong>: </li></ul>
+   - Lists all new commits since your current version
+   - Shows new, modified, and deleted files
+   - Helps you understand what's changing
+
+<ul><li><strong>?? Apply Updates</strong>:</li></ul>
+   - Updates documentation using appropriate method
+   - Commits submodule updates automatically
+   - Regenerates HTML documentation
+   - Creates update log for tracking
+
+<ul><li><strong>? Remind Later</strong>:</li></ul>
+   - Sets reminder for next day
+   - Will prompt again on next run
+   - Good for busy times
+
+<ul><li><strong>?? Skip Version</strong>:</li></ul>
+   - Permanently skips this specific version
+   - Won't prompt again until newer version available
+   - Use for versions you don't want/need
+
+<h2>Scheduled Automation</h2>
+
+<h3>Setup Automatic Checking</h3>
+<div class="code-block"><pre><code>powershell
+# Run as Administrator
+.\setup-docs-scheduler.ps1 -Frequency Weekly -Time "09:00"
+</code></pre></div>
+
+<h3>Scheduler Options:</h3>
+<ul><li><strong>Daily</strong>: Check every day at specified time</li><li><strong>Weekly</strong>: Check every Monday at specified time  </li><li><strong>Monthly</strong>: Check every 4 weeks at specified time</li></ul>
+
+<h3>Manage Scheduled Tasks:</h3>
+<div class="code-block"><pre><code>powershell
+# Remove scheduled task
+.\setup-docs-scheduler.ps1 -Remove
+
+# Test scheduled run
+.\check-docs-updates.ps1 -Scheduled
+</code></pre></div>
+
+<h2>Setup Types & Behavior</h2>
+
+<h3>?? <strong>Main Repository</strong> </h3>
+<em>Has both claude_docs/ and update-html-docs.ps1</em>
+
+<strong>Update Process:</strong>
+<ul><li><code>git pull origin main</code> in claude_docs</li><li>Run <code>update-html-docs.ps1</code> to regenerate HTML</li><li>Report completion</li></ul>
+
+<strong>Best For</strong>: Documentation maintainers and main repo developers
+
+<h3>?? <strong>Submodule Setup</strong></h3>
+<em>Has .gitmodules with claude_docs entry</em>
+
+<strong>Update Process:</strong>
+<ul><li><code>git submodule update --remote claude_docs</code></li><li><code>git add claude_docs</code> and commit the update</li><li>Report completion with commit hash</li></ul>
+
+<strong>Best For</strong>: Team members using documentation as submodule
+
+<h3>?? <strong>Local Copy</strong></h3>
+<em>Has claude_docs/ but not main repo setup</em>
+
+<strong>Update Process:</strong>
+<ul><li><code>git pull origin main</code> in claude_docs directory</li><li>Report completion</li></ul>
+
+<strong>Best For</strong>: Individual developers with local documentation copies
+
+<h2>Status Information</h2>
+
+The checker provides detailed status including:
+
+<ul><li><strong>Setup Type</strong>: Main repo, submodule, or local copy</li><li><strong>Current Branch</strong>: Which branch you're tracking</li><li><strong>Last Updated</strong>: When documentation was last updated</li><li><strong>Updates Available</strong>: How many commits you're behind</li><li><strong>Local Changes</strong>: Warns if you have uncommitted changes</li></ul>
+
+<h2>Advanced Usage</h2>
+
+<h3>Integration with CI/CD</h3>
+<div class="code-block"><pre><code>yaml
+# GitHub Actions example
+<ul><li>name: Check docs updates</li></ul>
+  run: |
+    if (.\check-docs-updates.ps1 -Scheduled) {
+      Write-Host "Documentation is up to date"
+    } else {
+      Write-Host "Documentation updates available"
+    }
+</code></pre></div>
+
+<h3>Batch Processing Multiple Projects</h3>
+<div class="code-block"><pre><code>powershell
+# Check all projects in a directory
+Get-ChildItem -Directory | ForEach-Object {
+    Set-Location <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCS-UPDATE-SYSTEM - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {{CONTENT}}
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>.FullName
+    if (Test-Path "check-docs-updates.ps1") {
+        Write-Host "Checking $(<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCS-UPDATE-SYSTEM - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {{CONTENT}}
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>.Name)..."
+        .\check-docs-updates.ps1 -CheckOnly
+    }
+}
+</code></pre></div>
+
+<h3>Custom Update Notifications</h3>
+``<code>powershell
+# Email notification example
+$result = .\check-docs-updates.ps1 -Scheduled
+if ($result -eq 1) {
+    Send-MailMessage -Subject "Documentation Updates Available" </code>
+                     -Body "New claude_docs updates are ready" <code>
+                     -To "team@company.com"
+}
+</code>`<code>
+
+<h2>File Tracking</h2>
+
+The update system creates these tracking files:
+
+<ul><li><strong></code>.claude_docs_last_update.json<code></strong>: Records last successful update</li><li><strong></code>.claude_docs_reminder.txt<code></strong>: Stores reminder dates  </li><li><strong></code>.claude_docs_skip_version.txt<code></strong>: Tracks skipped versions</li></ul>
+
+These files are automatically managed and can be safely ignored in git.
+
+<h2>Troubleshooting</h2>
+
+<h3>? "claude_docs not found"</h3>
+<strong>Solution</strong>: Run </code>.\master-setup.ps1<code> to set up documentation first
+
+<h3>? "Could not fetch updates"  </h3>
+<strong>Solutions</strong>:
+<ul><li>Check internet connection</li><li>Verify git remote is accessible</li><li>Ensure you have read access to documentation repo</li></ul>
+
+<h3>? "Failed to update submodule"</h3>
+<strong>Solutions</strong>:
+<ul><li>Make sure parent repo has no uncommitted changes</li><li>Check that you have write access to parent repo</li><li>Verify submodule remote URL is correct</li></ul>
+
+<h3>? "Permission denied" for scheduled tasks</h3>
+<strong>Solution</strong>: Run </code>setup-docs-scheduler.ps1<code> as Administrator
+
+<h3>?? <strong>General Tips</strong>:</h3>
+<ul><li>Always commit local changes before updating</li><li>Test updates in non-production environments first</li><li>Keep your git remotes up to date</li><li>Use </code>-CheckOnly<code> flag to preview updates safely</li></ul>
+
+---
+
+<h2>Quick Reference</h2>
+
+| Command | Purpose |
+|---------|---------|
+| </code>.\check-docs-updates.ps1<code> | Interactive update check |
+| </code>.\check-docs-updates.ps1 -CheckOnly -ShowLog<code> | Preview updates |
+| </code>.\check-docs-updates.ps1 -AutoUpdate<code> | Apply updates automatically |
+| </code>.\setup-docs-scheduler.ps1<code> | Setup automatic checking |
+| </code>.\master-setup.ps1` | Initial documentation setup |
+
+?? <strong>Keep your documentation current effortlessly!</strong></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

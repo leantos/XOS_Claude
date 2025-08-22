@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCUMENTATION-AUTOMATION - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Documentation Automation System
+
+This system automatically converts Markdown files to HTML and maintains cross-references between documentation files.
+
+<h2>Quick Start</h2>
+
+<h3>Option 1: Double-click the batch file</h3>
+<div class="code-block"><pre><code>
+update-docs.bat
+</code></pre></div>
+
+<h3>Option 2: Run PowerShell script directly  </h3>
+<div class="code-block"><pre><code>powershell
+.\update-html-docs.ps1
+</code></pre></div>
+
+<h3>Option 3: With options</h3>
+<div class="code-block"><pre><code>powershell
+.\update-html-docs.ps1 -BackupFirst -Verbose
+</code></pre></div>
+
+<h2>What It Does</h2>
+
+<ul><li><strong>Scans</strong> all <code>.md</code> files in the <code>claude_docs</code> directory</li><li><strong>Converts</strong> them to HTML using the template in <code>claude_docs/html-template.html</code></li><li><strong>Updates</strong> all cross-references from <code>.md</code> to <code>.html</code> links</li><li><strong>Creates</strong> missing HTML files automatically</li><li><strong>Maintains</strong> existing HTML file structure and styling</li><li><strong>Reports</strong> summary of changes made</li></ul>
+
+<h2>Files Created</h2>
+
+<ul><li><code>update-html-docs.ps1</code> - Main PowerShell script</li><li><code>update-docs.bat</code> - Simple double-click wrapper</li><li><code>claude_docs/html-template.html</code> - Template for new HTML files</li><li><code>claude_docs/.backup-html/</code> - Backup location (when using -BackupFirst)</li></ul>
+
+<h2>Features</h2>
+
+<h3>? <strong>Automatic Conversion</strong></h3>
+<ul><li>Converts headers, lists, links, code blocks</li><li>Preserves file structure and relationships</li><li>Uses consistent HTML template</li></ul>
+
+<h3>? <strong>Cross-Reference Updates</strong>  </h3>
+<ul><li>Changes <code>../file.md</code> to <code>file.html</code></li><li>Updates <code>href="<em>.html"</code> to <code>href="</em>.html"</code></li><li>Maintains anchor links (<code>#sections</code>)</li></ul>
+
+<h3>? <strong>Safety Features</strong></h3>
+<ul><li>Optional backup before changes (<code>-BackupFirst</code>)</li><li>Detects orphaned HTML files</li><li>Detailed progress reporting (<code>-Verbose</code>)</li></ul>
+
+<h3>? <strong>Integration Ready</strong></h3>
+<ul><li>Works with existing HTML files</li><li>Preserves custom styling and scripts</li><li>Compatible with git hooks and CI/CD</li></ul>
+
+<h2>Usage Examples</h2>
+
+<h3>Regular Update</h3>
+<div class="code-block"><pre><code>powershell
+.\update-html-docs.ps1
+</code></pre></div>
+
+<h3>Safe Update with Backup</h3>
+<div class="code-block"><pre><code>powershell
+.\update-html-docs.ps1 -BackupFirst -Verbose
+</code></pre></div>
+
+<h3>Schedule with Task Scheduler</h3>
+<div class="code-block"><pre><code>powershell
+# Create scheduled task to run daily
+$action = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument "-File C:\path\to\update-html-docs.ps1"
+$trigger = New-ScheduledTaskTrigger -Daily -At "2:00AM"
+Register-ScheduledTask -TaskName "Update XOS Docs" -Action $action -Trigger $trigger
+</code></pre></div>
+
+<h2>Customization</h2>
+
+<h3>Template Modification</h3>
+Edit <code>claude_docs/html-template.html</code> to customize:
+<ul><li>Page layout and styling</li><li>Navigation structure  </li><li>Header/footer content</li><li>JavaScript functionality</li></ul>
+
+<h3>Script Configuration</h3>
+Modify variables in <code>update-html-docs.ps1</code>:
+<div class="code-block"><pre><code>powershell
+$claudeDocsPath = "claude_docs"      # Source markdown location
+$htmlOutputPath = "claude_docs/html-docs"  # HTML output location
+$templatePath = "claude_docs/html-template.html"  # Template file
+</code></pre></div>
+
+<h2>Integration Options</h2>
+
+<h3>Git Hook Integration</h3>
+Add to <code>.githooks/post-commit</code>:
+<div class="code-block"><pre><code>bash
+#!/bin/bash
+if git diff-tree --no-commit-id --name-only -r HEAD | grep -q "claude_docs.<em>\.html"; then
+    powershell -File update-html-docs.ps1
+    git add claude_docs/html-docs/</em>.html
+    git commit -m "?? Auto-update HTML documentation"
+fi
+</code></pre></div>
+
+<h3>VS Code Task</h3>
+Add to <code>.vscode/tasks.json</code>:
+<div class="code-block"><pre><code>json
+{
+    "label": "Update HTML Docs",
+    "type": "shell",
+    "command": "powershell",
+    "args": ["-File", "update-html-docs.ps1", "-Verbose"],
+    "group": "build",
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+    }
+}
+</code></pre></div>
+
+<h2>Troubleshooting</h2>
+
+<h3>PowerShell Execution Policy</h3>
+If you get execution policy errors:
+<div class="code-block"><pre><code>powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+</code></pre></div>
+
+<h3>Template Not Found</h3>
+The script will work without a template, but for best results:
+<ul><li>Ensure <code>claude_docs/html-template.html</code> exists</li><li>Template must contain <code>{{TITLE}}</code> and <code>{{CONTENT}}</code> placeholders</li></ul>
+
+<h3>Orphaned HTML Files</h3>
+The script reports HTML files without corresponding MD files. These are usually:
+<ul><li>Manually created HTML files (keep them)</li><li>Old files that should be deleted</li><li>Files that were renamed in Markdown</li></ul>
+
+<h3>Cross-Reference Issues</h3>
+If links don't work after conversion:
+<ul><li>Check that referenced files exist in <code>claude_docs/html-docs/</code></li><li>Verify anchor links match header IDs in target files</li><li>Run script again to update all cross-references</li></ul>
+
+<h2>Advanced Features</h2>
+
+<h3>Batch Processing</h3>
+Process multiple directories:
+<div class="code-block"><pre><code>powershell
+$directories = @("claude_docs", "other_docs", "api_docs")
+foreach ($dir in $directories) {
+    .\update-html-docs.ps1 -SourcePath $dir
+}
+</code></pre></div>
+
+<h3>Custom Markdown Processing</h3>
+Add custom markdown extensions by modifying the <code>ConvertTo-HTML</code> function.
+
+<h3>Automatic Deployment</h3>
+Combine with rsync or robocopy for automatic deployment:
+<div class="code-block"><pre><code>powershell
+.\update-html-docs.ps1
+robocopy "claude_docs\html-docs" "\\server\docs\" /MIR
+</code></pre></div>
+
+---
+
+?? <strong>Your documentation is now fully automated!</strong> Just run the script whenever you want to sync your HTML files with your Markdown changes.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

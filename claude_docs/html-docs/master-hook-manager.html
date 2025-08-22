@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>master-hook-manager - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Master Hook Manager for Claude</p><p><h2>Activation Instructions for Claude</h2></p><p>When you start working on any project, execute these hooks in order:</p><p><h3>1. Initial Context Load</h3>
+<div class="code-block"><pre><code>
+HOOK: context-loader
+ACTION: Detect project type and load relevant documentation
+</code></pre></div></p><p><h3>2. Pre-Code Validation</h3>
+<div class="code-block"><pre><code>
+HOOK: pre-code-generation
+ACTION: Before writing any code, validate against rules
+</code></pre></div></p><p><h3>3. Component Check</h3>
+<div class="code-block"><pre><code>
+HOOK: component-registry
+ACTION: Verify component availability before use
+</code></pre></div></p><p><h3>4. Pattern Validation</h3>
+<div class="code-block"><pre><code>
+HOOK: validation-rules
+ACTION: Ensure code follows established patterns
+</code></pre></div></p><p><h2>Hook Execution Flow</h2></p><p><div class="code-block"><pre><code>mermaid
+graph TD
+    Start[Session Start] --> Load[Load context-loader.json]
+    Load --> Detect[Detect Project Type]
+    Detect --> LoadDocs[Load Relevant Docs]
+    LoadDocs --> Ready[Ready for User Input]
+    
+    Ready --> Request[User Request]
+    Request --> PreGen[pre-code-generation.json]
+    PreGen --> CompCheck[component-registry.json]
+    CompCheck --> Validate[validation-rules.json]
+    Validate --> Generate[Generate Code]
+    Generate --> PostCheck[Post-Generation Validation]
+    PostCheck --> Deliver[Deliver to User]
+    
+    Deliver --> Error{Error?}
+    Error -->|Yes| ErrorHook[error-handler.json]
+    ErrorHook --> Document[Document in ISSUES_AND_FIXES.md]
+    Error -->|No| Success[Success]
+</code></pre></div></p><p><h2>Quick Reference Commands</h2></p><p><h3>For Claude to Execute Internally</h3></p><p><div class="code-block"><pre><code>javascript
+// Check if component exists
+function checkComponent(componentName) {
+  const registry = require('./context/component-registry.json');
+  const framework = detectFramework();
+  return registry.frameworks[framework].available.includes(componentName);
+}</p><p>// Validate MVVM pattern
+function validateMVVM(code) {
+  const rules = require('./hooks/validation-rules.json');
+  return rules.categories.frontend.mvvm_validation.rules.every(rule => 
+    checkRule(code, rule)
+  );
+}</p><p>// Load project context
+function loadContext() {
+  const loader = require('./hooks/context-loader.json');
+  const projectType = detectProjectType();
+  return loader.context_loading.priority_order.map(level => 
+    loadFiles(level.load)
+  );
+}
+</code></pre></div></p><p><h2>Error Recovery</h2></p><p>When a hook fails:</p><p><ul><li><strong>Component Not Found</strong></li></ul>
+   - Check <code>component-registry.json</code> for alternatives
+   - Use fallback from <code>xos-fallbacks.md</code>
+   - Document new component if legitimate</p><p><ul><li><strong>Pattern Violation</strong></li></ul>
+   - Review <code>validation-rules.json</code>
+   - Check existing code for correct pattern
+   - Update pattern if outdated</p><p><ul><li><strong>Context Missing</strong></li></ul>
+   - Run <code>context-loader.json</code> again
+   - Check if <code>claude_docs/</code> exists
+   - Import if missing</p><p><h2>Monitoring and Reporting</h2></p><p><h3>Hook Execution Log</h3>
+<div class="code-block"><pre><code>json
+{
+  "session": "2024-01-15-001",
+  "hooks_executed": [
+    {"name": "context-loader", "status": "success", "time": "10ms"},
+    {"name": "pre-code-generation", "status": "success", "time": "5ms"},
+    {"name": "component-registry", "status": "warning", "time": "3ms"},
+    {"name": "validation-rules", "status": "success", "time": "7ms"}
+  ],
+  "issues_found": [
+    "XOSAlert not in registry",
+    "XOSButtonWrapper should be used instead of XOSButton"
+  ],
+  "resolutions": [
+    "Used XOSAlert component",
+    "Used XOSButtonWrapper to wrap button elements"
+  ]
+}
+</code></pre></div></p><p><h2>Integration with CLAUDE.md</h2></p><p>Add this to CLAUDE.md to activate hooks:</p><p>``<code>markdown
+<h2>?? HOOKS ENABLED</h2>
+This project uses Claude Enterprise Hooks.
+Hooks will execute automatically to ensure code quality.</p><p>Hook Status:
+<ul><li>? context-loader.json</li><li>? pre-code-generation.json  </li><li>? component-registry.json</li><li>? validation-rules.json</li><li>? error-handler.json</li></ul></p><p>To disable hooks (not recommended):
+Set </code>"hooks": { "enabled": false }<code> in claude.config.json
+<div class="code-block"><pre><code></p><p><h2>Manual Hook Triggers</h2></p><p>Sometimes you may want to manually trigger a hook:</p><p></code></pre></div>
+TRIGGER: hook:context-loader
+TRIGGER: hook:validate-component XOSButtonWrapper
+TRIGGER: hook:check-pattern MVVM
+TRIGGER: hook:document-error "Component not found"
+</code>``</p><p><h2>Success Metrics</h2></p><p>Hooks are working correctly when:
+<ul><li>? No compilation errors from missing components</li><li>? Consistent MVVM pattern across all components</li><li>? All services inherit from correct base classes</li><li>? Documentation stays up-to-date automatically</li><li>? Known issues are avoided proactively</li></ul></p><p><h2>Continuous Improvement</h2></p><p>After each session:
+<ul><li>Update component registry with new discoveries</li><li>Add new validation rules for patterns</li><li>Document any hook failures</li><li>Improve detection algorithms</li><li>Share updates across projects</li></ul></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>subagent-patterns - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Subagent Usage Patterns
+
+<h2>Overview</h2>
+This guide provides proven patterns for effectively using subagents to handle complex development tasks. Each pattern demonstrates how to structure prompts, chain operations, and ensure quality outcomes.
+
+<h2>Core Patterns</h2>
+
+<h3>1. Feature Development Pattern</h3>
+<strong>When to use</strong>: Building complete features from requirements to deployment
+
+<div class="code-block"><pre><code>
+Pattern: Requirements ? Design ? Implementation ? Testing ? Documentation
+
+Step 1: Use backend-analyzer to understand existing architecture
+Step 2: Use database-architect for schema design
+Step 3: Use backend-service-builder for API implementation
+Step 4: Use frontend-architect for UI components
+Step 5: Use test-automation-engineer for test suite
+Step 6: Use documentation-engineer for docs
+</code></pre></div>
+
+<strong>Example Prompt Sequence</strong>:
+<div class="code-block"><pre><code>markdown
+<ul><li>"Analyze the existing user management system and identify integration points for adding role-based permissions"</li><li>"Design database schema for role-based access control with users, roles, and permissions"</li><li>"Implement REST API endpoints for role management including CRUD operations and permission checks"</li><li>"Create React components for role management UI with forms, lists, and permission matrix"</li><li>"Develop comprehensive test suite for RBAC including unit, integration, and e2e tests"</li><li>"Document the RBAC implementation including architecture, API reference, and usage examples"</li></ul>
+</code></pre></div>
+
+<h3>2. Performance Optimization Pattern</h3>
+<strong>When to use</strong>: Identifying and fixing performance issues
+
+<div class="code-block"><pre><code>
+Pattern: Measure ? Analyze ? Optimize ? Validate ? Monitor
+
+Step 1: Use performance-optimizer to profile current state
+Step 2: Use backend-analyzer to understand bottlenecks
+Step 3: Use database-architect for query optimization
+Step 4: Use general-purpose for code optimization
+Step 5: Use devops-automator for monitoring setup
+</code></pre></div>
+
+<strong>Key Metrics to Include</strong>:
+<ul><li>Response time targets (p50, p95, p99)</li><li>Throughput requirements (requests/second)</li><li>Resource constraints (CPU, memory, I/O)</li><li>User experience metrics (FCP, TTI, CLS)</li></ul>
+
+<h3>3. Security Hardening Pattern</h3>
+<strong>When to use</strong>: Implementing security best practices
+
+<div class="code-block"><pre><code>
+Pattern: Audit ? Prioritize ? Remediate ? Test ? Document
+
+Step 1: Use security-auditor for vulnerability assessment
+Step 2: Use backend-service-builder for auth implementation
+Step 3: Use api-gateway-designer for security middleware
+Step 4: Use test-automation-engineer for security tests
+Step 5: Use documentation-engineer for security guidelines
+</code></pre></div>
+
+<strong>Security Checklist</strong>:
+<div class="code-block"><pre><code>markdown
+? Authentication and authorization
+? Input validation and sanitization
+? SQL injection prevention
+? XSS protection
+? CSRF tokens
+? Security headers
+? Dependency vulnerabilities
+? Secrets management
+? Encryption at rest and in transit
+? Audit logging
+</code></pre></div>
+
+<h3>4. Microservices Decomposition Pattern</h3>
+<strong>When to use</strong>: Breaking monolith into microservices
+
+<div class="code-block"><pre><code>
+Pattern: Analyze ? Identify Boundaries ? Extract ? Integrate ? Deploy
+
+Step 1: Use backend-analyzer to map dependencies
+Step 2: Use microservice-architect to design services
+Step 3: Use database-architect for data separation
+Step 4: Use api-gateway-designer for routing
+Step 5: Use devops-automator for deployment
+</code></pre></div>
+
+<strong>Boundary Identification Criteria</strong>:
+<ul><li>Business capabilities</li><li>Data ownership</li><li>Team structure</li><li>Scalability requirements</li><li>Technology diversity needs</li></ul>
+
+<h3>5. API-First Development Pattern</h3>
+<strong>When to use</strong>: Building APIs before implementation
+
+<div class="code-block"><pre><code>
+Pattern: Design ? Mock ? Implement ? Test ? Document
+
+Step 1: Use documentation-engineer for OpenAPI spec
+Step 2: Use general-purpose for mock server
+Step 3: Use backend-service-builder for implementation
+Step 4: Use test-automation-engineer for contract tests
+Step 5: Use api-gateway-designer for gateway setup
+</code></pre></div>
+
+<strong>API Design Principles</strong>:
+<div class="code-block"><pre><code>yaml
+Consistency:
+  - Naming conventions
+  - Error formats
+  - Pagination patterns
+  - Filtering syntax
+  
+Versioning:
+  - URL path versioning (/v1/)
+  - Header versioning
+  - Content negotiation
+  
+Documentation:
+  - OpenAPI/Swagger spec
+  - Example requests/responses
+  - Error codes reference
+  - Rate limiting info
+</code></pre></div>
+
+<h3>6. Database Migration Pattern</h3>
+<strong>When to use</strong>: Migrating or upgrading database
+
+<div class="code-block"><pre><code>
+Pattern: Analyze ? Plan ? Migrate ? Validate ? Cutover
+
+Step 1: Use database-architect to analyze current schema
+Step 2: Use data-migration-specialist for migration plan
+Step 3: Use backend-service-builder for dual-write logic
+Step 4: Use test-automation-engineer for validation
+Step 5: Use devops-automator for cutover automation
+</code></pre></div>
+
+<strong>Migration Safety Checklist</strong>:
+<div class="code-block"><pre><code>markdown
+? Backup strategy defined
+? Rollback plan prepared
+? Data validation queries ready
+? Performance impact assessed
+? Downtime window scheduled
+? Monitoring alerts configured
+? Stakeholders notified
+</code></pre></div>
+
+<h3>7. Frontend Modernization Pattern</h3>
+<strong>When to use</strong>: Upgrading legacy frontend
+
+<div class="code-block"><pre><code>
+Pattern: Audit ? Strategize ? Migrate ? Optimize ? Deploy
+
+Step 1: Use frontend-architect to assess current state
+Step 2: Use general-purpose for migration strategy
+Step 3: Use frontend-architect for component migration
+Step 4: Use performance-optimizer for bundle optimization
+Step 5: Use test-automation-engineer for regression tests
+</code></pre></div>
+
+<strong>Modernization Strategies</strong>:
+<ul><li>Strangler Fig Pattern (gradual replacement)</li><li>Big Bang (complete rewrite)</li><li>Hybrid approach (new features in modern stack)</li><li>Micro-frontends</li></ul>
+
+<h3>8. CI/CD Implementation Pattern</h3>
+<strong>When to use</strong>: Setting up automated pipelines
+
+<div class="code-block"><pre><code>
+Pattern: Define ? Build ? Test ? Deploy ? Monitor
+
+Step 1: Use devops-automator for pipeline design
+Step 2: Use test-automation-engineer for test integration
+Step 3: Use security-auditor for security scanning
+Step 4: Use devops-automator for deployment automation
+Step 5: Use documentation-engineer for runbooks
+</code></pre></div>
+
+<strong>Pipeline Stages Template</strong>:
+<div class="code-block"><pre><code>yaml
+stages:
+  - build:
+      - Compile/transpile code
+      - Bundle assets
+      - Generate artifacts
+  
+  - test:
+      - Unit tests
+      - Integration tests
+      - Code coverage check
+  
+  - security:
+      - SAST scanning
+      - Dependency check
+      - Container scanning
+  
+  - deploy:
+      - Deploy to staging
+      - Smoke tests
+      - Deploy to production
+      - Health checks
+</code></pre></div>
+
+<h3>9. Code Review Workflow Pattern</h3>
+<strong>When to use</strong>: Systematic code quality improvement
+
+<div class="code-block"><pre><code>
+Pattern: Review ? Identify ? Fix ? Verify ? Merge
+
+Step 1: Use code-reviewer for initial assessment
+Step 2: Use security-auditor for security check
+Step 3: Use performance-optimizer for perf review
+Step 4: Use test-automation-engineer for test coverage
+Step 5: Use documentation-engineer for docs update
+</code></pre></div>
+
+<strong>Review Checklist Template</strong>:
+<div class="code-block"><pre><code>markdown
+<h2>Code Quality</h2>
+<ul><li>[ ] Follows coding standards</li><li>[ ] No code duplication</li><li>[ ] Proper error handling</li><li>[ ] Adequate logging</li></ul>
+
+<h2>Architecture</h2>
+<ul><li>[ ] SOLID principles</li><li>[ ] Design patterns used appropriately</li><li>[ ] Proper separation of concerns</li><li>[ ] No circular dependencies</li></ul>
+
+<h2>Performance</h2>
+<ul><li>[ ] No N+1 queries</li><li>[ ] Efficient algorithms</li><li>[ ] Proper caching</li><li>[ ] Resource cleanup</li></ul>
+
+<h2>Security</h2>
+<ul><li>[ ] Input validation</li><li>[ ] No hardcoded secrets</li><li>[ ] Proper authentication</li><li>[ ] SQL injection prevention</li></ul>
+
+<h2>Testing</h2>
+<ul><li>[ ] Unit tests present</li><li>[ ] Edge cases covered</li><li>[ ] Integration tests</li><li>[ ] Test documentation</li></ul>
+</code></pre></div>
+
+<h3>10. Incident Response Pattern</h3>
+<strong>When to use</strong>: Handling production issues
+
+<div class="code-block"><pre><code>
+Pattern: Detect ? Diagnose ? Fix ? Test ? Deploy ? Document
+
+Step 1: Use backend-analyzer to investigate issue
+Step 2: Use performance-optimizer if performance-related
+Step 3: Use general-purpose for hotfix
+Step 4: Use test-automation-engineer for regression test
+Step 5: Use devops-automator for emergency deployment
+Step 6: Use documentation-engineer for post-mortem
+</code></pre></div>
+
+<strong>Incident Response Template</strong>:
+<div class="code-block"><pre><code>markdown
+<h2>Incident Summary</h2>
+<ul><li>Severity: [P1/P2/P3]</li><li>Impact: [Users affected, functionality impaired]</li><li>Duration: [Start time - End time]</li><li>Root cause: [Brief description]</li></ul>
+
+<h2>Timeline</h2>
+<ul><li>Detection: [How was it discovered?]</li><li>Response: [Initial actions taken]</li><li>Resolution: [Fix implemented]</li><li>Validation: [How was fix verified?]</li></ul>
+
+<h2>Lessons Learned</h2>
+<ul><li>What went well</li><li>What could be improved</li><li>Action items for prevention</li></ul>
+</code></pre></div>
+
+<h2>Prompt Engineering Best Practices</h2>
+
+<h3>1. Context Setting</h3>
+Always provide:
+<ul><li>Current technology stack</li><li>Existing patterns in codebase</li><li>Performance requirements</li><li>Security constraints</li><li>Team conventions</li></ul>
+
+<h3>2. Clear Deliverables</h3>
+Specify exactly what you need:
+<ul><li>Code files with specific names</li><li>Documentation format</li><li>Test coverage requirements</li><li>Performance benchmarks</li><li>Deployment artifacts</li></ul>
+
+<h3>3. Success Criteria</h3>
+Define measurable outcomes:
+<div class="code-block"><pre><code>markdown
+? All tests pass
+? Code coverage >80%
+? No security vulnerabilities
+? Response time <200ms
+? Documentation complete
+</code></pre></div>
+
+<h3>4. Iterative Refinement</h3>
+Start simple, then enhance:
+<ul><li>Get basic functionality working</li><li>Add error handling</li><li>Optimize performance</li><li>Add comprehensive tests</li><li>Complete documentation</li></ul>
+
+<h3>5. Error Handling Instructions</h3>
+Always specify:
+<div class="code-block"><pre><code>markdown
+Error Handling Requirements:
+<ul><li>Log all errors with context</li><li>Return user-friendly messages</li><li>Include error codes for debugging</li><li>Implement retry logic for transient failures</li><li>Graceful degradation for partial failures</li></ul>
+</code></pre></div>
+
+<h2>Multi-Agent Collaboration Patterns</h2>
+
+<h3>Parallel Execution</h3>
+When tasks are independent:
+<div class="code-block"><pre><code>
+Parallel:
++-- frontend-architect: Build UI components
++-- backend-service-builder: Create APIs
++-- database-architect: Design schema
+</code></pre></div>
+
+<h3>Sequential Pipeline</h3>
+When tasks depend on each other:
+<div class="code-block"><pre><code>
+Sequential:
+<ul><li>database-architect ? Schema design</li><li>backend-service-builder ? API implementation</li><li>frontend-architect ? UI development</li><li>test-automation-engineer ? Test suite</li></ul>
+</code></pre></div>
+
+<h3>Hub-and-Spoke</h3>
+When one agent coordinates others:
+<div class="code-block"><pre><code>
+Hub: general-purpose (coordinator)
++-- Spoke: database-architect
++-- Spoke: backend-service-builder
++-- Spoke: frontend-architect
++-- Spoke: test-automation-engineer
+</code></pre></div>
+
+<h2>Quality Assurance Patterns</h2>
+
+<h3>Pre-Implementation Review</h3>
+<div class="code-block"><pre><code>
+<ul><li>Requirements review with general-purpose</li><li>Architecture review with backend-analyzer</li><li>Security review with security-auditor</li><li>Performance impact with performance-optimizer</li></ul>
+</code></pre></div>
+
+<h3>Post-Implementation Validation</h3>
+<div class="code-block"><pre><code>
+<ul><li>Code review with code-reviewer</li><li>Security scan with security-auditor</li><li>Performance test with performance-optimizer</li><li>Documentation check with documentation-engineer</li></ul>
+</code></pre></div>
+
+<h2>Common Anti-Patterns to Avoid</h2>
+
+<h3>1. ? Vague Requirements</h3>
+<strong>Wrong</strong>: "Make the API better"
+<strong>Right</strong>: "Optimize API response time to <200ms, add caching, implement pagination"
+
+<h3>2. ? Missing Context</h3>
+<strong>Wrong</strong>: "Create a user service"
+<strong>Right</strong>: "Create a user service using Node.js, Express, PostgreSQL, following existing repository pattern"
+
+<h3>3. ? No Success Criteria</h3>
+<strong>Wrong</strong>: "Add tests"
+<strong>Right</strong>: "Add unit tests with >80% coverage, integration tests for all endpoints, and e2e tests for critical paths"
+
+<h3>4. ? Over-broad Scope</h3>
+<strong>Wrong</strong>: "Refactor the entire application"
+<strong>Right</strong>: "Refactor the authentication module to use JWT, maintain backward compatibility"
+
+<h3>5. ? Ignoring Dependencies</h3>
+<strong>Wrong</strong>: "Update the database schema"
+<strong>Right</strong>: "Update database schema with migration scripts, update ORM models, and modify affected APIs"
+
+<h2>Measuring Success</h2>
+
+<h3>Key Performance Indicators</h3>
+<ul><li>Task completion rate</li><li>Code quality metrics</li><li>Time to delivery</li><li>Defect rate</li><li>Documentation completeness</li></ul>
+
+<h3>Quality Metrics</h3>
+<div class="code-block"><pre><code>yaml
+Code Quality:
+  - Cyclomatic complexity <10
+  - Duplication <3%
+  - Technical debt ratio <5%
+  
+Performance:
+  - Response time p95 <500ms
+  - Error rate <1%
+  - Uptime >99.9%
+  
+Security:
+  - Zero critical vulnerabilities
+  - All inputs validated
+  - Authentication on all endpoints
+  
+Testing:
+  - Code coverage >80%
+  - All critical paths tested
+  - No flaky tests
+</code></pre></div>
+
+<h2>Continuous Improvement</h2>
+
+<h3>Retrospective Questions</h3>
+<ul><li>Did the subagent deliver expected results?</li><li>Was the prompt clear and complete?</li><li>Were there unexpected issues?</li><li>How can the prompt be improved?</li><li>Should a different subagent be used?</li></ul>
+
+<h3>Prompt Refinement Process</h3>
+<ul><li>Start with template prompt</li><li>Customize for specific needs</li><li>Execute and review results</li><li>Identify gaps or issues</li><li>Refine prompt</li><li>Document improvements</li><li>Share learnings with team</li></ul></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

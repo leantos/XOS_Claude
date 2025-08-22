@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>git-automation-guide - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Git Automation Guide</p><p><h2>Overview</h2>
+This guide provides comprehensive automation patterns for Git operations, including pre-commit hooks, automated workflows, and repository maintenance. It focuses on practical implementations that improve code quality, security, and development efficiency.</p><p><h2>Pre-Commit Hooks</h2></p><p><h3>Installation & Setup</h3>
+<div class="code-block"><pre><code>bash
+# Install pre-commit framework
+pip install pre-commit</p><p># Create .pre-commit-config.yaml
+cat > .pre-commit-config.yaml << 'EOF'
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: detect-private-key</p><p>  - repo: local
+    hooks:
+      - id: lint-code
+        name: Lint Code
+        entry: npm run lint
+        language: system
+        files: \.(js|ts|jsx|tsx)$
+        
+      - id: format-code
+        name: Format Code
+        entry: npm run format
+        language: system
+        files: \.(js|ts|jsx|tsx)$
+        
+      - id: run-tests
+        name: Run Tests
+        entry: npm test
+        language: system
+        pass_filenames: false
+EOF</p><p># Install hooks
+pre-commit install
+</code></pre></div></p><p><h3>Custom Hook Examples</h3></p><p>#### Code Quality Hooks
+<div class="code-block"><pre><code>bash
+#!/bin/bash
+# .git/hooks/pre-commit</p><p>set -e</p><p>echo "Running pre-commit checks..."</p><p># Check for merge conflict markers
+if grep -r "<<<<<<< HEAD" --exclude-dir=.git .; then
+    echo "? Merge conflict markers detected"
+    exit 1
+fi</p><p># Check for TODO/FIXME comments in production code
+if git diff --cached --name-only | xargs grep -l "TODO\|FIXME" 2>/dev/null; then
+    echo "??  TODO/FIXME comments detected in staged files"
+    read -p "Continue? (y/N): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+fi</p><p># Run linting
+echo "Running ESLint..."
+npm run lint:staged || {
+    echo "? Linting failed"
+    exit 1
+}</p><p># Run formatting
+echo "Running Prettier..."
+npm run format:staged || {
+    echo "? Formatting failed"
+    exit 1
+}</p><p># Run type checking
+echo "Running TypeScript check..."
+npm run type-check || {
+    echo "? Type checking failed"
+    exit 1
+}</p><p>echo "? All pre-commit checks passed"
+</code></pre></div></p><p>#### Security Hooks
+<div class="code-block"><pre><code>bash
+#!/bin/bash
+# Security-focused pre-commit hook</p><p># Check for secrets
+echo "Checking for secrets..."
+git diff --cached --name-only | xargs grep -l "password\|secret\|key\|token" 2>/dev/null && {
+    echo "? Potential secrets detected in staged files"
+    echo "Files containing sensitive keywords:"
+    git diff --cached --name-only | xargs grep -l "password\|secret\|key\|token" 2>/dev/null
+    exit 1
+}</p><p># Check for hardcoded IPs
+git diff --cached | grep -E "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" && {
+    echo "??  Hardcoded IP addresses detected"
+    read -p "Continue? (y/N): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+}</p><p># Check for large files
+for file in $(git diff --cached --name-only); do
+    if [ -f "$file" ] && [ $(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo 0) -gt 1048576 ]; then
+        echo "? Large file detected: $file (>1MB)"
+        echo "Consider using Git LFS for large files"
+        exit 1
+    fi
+done</p><p>echo "? Security checks passed"
+</code></pre></div></p><p><h3>Language-Specific Hooks</h3></p><p>#### .NET/C# Hooks
+<div class="code-block"><pre><code>yaml
+# .pre-commit-config.yaml for .NET projects
+repos:
+  - repo: local
+    hooks:
+      - id: dotnet-format
+        name: .NET Format
+        entry: dotnet format --verify-no-changes
+        language: system
+        files: \.(cs|csproj|sln)$
+        
+      - id: dotnet-build
+        name: .NET Build
+        entry: dotnet build --no-restore
+        language: system
+        files: \.(cs|csproj)$
+        pass_filenames: false
+        
+      - id: dotnet-test
+        name: .NET Test
+        entry: dotnet test --no-build --verbosity quiet
+        language: system
+        files: \.(cs|csproj)$
+        pass_filenames: false
+</code></pre></div></p><p>#### Node.js/TypeScript Hooks
+<div class="code-block"><pre><code>yaml
+repos:
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.44.0
+    hooks:
+      - id: eslint
+        files: \.(js|jsx|ts|tsx)$
+        args: [--fix]
+        
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.0
+    hooks:
+      - id: prettier
+        files: \.(js|jsx|ts|tsx|json|css|md)$
+        
+  - repo: local
+    hooks:
+      - id: jest-tests
+        name: Jest Tests
+        entry: npm test
+        language: system
+        files: \.(js|jsx|ts|tsx)$
+        pass_filenames: false
+</code></pre></div></p><p><h2>Git Configuration Automation</h2></p><p><h3>Global Git Configuration</h3>
+<div class="code-block"><pre><code>bash
+#!/bin/bash
+# setup-git.sh - Global Git configuration script</p><p># Set global configuration
+git config --global user.name "Developer Name"
+git config --global user.email "developer@company.com"</p><p># Set default branch name
+git config --global init.defaultBranch main</p><p># Set merge strategy
+git config --global merge.ff false</p><p># Enable rebase on pull
+git config --global pull.rebase true</p><p># Set up aliases
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.last 'log -1 HEAD'
+git config --global alias.visual '!gitk'</p><p># Advanced aliases
+git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+git config --global alias.pushup '!git push --set-upstream origin $(git branch --show-current)'
+git config --global alias.cleanup '!git branch --merged | grep -v "\<em>\|main\|master\|develop" | xargs -n 1 git branch -d'</p><p># Security settings
+git config --global commit.gpgsign true
+git config --global tag.gpgsign true</p><p>echo "? Git configuration completed"
+</code></pre></div></p><p><h3>Repository-Specific Configuration</h3>
+<div class="code-block"><pre><code>bash
+#!/bin/bash
+# setup-repo.sh - Repository-specific configuration</p><p># Set up hooks directory
+mkdir -p .githooks
+git config core.hooksPath .githooks</p><p># Set up commit template
+cat > .gitmessage << 'EOF'
+# <type>(<scope>): <subject>
+#
+# <body>
+#
+# <footer>
+#
+# Types:
+# feat: A new feature
+# fix: A bug fix
+# docs: Documentation only changes
+# style: Changes that do not affect the meaning of the code
+# refactor: A code change that neither fixes a bug nor adds a feature
+# perf: A code change that improves performance
+# test: Adding missing tests or correcting existing tests
+# chore: Changes to the build process or auxiliary tools
+EOF</p><p>git config commit.template .gitmessage</p><p># Set up Git LFS for large files
+git lfs track "</em>.psd"
+git lfs track "<em>.zip"
+git lfs track "</em>.pdf"
+git add .gitattributes</p><p>echo "? Repository configuration completed"
+</code></pre></div></p><p><h2>Automated Workflows</h2></p><p><h3>Branch Management Automation</h3>
+<div class="code-block"><pre><code>bash
+#!/bin/bash
+# branch-manager.sh</p><p>create_feature_branch() {
+    local ticket_id="$1"
+    local description="$2"
+    
+    if [ -z "$ticket_id" ] || [ -z "$description" ]; then
+        echo "Usage: create_feature_branch <ticket_id> <description>"
+        return 1
+    fi
+    
+    # Sanitize description
+    description=$(echo "$description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--<em>/-/g' | sed 's/^-\|-$//g')
+    
+    local branch_name="feature/${ticket_id}-${description}"
+    
+    # Switch to main and pull latest
+    git checkout main
+    git pull origin main
+    
+    # Create and checkout new branch
+    git checkout -b "$branch_name"
+    
+    echo "? Created and switched to branch: $branch_name"
+}</p><p>cleanup_merged_branches() {
+    echo "Cleaning up merged branches..."
+    
+    # Fetch latest changes
+    git fetch --prune
+    
+    # Get current branch
+    local current_branch=$(git branch --show-current)
+    
+    # Switch to main if on a branch that might be deleted
+    if [ "$current_branch" != "main" ] && [ "$current_branch" != "master" ] && [ "$current_branch" != "develop" ]; then
+        git checkout main
+    fi
+    
+    # Delete merged branches (excluding protected branches)
+    git branch --merged | grep -v '\</em>\|main\|master\|develop' | xargs -n 1 git branch -d
+    
+    # Delete remote tracking branches that no longer exist
+    git remote prune origin
+    
+    echo "? Branch cleanup completed"
+}</p><p>sync_with_upstream() {
+    local upstream_branch="${1:-main}"
+    local current_branch=$(git branch --show-current)
+    
+    echo "Syncing $current_branch with $upstream_branch..."
+    
+    # Fetch latest changes
+    git fetch origin "$upstream_branch"
+    
+    # Rebase current branch onto upstream
+    git rebase "origin/$upstream_branch" || {
+        echo "? Rebase conflicts detected"
+        echo "Resolve conflicts and run: git rebase --continue"
+        return 1
+    }
+    
+    echo "? Successfully synced with $upstream_branch"
+}
+</code></pre></div></p><p><h3>Commit Message Automation</h3>
+<div class="code-block"><pre><code>bash
+#!/bin/bash
+# commit-helper.sh</p><p>COMMIT_TYPES=("feat" "fix" "docs" "style" "refactor" "perf" "test" "chore")
+SCOPES=("api" "ui" "auth" "db" "config" "deps")</p><p>select_commit_type() {
+    echo "Select commit type:"
+    select type in "${COMMIT_TYPES[@]}"; do
+        if [ -n "$type" ]; then
+            echo "$type"
+            return 0
+        fi
+    done
+}</p><p>select_scope() {
+    echo "Select scope (optional):"
+    echo "0) No scope"
+    select scope in "${SCOPES[@]}"; do
+        if [ "$REPLY" = "0" ]; then
+            echo ""
+            return 0
+        elif [ -n "$scope" ]; then
+            echo "$scope"
+            return 0
+        fi
+    done
+}</p><p>interactive_commit() {
+    local type=$(select_commit_type)
+    local scope=$(select_scope)
+    
+    echo -n "Enter commit subject: "
+    read subject
+    
+    echo -n "Enter commit body (optional, press Enter when done): "
+    read body
+    
+    echo -n "Enter breaking change note (optional): "
+    read breaking
+    
+    # Construct commit message
+    local commit_msg="$type"
+    if [ -n "$scope" ]; then
+        commit_msg="$commit_msg($scope)"
+    fi
+    commit_msg="$commit_msg: $subject"
+    
+    if [ -n "$body" ]; then
+        commit_msg="$commit_msg\n\n$body"
+    fi
+    
+    if [ -n "$breaking" ]; then
+        commit_msg="$commit_msg\n\nBREAKING CHANGE: $breaking"
+    fi
+    
+    # Show preview
+    echo -e "\nCommit message preview:"
+    echo -e "$commit_msg"
+    
+    echo -n "\nProceed with commit? (y/N): "
+    read confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        echo -e "$commit_msg" | git commit -F -
+        echo "? Commit created successfully"
+    else
+        echo "? Commit cancelled"
+    fi
+}
+</code></pre></div></p><p><h3>Repository Health Checks</h3>
+<div class="code-block"><pre><code>bash
+#!/bin/bash
+# repo-health-check.sh</p><p>check_repository_health() {
+    echo "?? Running repository health check..."
+    
+    local issues=0
+    
+    # Check for uncommitted changes
+    if ! git diff-index --quiet HEAD --; then
+        echo "??  Uncommitted changes detected"
+        issues=$((issues + 1))
+    fi
+    
+    # Check for untracked files
+    local untracked=$(git ls-files --others --exclude-standard)
+    if [ -n "$untracked" ]; then
+        echo "??  Untracked files detected:"
+        echo "$untracked"
+        issues=$((issues + 1))
+    fi
+    
+    # Check branch protection
+    local current_branch=$(git branch --show-current)
+    if [ "$current_branch" = "main" ] || [ "$current_branch" = "master" ]; then
+        echo "??  Working directly on protected branch: $current_branch"
+        issues=$((issues + 1))
+    fi
+    
+    # Check for large files
+    local large_files=$(find . -type f -size +10M -not -path "./.git/<em>" -not -path "./node_modules/</em>")
+    if [ -n "$large_files" ]; then
+        echo "??  Large files detected (>10MB):"
+        echo "$large_files"
+        echo "Consider using Git LFS"
+        issues=$((issues + 1))
+    fi
+    
+    # Check Git LFS status
+    if command -v git-lfs >/dev/null 2>&1; then
+        local lfs_status=$(git lfs status)
+        if echo "$lfs_status" | grep -q "Objects to be committed\|Objects to be pushed"; then
+            echo "??  Git LFS objects pending"
+        fi
+    fi
+    
+    # Check for merge conflicts
+    if git ls-files -u | grep -q .; then
+        echo "? Merge conflicts detected"
+        issues=$((issues + 1))
+    fi
+    
+    # Report summary
+    if [ $issues -eq 0 ]; then
+        echo "? Repository health check passed"
+    else
+        echo "? Repository health check found $issues issue(s)"
+        return 1
+    fi
+}</p><p>optimize_repository() {
+    echo "?? Optimizing repository..."
+    
+    # Garbage collection
+    git gc --aggressive --prune=now
+    
+    # Repack for better compression
+    git repack -ad
+    
+    # Clean up reflog
+    git reflog expire --expire-unreachable=now --all
+    
+    # Verify repository integrity
+    git fsck --full
+    
+    echo "? Repository optimization completed"
+}
+</code></pre></div></p><p><h2>CI/CD Integration</h2></p><p><h3>GitHub Actions Integration</h3>
+<div class="code-block"><pre><code>yaml
+# .github/workflows/git-automation.yml
+name: Git Automation</p><p>on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]</p><p>jobs:
+  validate-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Validate Commit Messages
+        uses: wagoid/commitlint-github-action@v5
+        with:
+          configFile: .commitlintrc.json
+          
+  auto-merge:
+    runs-on: ubuntu-latest
+    needs: [validate-commits]
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.<em>.name, 'auto-merge')
+    steps:
+      - name: Auto-merge PR
+        uses: pascalgn/merge-action@v0.15.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          merge_method: squash
+          
+  cleanup-branches:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Delete merged branches
+        run: |
+          git branch -r --merged | grep -v '\</em>\|main\|develop' | sed 's/origin\///' | xargs -n 1 git push --delete origin
+</code></pre></div></p><p><h3>GitLab CI Integration</h3>
+<div class="code-block"><pre><code>yaml
+# .gitlab-ci.yml
+stages:
+  - validate
+  - cleanup</p><p>validate-commits:
+  stage: validate
+  script:
+    - npm install -g @commitlint/cli @commitlint/config-conventional
+    - commitlint --from=HEAD~1 --to=HEAD --verbose
+  only:
+    - merge_requests
+    - main</p><p>cleanup-branches:
+  stage: cleanup
+  script:
+    - git branch -r --merged | grep -v '\*\|main\|develop' | sed 's/origin\///' | xargs -n 1 git push --delete origin || true
+  only:
+    - main
+  when: manual
+</code></pre></div></p><p><h2>Best Practices</h2></p><p><h3>Hook Management</h3>
+<ul><li><strong>Version Control</strong>: Keep hooks in version control for team consistency</li><li><strong>Fast Execution</strong>: Keep pre-commit hooks fast (<10 seconds)</li><li><strong>Clear Messages</strong>: Provide clear success/failure messages</li><li><strong>Bypass Option</strong>: Allow bypassing hooks for emergency commits</li></ul></p><p><h3>Automation Guidelines</h3>
+<ul><li><strong>Idempotent Operations</strong>: Ensure scripts can be run multiple times safely</li><li><strong>Error Handling</strong>: Handle errors gracefully with helpful messages</li><li><strong>Logging</strong>: Log operations for debugging and auditing</li><li><strong>Configuration</strong>: Make scripts configurable for different environments</li></ul></p><p><h3>Security Considerations</h3>
+<ul><li><strong>Credential Management</strong>: Never store credentials in hooks or scripts</li><li><strong>Validation</strong>: Validate all inputs and file paths</li><li><strong>Permissions</strong>: Set appropriate file permissions for hook scripts</li><li><strong>Audit Trail</strong>: Log security-relevant operations</li></ul></p><p>This automation guide provides practical tools and patterns for implementing robust Git workflows that improve code quality, security, and team productivity.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

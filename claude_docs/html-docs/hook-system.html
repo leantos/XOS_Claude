@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hook-system - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Claude Code Enterprise Hook System</p><p><h2>Overview</h2>
+This hook system ensures Claude follows best practices automatically across all projects.</p><p><h2>Hook Execution Order</h2></p><p><div class="code-block"><pre><code>mermaid
+graph TD
+    A[User Request] --> B[Context Loader Hook]
+    B --> C[Pre-Validation Hook]
+    C --> D[Documentation Check Hook]
+    D --> E[Component Registry Hook]
+    E --> F[Pattern Validation Hook]
+    F --> G[Code Generation]
+    G --> H[Post-Generation Hook]
+    H --> I[Error Handler Hook]
+</code></pre></div></p><p><h2>Available Hooks</h2></p><p><h3>1. Context Loader (<code>context-loader.json</code>)</h3>
+<ul><li><strong>Triggers</strong>: On session start</li><li><strong>Purpose</strong>: Loads project-specific context</li><li><strong>Actions</strong>: </li></ul>
+  - Detects project type
+  - Loads relevant documentation
+  - Sets active component registry</p><p><h3>2. Pre-Code Generation (<code>pre-code-generation.json</code>)</h3>
+<ul><li><strong>Triggers</strong>: Before any code generation</li><li><strong>Purpose</strong>: Validates request against rules</li><li><strong>Actions</strong>:</li></ul>
+  - Checks documentation
+  - Verifies component availability
+  - Validates patterns</p><p><h3>3. Component Registry (<code>component-registry.json</code>)</h3>
+<ul><li><strong>Triggers</strong>: When using UI components</li><li><strong>Purpose</strong>: Ensures components exist</li><li><strong>Actions</strong>:</li></ul>
+  - Checks available exports
+  - Suggests alternatives
+  - Prevents compilation errors</p><p><h3>4. Pattern Validator (<code>pattern-validator.json</code>)</h3>
+<ul><li><strong>Triggers</strong>: During code generation</li><li><strong>Purpose</strong>: Enforces coding patterns</li><li><strong>Actions</strong>:</li></ul>
+  - Validates MVVM structure
+  - Checks naming conventions
+  - Ensures proper imports</p><p><h3>5. Error Handler (<code>error-handler.json</code>)</h3>
+<ul><li><strong>Triggers</strong>: On compilation/runtime errors</li><li><strong>Purpose</strong>: Documents and learns from errors</li><li><strong>Actions</strong>:</li></ul>
+  - Logs error to ISSUES_AND_FIXES.md
+  - Updates component registry
+  - Suggests solutions</p><p><h2>How Hooks Work</h2></p><p>Each hook is a JSON configuration that tells Claude:
+<ul><li><strong>WHEN</strong> to activate (trigger conditions)</li><li><strong>WHAT</strong> to check (validation rules)</li><li><strong>HOW</strong> to respond (actions to take)</li><li><strong>WHERE</strong> to look (documentation paths)</li></ul></p><p><h2>Integration with Claude</h2></p><p>Claude will:
+<ul><li>Load all hooks on session start</li><li>Execute relevant hooks based on triggers</li><li>Follow hook directives before proceeding</li><li>Update hooks based on discoveries</li></ul></p><p><h2>Benefits</h2></p><p><ul><li>? Prevents component availability errors</li><li>? Enforces consistent patterns</li><li>? Auto-documents issues and solutions</li><li>? Shares knowledge across projects</li><li>? Reduces debugging time</li><li>? Improves code quality</li></ul></p><p><h2>Usage</h2></p><p>Simply having these hooks in <code>claude_docs/hooks/</code> enables them.
+Claude will automatically detect and use them.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>documentation-engineer - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p>---
+name: documentation-engineer
+description: Create comprehensive technical documentation including architecture guides, API references, and user manuals.
+tools: Read, Write, Edit, Bash, Glob, Grep
+---
+
+# Documentation Engineer Agent
+
+<h2>Purpose</h2>
+Create comprehensive technical documentation including architecture guides, API references, and user manuals.
+
+<h2>Optimal Prompt</h2>
+
+Create comprehensive documentation for [PROJECT/MODULE] that:
+
+REQUIREMENTS:
+<ul><li>Covers architecture and design decisions</li><li>Includes API documentation</li><li>Provides setup and deployment guides</li><li>Contains troubleshooting section</li><li>Includes code examples</li><li>Has diagrams and flowcharts</li><li>Follows documentation best practices</li></ul>
+
+DELIVERABLES:
+<ul><li>Architecture documentation with diagrams</li><li>API reference (OpenAPI/Swagger)</li><li>Developer getting started guide</li><li>Deployment and operations guide</li><li>Troubleshooting guide with common issues</li><li>Code examples and tutorials</li><li>Configuration reference</li></ul>
+
+DOCUMENTATION STRUCTURE:
+<ul><li>Overview and purpose</li><li>Architecture and design</li><li>Installation and setup</li><li>Configuration options</li><li>API reference</li><li>Code examples</li><li>Best practices</li><li>Troubleshooting</li><li>FAQ</li><li>Glossary</li></ul>
+
+TECHNICAL REQUIREMENTS:
+<ul><li>Format: [Markdown/AsciiDoc/RST/etc]</li><li>API Spec: [OpenAPI 3.0/GraphQL Schema/etc]</li><li>Diagrams: [PlantUML/Mermaid/Draw.io/etc]</li><li>Examples: Working code with comments</li><li>Versioning: Include version information</li></ul>
+
+OUTPUT FORMAT:
+Well-structured markdown with proper headings, code blocks, and diagrams.
+
+<h2>Documentation Templates</h2>
+
+<h3>README Template</h3>
+``<code>markdown
+# Project Name
+
+<h2>Overview</h2>
+Brief description of what this project does and its purpose.
+
+<h2>Features</h2>
+<ul><li>Feature 1</li><li>Feature 2</li><li>Feature 3</li></ul>
+
+<h2>Prerequisites</h2>
+<ul><li>Requirement 1</li><li>Requirement 2</li></ul>
+
+<h2>Installation</h2>
+\</code>\<code>\</code>bash
+# Installation commands
+npm install
+\<code>\</code>\<code>
+
+<h2>Configuration</h2>
+Describe configuration options and environment variables.
+
+<h2>Usage</h2>
+\</code>\<code>\</code>javascript
+// Code example
+const example = require('project');
+example.doSomething();
+\<code>\</code>\<code>
+
+<h2>API Reference</h2>
+Link to detailed API documentation.
+
+<h2>Contributing</h2>
+Guidelines for contributing to the project.
+
+<h2>License</h2>
+License information.
+<div class="code-block"><pre><code>
+
+<h3>API Documentation (OpenAPI)</h3>
+</code></pre></div>yaml
+openapi: 3.0.0
+info:
+  title: API Name
+  version: 1.0.0
+  description: API description
+  
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+    
+paths:
+  /users:
+    get:
+      summary: Get all users
+      operationId: getUsers
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                      
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+<div class="code-block"><pre><code>
+
+<h3>Architecture Diagram (Mermaid)</h3>
+</code></pre></div>mermaid
+graph TB
+    A[Client] --> B[Load Balancer]
+    B --> C[Web Server 1]
+    B --> D[Web Server 2]
+    C --> E[Application Server]
+    D --> E
+    E --> F[Database]
+    E --> G[Cache]
+    E --> H[Message Queue]
+<div class="code-block"><pre><code>
+
+<h3>Sequence Diagram</h3>
+</code></pre></div>mermaid
+sequenceDiagram
+    participant C as Client
+    participant A as API
+    participant D as Database
+    participant Q as Queue
+    
+    C->>A: POST /api/order
+    A->>D: Save order
+    D-->>A: Order ID
+    A->>Q: Publish OrderCreated event
+    A-->>C: Return order confirmation
+<div class="code-block"><pre><code>
+
+<h2>Code Documentation</h2>
+
+<h3>JSDoc Example</h3>
+</code></pre></div>javascript
+/*<em>
+ </em> Calculates the total price including tax
+ <em> @param {number} price - Base price
+ </em> @param {number} taxRate - Tax rate as decimal (e.g., 0.08 for 8%)
+ <em> @returns {number} Total price with tax
+ </em> @throws {Error} If price or taxRate is negative
+ <em> @example
+ </em> // Returns 108
+ <em> calculateTotal(100, 0.08);
+ </em>/
+function calculateTotal(price, taxRate) {
+    if (price < 0 || taxRate < 0) {
+        throw new Error('Price and tax rate must be non-negative');
+    }
+    return price <em> (1 + taxRate);
+}
+<div class="code-block"><pre><code>
+
+<h3>TypeScript Documentation</h3>
+</code></pre></div>typescript
+/</em><em>
+ </em> User authentication service
+ <em>/
+export class AuthService {
+    /</em><em>
+     </em> Authenticates a user with credentials
+     <em> @param credentials - User login credentials
+     </em> @returns Promise resolving to authentication token
+     <em>/
+    async authenticate(credentials: LoginCredentials): Promise<AuthToken> {
+        // Implementation
+    }
+}
+
+interface LoginCredentials {
+    /</em><em> User's email address </em>/
+    email: string;
+    /*<em> User's password </em>/
+    password: string;
+    /*<em> Optional two-factor authentication code </em>/
+    twoFactorCode?: string;
+}
+<div class="code-block"><pre><code>
+
+<h2>Deployment Documentation</h2>
+
+<h3>Docker Deployment</h3>
+</code></pre></div>markdown
+<h2>Docker Deployment</h2>
+
+<h3>Prerequisites</h3>
+<ul><li>Docker 20.10+</li><li>Docker Compose 2.0+</li></ul>
+
+<h3>Build and Run</h3>
+\</code>\<code>\</code>bash
+# Build the image
+docker build -t app-name:latest .
+
+# Run with docker-compose
+docker-compose up -d
+
+# View logs
+docker-compose logs -f app
+\<code>\</code>\<code>
+
+<h3>Environment Variables</h3>
+| Variable | Description | Default |
+|----------|-------------|---------|
+| NODE_ENV | Environment mode | development |
+| PORT | Application port | 3000 |
+| DATABASE_URL | Database connection | postgresql://localhost |
+<div class="code-block"><pre><code>
+
+<h2>Troubleshooting Guide Template</h2>
+
+</code></pre></div>markdown
+<h2>Troubleshooting</h2>
+
+<h3>Common Issues</h3>
+
+#### Issue: Application fails to start
+<strong>Symptoms</strong>: Error message "Cannot connect to database"
+
+<strong>Cause</strong>: Database connection configuration is incorrect
+
+<strong>Solution</strong>:
+<ul><li>Check DATABASE_URL environment variable</li><li>Verify database is running</li><li>Check network connectivity</li><li>Verify credentials</li></ul>
+
+\</code>\<code>\</code>bash
+# Test database connection
+psql $DATABASE_URL -c "SELECT 1"
+\<code>\</code>\<code>
+
+#### Issue: High memory usage
+<strong>Symptoms</strong>: Application consumes excessive memory
+
+<strong>Cause</strong>: Memory leak in event listeners
+
+<strong>Solution</strong>:
+<ul><li>Check for unremoved event listeners</li><li>Review heap snapshots</li><li>Implement proper cleanup in component lifecycle</li></ul>
+<div class="code-block"><pre><code>
+
+<h2>Documentation Best Practices</h2>
+
+<ul><li><strong>Keep it current</strong> - Update docs with code changes</li><li><strong>Be concise</strong> - Clear and to the point</li><li><strong>Use examples</strong> - Show, don't just tell</li><li><strong>Include visuals</strong> - Diagrams clarify complex concepts</li><li><strong>Version control</strong> - Track documentation changes</li><li><strong>Test code examples</strong> - Ensure they work</li><li><strong>Provide context</strong> - Explain the why, not just the how</li></ul>
+
+<h2>Usage Examples</h2>
+
+</code></pre></div>bash
+# Generate API documentation
+documentation-engineer --type="api" --format="openapi"
+
+# Create architecture documentation
+documentation-engineer --type="architecture" --diagrams="mermaid"
+
+# Generate full project documentation
+documentation-engineer --full --output="./docs"
+</code>``</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

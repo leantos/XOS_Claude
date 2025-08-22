@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>performance-optimizer - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p>---
+name: performance-optimizer
+description: Identify and optimize performance bottlenecks in XOS framework applications built with .NET 8.0, PostgreSQL, and XOS components for enterprise-grade performance.
+tools: Read, Write, Edit, Bash, Glob, Grep
+---
+
+# XOS Performance Optimizer Agent
+
+<h2>Purpose</h2>
+Identify and optimize performance bottlenecks in XOS framework applications built with .NET 8.0, PostgreSQL, and XOS components for enterprise-grade performance.
+
+<h2>Optimal Prompt</h2>
+
+Analyze and optimize performance for [XOS_APPLICATION/MODULE]:
+
+ANALYSIS REQUIREMENTS:
+<ul><li>Profile .NET 8.0 application performance metrics</li><li>Identify bottlenecks (CPU, Memory, GC pressure, I/O)</li><li>Analyze PostgreSQL query performance with Npgsql</li><li>Review XOS Component rendering performance</li><li>Check for memory leaks in long-running processes</li><li>Analyze SignalR connection performance</li><li>Review multi-tenant database query efficiency</li><li>Assess XOS State Management performance</li></ul>
+
+DELIVERABLES:
+<ul><li>.NET performance audit report with Application Insights metrics</li><li>PostgreSQL query optimization recommendations with execution plans</li><li>XOS Component performance optimizations</li><li>Optimized Entity Framework Core implementations</li><li>Database connection pooling configurations</li><li>SignalR scalability improvements</li><li>Memory management and GC tuning recommendations</li><li>Load testing results with NBomber or k6</li></ul>
+
+OPTIMIZATION AREAS:
+<ul><li>Entity Framework Core query optimization (N+1, projection, tracking)</li><li>PostgreSQL index optimization and query plans</li><li>XOS Grid virtualization for large datasets</li><li>ASP.NET Core middleware pipeline efficiency</li><li>JWT token validation performance</li><li>File upload/download streaming optimization</li><li>PDF generation memory management</li><li>Multi-tenant data isolation performance</li></ul>
+
+METRICS TO IMPROVE:
+<ul><li>API response time <200ms (95th percentile)</li><li>Database query time <50ms average</li><li>XOS Grid rendering <100ms for 10K+ rows</li><li>Memory usage stable with <10% GC pressure</li><li>SignalR message latency <50ms</li><li>File operations throughput >10MB/s</li><li>PDF generation <2s for 100-page documents</li></ul>
+
+OUTPUT FORMAT:
+Before/after metrics with specific .NET code changes, PostgreSQL optimizations, and XOS component configurations.
+
+<h2>.NET 8.0 Performance Analysis Tools</h2>
+
+<h3>Application Performance Monitoring</h3>
+<div class="code-block"><pre><code>csharp
+// Program.cs - Application Insights configuration
+builder.Services.AddApplicationInsightsTelemetry(options =>
+{
+    options.EnableRequestTrackingTelemetry = true;
+    options.EnableDependencyTrackingTelemetry = true;
+    options.EnablePerformanceCounterCollectionModule = true;
+});
+
+// Custom performance metrics
+public class PerformanceMetrics
+{
+    private readonly TelemetryClient _telemetryClient;
+    
+    public PerformanceMetrics(TelemetryClient telemetryClient)
+    {
+        _telemetryClient = telemetryClient;
+    }
+    
+    public void TrackDatabaseQuery(string queryName, TimeSpan duration)
+    {
+        _telemetryClient.TrackDependency("PostgreSQL", queryName, 
+            DateTime.UtcNow.Subtract(duration), duration, true);
+            
+        if (duration.TotalMilliseconds > 100)
+        {
+            _telemetryClient.TrackEvent("SlowDatabaseQuery", new Dictionary<string, string>
+            {
+                ["QueryName"] = queryName,
+                ["Duration"] = duration.TotalMilliseconds.ToString("F2")
+            });
+        }
+    }
+}
+</code></pre></div>
+
+<h3>Memory and GC Monitoring</h3>
+<div class="code-block"><pre><code>csharp
+// Startup.cs - GC monitoring service
+public class GCMonitoringService : BackgroundService
+{
+    private readonly ILogger<GCMonitoringService> _logger;
+    private readonly TelemetryClient _telemetryClient;
+    
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var gen0 = GC.CollectionCount(0);
+            var gen1 = GC.CollectionCount(1);
+            var gen2 = GC.CollectionCount(2);
+            var memory = GC.GetTotalMemory(false);
+            
+            _telemetryClient.TrackMetric("GC.Gen0.Collections", gen0);
+            _telemetryClient.TrackMetric("GC.Gen1.Collections", gen1);
+            _telemetryClient.TrackMetric("GC.Gen2.Collections", gen2);
+            _telemetryClient.TrackMetric("Memory.TotalBytes", memory);
+            
+            if (memory > 1_000_000_000) // 1GB threshold
+            {
+                _logger.LogWarning("High memory usage detected: {MemoryMB}MB", memory / 1024 / 1024);
+            }
+            
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+        }
+    }
+}
+</code></pre></div>
+
+<h2>PostgreSQL Query Optimization</h2>
+
+<h3>N+1 Query Prevention with EF Core</h3>
+<div class="code-block"><pre><code>csharp
+// Before: N+1 query problem
+public async Task<List<OrderDto>> GetOrdersWithCustomersAsync()
+{
+    var orders = await _context.Orders.ToListAsync();
+    var result = new List<OrderDto>();
+    
+    foreach (var order in orders)
+    {
+        // This creates N+1 queries!
+        var customer = await _context.Customers.FindAsync(order.CustomerId);
+        result.Add(new OrderDto
+        {
+            Id = order.Id,
+            CustomerName = customer.Name,
+            Amount = order.Amount
+        });
+    }
+    return result;
+}
+
+// After: Single query with Include
+public async Task<List<OrderDto>> GetOrdersWithCustomersOptimizedAsync()
+{
+    return await _context.Orders
+        .Include(o => o.Customer)
+        .Select(o => new OrderDto
+        {
+            Id = o.Id,
+            CustomerName = o.Customer.Name,
+            Amount = o.Amount
+        })
+        .AsNoTracking() // Important for read-only scenarios
+        .ToListAsync();
+}
+</code></pre></div>
+
+<h3>Multi-Tenant Query Optimization</h3>
+<div class="code-block"><pre><code>csharp
+// Optimized multi-tenant query with proper indexing
+public class TenantAwareRepository<T> where T : class, ITenantEntity
+{
+    private readonly ApplicationDbContext _context;
+    private readonly ITenantProvider _tenantProvider;
+    
+    public async Task<List<T>> GetTenantDataAsync(int page, int pageSize)
+    {
+        var tenantId = _tenantProvider.GetCurrentTenantId();
+        
+        return await _context.Set<T>()
+            .Where(e => e.TenantId == tenantId)
+            .OrderBy(e => e.Id)
+            .Skip(page <em> pageSize)
+            .Take(pageSize)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+}
+
+// PostgreSQL index for multi-tenant queries
+/</em>
+CREATE INDEX CONCURRENTLY idx_orders_tenant_id_created_at 
+ON orders (tenant_id, created_at DESC) 
+WHERE tenant_id IS NOT NULL;
+
+CREATE INDEX CONCURRENTLY idx_customers_tenant_id_active 
+ON customers (tenant_id, is_active) 
+WHERE tenant_id IS NOT NULL AND is_active = true;
+<em>/
+</code></pre></div>
+
+<h3>Connection Pooling Configuration</h3>
+<div class="code-block"><pre><code>csharp
+// appsettings.json - Npgsql connection pooling
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=xos_app;Username=app_user;Password=secure_password;Pooling=true;MinPoolSize=10;MaxPoolSize=100;ConnectionLifetime=300;CommandTimeout=30;"
+  }
+}
+
+// Startup.cs - DbContext configuration
+services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(connectionString, npgsqlOptions =>
+    {
+        npgsqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 3,
+            maxRetryDelay: TimeSpan.FromSeconds(5),
+            errorCodesToAdd: null);
+        npgsqlOptions.CommandTimeout(30);
+    });
+    
+    // Performance optimizations
+    if (!Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging(false);
+        options.EnableServiceProviderCaching();
+        options.EnableModelValidation(false);
+    }
+});
+</code></pre></div>
+
+<h2>XOS Component Performance Optimization</h2>
+
+<h3>XOS Grid Virtualization</h3>
+<div class="code-block"><pre><code>csharp
+// XOSGrid.razor - Optimized for large datasets
+@page "/optimized-grid"
+@using XOS.Components.Grid
+
+<XOSGrid TItem="CustomerDto" 
+         Items="@_customers"
+         VirtualScrolling="true"
+         PageSize="50"
+         ServerSideProcessing="true"
+         OnDataRequest="LoadCustomersAsync">
+    
+    <XOSGridColumn Property="@(c => c.Id)" Width="80px" />
+    <XOSGridColumn Property="@(c => c.Name)" Width="200px" />
+    <XOSGridColumn Property="@(c => c.Email)" Width="250px" />
+    <XOSGridColumn Property="@(c => c.LastOrderDate)" Width="150px" />
+</XOSGrid>
+
+@code {
+    private List<CustomerDto> _customers = new();
+    
+    private async Task<XOSGridDataResult<CustomerDto>> LoadCustomersAsync(XOSGridDataRequest request)
+    {
+        // Implement server-side filtering, sorting, and paging
+        var query = _customerService.GetCustomersQuery();
+        
+        // Apply filters
+        if (!string.IsNullOrEmpty(request.SearchTerm))
+        {
+            query = query.Where(c => c.Name.Contains(request.SearchTerm) || 
+                                   c.Email.Contains(request.SearchTerm));
+        }
+        
+        // Apply sorting
+        if (!string.IsNullOrEmpty(request.SortField))
+        {
+            query = request.SortDirection == "asc" 
+                ? query.OrderBy(request.SortField)
+                : query.OrderByDescending(request.SortField);
+        }
+        
+        // Get total count before paging
+        var totalCount = await query.CountAsync();
+        
+        // Apply paging
+        var items = await query
+            .Skip(request.Skip)
+            .Take(request.Take)
+            .Select(c => new CustomerDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Email = c.Email,
+                LastOrderDate = c.Orders.Max(o => o.CreatedAt)
+            })
+            .AsNoTracking()
+            .ToListAsync();
+            
+        return new XOSGridDataResult<CustomerDto>
+        {
+            Items = items,
+            TotalCount = totalCount
+        };
+    }
+}
+</code></pre></div>
+
+<h3>XOS State Management Performance</h3>
+<div class="code-block"><pre><code>csharp
+// XOSStateService.cs - Optimized state management
+public class XOSStateService
+{
+    private readonly IMemoryCache _cache;
+    private readonly ILogger<XOSStateService> _logger;
+    private readonly ConcurrentDictionary<string, object> _stateCache = new();
+    
+    public async Task<T> GetStateAsync<T>(string key) where T : class
+    {
+        // Try memory cache first
+        if (_cache.TryGetValue(key, out T cachedValue))
+        {
+            return cachedValue;
+        }
+        
+        // Try concurrent dictionary for frequently accessed state
+        if (_stateCache.TryGetValue(key, out var stateValue) && stateValue is T typedValue)
+        {
+            return typedValue;
+        }
+        
+        // Fetch from database with caching
+        var value = await FetchFromDatabaseAsync<T>(key);
+        if (value != null)
+        {
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30),
+                SlidingExpiration = TimeSpan.FromMinutes(5),
+                Priority = CacheItemPriority.Normal
+            };
+            
+            _cache.Set(key, value, cacheOptions);
+            _stateCache.TryAdd(key, value);
+        }
+        
+        return value;
+    }
+}
+</code></pre></div>
+
+<h2>SignalR Performance Optimization</h2>
+
+<h3>Scalable SignalR Configuration</h3>
+<div class="code-block"><pre><code>csharp
+// Program.cs - SignalR optimization
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = false; // Disable in production
+    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
+    options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+    options.MaximumParallelInvocationsPerClient = 2;
+})
+.AddStackExchangeRedis("localhost:6379", options =>
+{
+    options.Configuration.ChannelPrefix = "xos-signalr";
+});
+
+// NotificationHub.cs - Optimized hub
+public class NotificationHub : Hub
+{
+    private readonly IMemoryCache _cache;
+    
+    public async Task JoinTenantGroup(string tenantId)
+    {
+        // Cache group memberships to avoid repeated database lookups
+        var cacheKey = $"user-tenant-{Context.UserIdentifier}";
+        if (!_cache.TryGetValue(cacheKey, out string cachedTenantId) || 
+            cachedTenantId != tenantId)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"tenant-{cachedTenantId}");
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"tenant-{tenantId}");
+            
+            _cache.Set(cacheKey, tenantId, TimeSpan.FromHours(1));
+        }
+    }
+    
+    public async Task SendMessageToTenant(string tenantId, string message)
+    {
+        // Use typed hub for better performance
+        await Clients.Group($"tenant-{tenantId}")
+            .SendAsync("ReceiveMessage", new { Message = message, Timestamp = DateTime.UtcNow });
+    }
+}
+</code></pre></div>
+
+<h2>File Operations Optimization</h2>
+
+<h3>Streaming File Upload/Download</h3>
+<div class="code-block"><pre><code>csharp
+// FileController.cs - Optimized file operations
+[ApiController]
+[Route("api/[controller]")]
+public class FileController : ControllerBase
+{
+    private readonly IFileService _fileService;
+    private readonly IConfiguration _config;
+    
+    [HttpPost("upload")]
+    [RequestSizeLimit(100_000_000)] // 100MB limit
+    public async Task<IActionResult> UploadAsync(IFormFile file)
+    {
+        if (file?.Length > 0)
+        {
+            // Stream directly to avoid memory issues
+            using var stream = file.OpenReadStream();
+            var fileInfo = await _fileService.SaveStreamAsync(stream, file.FileName);
+            
+            return Ok(new { FileId = fileInfo.Id, Size = fileInfo.Size });
+        }
+        
+        return BadRequest("No file uploaded");
+    }
+    
+    [HttpGet("download/{fileId}")]
+    public async Task<IActionResult> DownloadAsync(Guid fileId)
+    {
+        var fileInfo = await _fileService.GetFileInfoAsync(fileId);
+        if (fileInfo == null)
+            return NotFound();
+        
+        var stream = await _fileService.GetFileStreamAsync(fileId);
+        
+        return File(stream, "application/octet-stream", fileInfo.FileName, enableRangeProcessing: true);
+    }
+}
+
+// FileService.cs - Streaming implementation
+public class FileService : IFileService
+{
+    public async Task<FileInfo> SaveStreamAsync(Stream inputStream, string fileName)
+    {
+        var fileId = Guid.NewGuid();
+        var filePath = GetFilePath(fileId);
+        
+        // Ensure directory exists
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+        
+        // Stream directly to file system
+        using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 64 </em> 1024);
+        await inputStream.CopyToAsync(fileStream);
+        
+        var fileInfo = new FileInfo
+        {
+            Id = fileId,
+            FileName = fileName,
+            Size = fileStream.Length,
+            CreatedAt = DateTime.UtcNow
+        };
+        
+        // Save metadata to database asynchronously
+        _ = Task.Run(async () => await SaveFileMetadataAsync(fileInfo));
+        
+        return fileInfo;
+    }
+}
+</code></pre></div>
+
+<h3>PDF Generation Optimization</h3>
+<div class="code-block"><pre><code>csharp
+// PdfService.cs - Memory-efficient PDF generation
+public class PdfService : IPdfService
+{
+    public async Task<Stream> GeneratePdfAsync(PdfRequest request)
+    {
+        // Use streaming to avoid loading entire PDF into memory
+        var outputStream = new MemoryStream();
+        
+        using var document = new PdfDocument();
+        using var renderer = new HtmlToPdfRenderer();
+        
+        // Configure for performance
+        renderer.RenderingOptions.MarginTop = 10;
+        renderer.RenderingOptions.MarginBottom = 10;
+        renderer.RenderingOptions.EnableJavaScript = false; // Disable JS for performance
+        renderer.RenderingOptions.Timeout = 60; // 60 second timeout
+        
+        // Process in chunks for large documents
+        const int chunkSize = 50; // Pages per chunk
+        var pageCount = request.Pages.Count;
+        
+        for (int i = 0; i < pageCount; i += chunkSize)
+        {
+            var chunk = request.Pages.Skip(i).Take(chunkSize);
+            var chunkHtml = await GenerateHtmlChunkAsync(chunk);
+            
+            using var chunkPdf = await renderer.RenderHtmlAsPdfAsync(chunkHtml);
+            document.AddPagesFromDocument(chunkPdf);
+            
+            // Force garbage collection after each chunk
+            if (i % (chunkSize * 2) == 0)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+        }
+        
+        document.SaveAs(outputStream);
+        outputStream.Position = 0;
+        
+        return outputStream;
+    }
+}
+</code></pre></div>
+
+<h2>Caching Strategy</h2>
+
+<h3>Redis Distributed Caching</h3>
+<div class="code-block"><pre><code>csharp
+// Program.cs - Redis configuration
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379";
+    options.InstanceName = "XOS-App";
+});
+
+// CacheService.cs - Optimized caching patterns
+public class CacheService : ICacheService
+{
+    private readonly IDistributedCache _distributedCache;
+    private readonly IMemoryCache _memoryCache;
+    private readonly ILogger<CacheService> _logger;
+    
+    public async Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> factory, TimeSpan? expiration = null) where T : class
+    {
+        // Try L1 cache (memory) first
+        if (_memoryCache.TryGetValue(key, out T memoryValue))
+        {
+            return memoryValue;
+        }
+        
+        // Try L2 cache (Redis) second
+        var distributedValue = await _distributedCache.GetStringAsync(key);
+        if (distributedValue != null)
+        {
+            var deserializedValue = JsonSerializer.Deserialize<T>(distributedValue);
+            
+            // Store in L1 cache for faster subsequent access
+            _memoryCache.Set(key, deserializedValue, TimeSpan.FromMinutes(5));
+            
+            return deserializedValue;
+        }
+        
+        // Fetch from source
+        var value = await factory();
+        if (value != null)
+        {
+            var serializedValue = JsonSerializer.Serialize(value);
+            var options = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromMinutes(30)
+            };
+            
+            await _distributedCache.SetStringAsync(key, serializedValue, options);
+            _memoryCache.Set(key, value, TimeSpan.FromMinutes(5));
+        }
+        
+        return value;
+    }
+}
+</code></pre></div>
+
+<h2>Load Testing with NBomber</h2>
+
+<h3>NBomber Performance Tests</h3>
+<div class="code-block"><pre><code>csharp
+// LoadTests.cs - NBomber test scenarios
+using NBomber.CSharp;
+using NBomber.Http.CSharp;
+
+public class XOSLoadTests
+{
+    public void RunApiLoadTest()
+    {
+        var httpClient = new HttpClient();
+        
+        var scenario = Scenario.Create("api_load_test", async context =>
+        {
+            var response = await httpClient.GetAsync("https://localhost:5001/api/customers?page=1&pageSize=20");
+            
+            return response.IsSuccessStatusCode ? Response.Ok() : Response.Fail();
+        })
+        .WithLoadSimulations(
+            Simulation.InjectPerSec(rate: 100, during: TimeSpan.FromMinutes(5)),
+            Simulation.KeepConstant(copies: 50, during: TimeSpan.FromMinutes(10))
+        );
+        
+        var stats = NBomberRunner
+            .RegisterScenarios(scenario)
+            .WithWorkerPlugins(new HttpMetricsPlugin())
+            .Run();
+            
+        // Assert performance requirements
+        var apiStats = stats.AllOkCount;
+        var p95Duration = stats.ScenarioStats[0].Ok.Latency.P95;
+        
+        Assert.True(p95Duration < 200, $"P95 response time {p95Duration}ms exceeds 200ms threshold");
+    }
+}
+</code></pre></div>
+
+<h2>Configuration Templates</h2>
+
+<h3>appsettings.Production.json - Performance Optimized</h3>
+<div class="code-block"><pre><code>json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=prod-db;Database=xos_app;Username=app_user;Password=${DB_PASSWORD};Pooling=true;MinPoolSize=20;MaxPoolSize=200;ConnectionLifetime=300;CommandTimeout=30;MaxAutoPrepare=10;AutoPrepareMinUsages=2;"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "Microsoft.EntityFrameworkCore": "Error",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "Redis": {
+    "ConnectionString": "${REDIS_CONNECTION}",
+    "InstanceName": "XOS-Production"
+  },
+  "Performance": {
+    "EnableResponseCompression": true,
+    "EnableResponseCaching": true,
+    "MaxRequestBodySize": 104857600,
+    "RequestTimeout": 30,
+    "DefaultCacheExpiration": "00:30:00"
+  },
+  "ApplicationInsights": {
+    "ConnectionString": "${APPINSIGHTS_CONNECTION}"
+  }
+}
+</code></pre></div>
+
+<h2>Usage Examples</h2>
+
+<div class="code-block"><pre><code>bash
+# Run performance analysis on XOS application
+xos-performance-optimizer --analyze --environment=production --duration=1h
+
+# Optimize PostgreSQL queries
+xos-performance-optimizer --db-optimize --connection="Host=localhost;Database=xos_app"
+
+# XOS Component performance audit
+xos-performance-optimizer --component-audit --path="./Components/"
+
+# Full application performance suite
+xos-performance-optimizer --full-suite --load-test --duration=30m
+</code></pre></div>
+
+<h2>Performance Monitoring Dashboard</h2>
+
+<h3>Key Metrics to Track</h3>
+<ul><li><strong>API Performance</strong>: P95 response time < 200ms</li><li><strong>Database Performance</strong>: Average query time < 50ms</li><li><strong>Memory Usage</strong>: Stable with GC pressure < 10%</li><li><strong>XOS Grid Performance</strong>: Render time < 100ms for 10K+ rows</li><li><strong>File Operations</strong>: Throughput > 10MB/s</li><li><strong>SignalR</strong>: Message latency < 50ms</li><li><strong>Cache Hit Ratio</strong>: > 85% for frequently accessed data</li></ul>
+
+This agent focuses specifically on XOS framework applications with .NET 8.0 and PostgreSQL, providing enterprise-grade performance optimization guidance for real-world business applications.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

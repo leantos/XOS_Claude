@@ -126,7 +126,7 @@
                     <p>This documentation works in two ways:</p>
                     <ul>
                         <li><strong>Web Browsing:</strong> Read online at this site for learning and reference</li>
-                        <li><strong>Claude Code Integration:</strong> Reference via <code>@claude_docs/</code> in your projects</li>
+                        <li><strong>Claude Code Integration:</strong> Reference via <code>../</code> in your projects</li>
                     </ul>
                 </div>
 
@@ -155,13 +155,13 @@ git push</pre>
                                 <span>Claude Code Reference Examples</span>
                                 <button class="copy-btn" onclick="copyCode(this, 'claude-refs')">Copy</button>
                             </div>
-                            <pre id="claude-refs">Create user login using @claude_docs/CRITICAL_PATTERNS.md
+                            <pre id="claude-refs">Create user login using ../CRITICAL_PATTERNS.md
 
-Fix input issues with @claude_docs/frontend/xos-input-handling-fix.md
+Fix input issues with ../frontend/xos-input-handling-fix.md
 
-Build API following @claude_docs/backend/backend-blueprint.md</pre>
+Build API following ../backend/backend-blueprint.md</pre>
                         </div>
-                        <p><small>Always include <code>@claude_docs/CRITICAL_PATTERNS.md</code> in your prompts</small></p>
+                        <p><small>Always include <code>../CRITICAL_PATTERNS.md</code> in your prompts</small></p>
                     </div>
 
                     <div class="nav-card">
@@ -190,7 +190,7 @@ git add claude_docs && git commit -m "Update XOS documentation"</pre>
                             <li><strong>Team Consistency:</strong> Everyone uses the same proven patterns</li>
                             <li><strong>Claude Accuracy:</strong> AI needs context to work with custom frameworks</li>
                         </ul>
-                        <p><small><strong>Bottom line:</strong> Always reference <code>@claude_docs/</code> files in your Claude prompts</small></p>
+                        <p><small><strong>Bottom line:</strong> Always reference <code>../</code> files in your Claude prompts</small></p>
                     </div>
                 </div>
 
@@ -200,7 +200,7 @@ git add claude_docs && git commit -m "Update XOS documentation"</pre>
                     <ol>
                         <li>Ask your team lead for the documentation repository URL</li>
                         <li>Run the "Add Documentation Submodule" command above</li>
-                        <li>Start using <code>@claude_docs/</code> references in your Claude prompts</li>
+                        <li>Start using <code>../</code> references in your Claude prompts</li>
                     </ol>
                 </div>
             </section>
@@ -237,7 +237,7 @@ git add claude_docs && git commit -m "Update XOS documentation"</pre>
 
                 <div class="alert alert-success">
                     <h3>The Solution: Reference @claude_docs in Every Prompt</h3>
-                    <p>The <code>@claude_docs/</code> system contains everything Claude needs to work correctly with XOS.</p>
+                    <p>The <code>../</code> system contains everything Claude needs to work correctly with XOS.</p>
                 </div>
             </section>
 
@@ -251,7 +251,7 @@ git add claude_docs && git commit -m "Update XOS documentation"</pre>
                             <span>Essential Context Prompt</span>
                             <button class="copy-btn" onclick="copyCode(this, 'context-prompt')">Copy</button>
                         </div>
-                        <pre id="context-prompt">I'm working with XOS framework. Check @claude_docs/START-HERE.md and @claude_docs/essential/CRITICAL_PATTERNS.md before implementing anything.</pre>
+                        <pre id="context-prompt">I'm working with XOS framework. Check ../START-HERE.md and ../essential/CRITICAL_PATTERNS.md before implementing anything.</pre>
                     </div>
                     <p><strong>Why</strong>: Claude needs this context or it will use standard React/.NET patterns that don't work.</p>
                 </div>
@@ -267,8 +267,8 @@ git add claude_docs && git commit -m "Update XOS documentation"</pre>
                                     <button class="copy-btn" onclick="copyCode(this, 'frontend-component')">Copy</button>
                                 </div>
                                 <pre id="frontend-component">Create [ComponentName] using XOS patterns.
-Follow @claude_docs/xos-complete-patterns/frontend/component-complete.jsx
-Use @claude_docs/xos-complete-patterns/frontend/viewmodel-complete.jsx for state
+Follow ../xos-complete-patterns/frontend/component-complete.jsx
+Use ../xos-complete-patterns/frontend/viewmodel-complete.jsx for state
 CRITICAL: All inputs must accept keyboard typing</pre>
                             </div>
                         </div>
@@ -281,8 +281,8 @@ CRITICAL: All inputs must accept keyboard typing</pre>
                                     <button class="copy-btn" onclick="copyCode(this, 'backend-api')">Copy</button>
                                 </div>
                                 <pre id="backend-api">Create [EntityName] API with CRUD operations.
-Follow @claude_docs/xos-complete-patterns/backend/controller-complete.cs
-Use @claude_docs/xos-complete-patterns/backend/service-complete.cs for DB operations
+Follow ../xos-complete-patterns/backend/controller-complete.cs
+Use ../xos-complete-patterns/backend/service-complete.cs for DB operations
 POST endpoints only, return domain types directly</pre>
                             </div>
                         </div>
@@ -295,8 +295,8 @@ POST endpoints only, return domain types directly</pre>
                                     <button class="copy-btn" onclick="copyCode(this, 'fullstack-module')">Copy</button>
                                 </div>
                                 <pre id="fullstack-module">Create complete [ModuleName] module with frontend + backend.
-Use patterns from @claude_docs/xos-complete-patterns/
-Follow @claude_docs/xos-complete-patterns/integration/frontend-to-backend.md
+Use patterns from ../xos-complete-patterns/
+Follow ../xos-complete-patterns/integration/frontend-to-backend.md
 Backend: PostgreSQL with raw SQL, POST-only endpoints
 Frontend: XOS MVVM with working keyboard inputs</pre>
                             </div>
@@ -310,7 +310,7 @@ Frontend: XOS MVVM with working keyboard inputs</pre>
                                     <button class="copy-btn" onclick="copyCode(this, 'input-fix')">Copy</button>
                                 </div>
                                 <pre id="input-fix">[ComponentName] inputs won't accept keyboard typing.
-Fix using patterns from @claude_docs/xos-complete-patterns/frontend/component-complete.jsx
+Fix using patterns from ../xos-complete-patterns/frontend/component-complete.jsx
 Use 3-step event handler pattern + updateUI()</pre>
                             </div>
                         </div>
@@ -333,9 +333,9 @@ Use 3-step event handler pattern + updateUI()</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'new-component')">Copy</button>
                                     </div>
                                     <pre id="new-component">Create [YourComponentName] component using XOS MVVM pattern.
-Follow @claude_docs/development-guide/TDD-XOS-FRONTEND-WORKFLOW.md
-Use @claude_docs/frontend/ui-templates/XOSComponentTemplate as base.
-CRITICAL: All inputs must accept keyboard typing - use patterns from @claude_docs/frontend/xos-input-handling-fix.md</pre>
+Follow ../development-guide/TDD-XOS-FRONTEND-WORKFLOW.md
+Use ../frontend/ui-templates/XOSComponentTemplate as base.
+CRITICAL: All inputs must accept keyboard typing - use patterns from ../frontend/xos-input-handling-fix.md</pre>
                                 </div>
                             </div>
                         </div>
@@ -352,7 +352,7 @@ CRITICAL: All inputs must accept keyboard typing - use patterns from @claude_doc
                                         <button class="copy-btn" onclick="copyCode(this, 'input-fix')">Copy</button>
                                     </div>
                                     <pre id="input-fix">[YourComponentName] inputs won't accept keyboard typing.
-Fix using three-step event handler pattern from @claude_docs/frontend/xos-input-handling-fix.md
+Fix using three-step event handler pattern from ../frontend/xos-input-handling-fix.md
 Ensure updateUI() is called after state changes.</pre>
                                 </div>
                             </div>
@@ -370,7 +370,7 @@ Ensure updateUI() is called after state changes.</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'data-error')">Copy</button>
                                     </div>
                                     <pre id="data-error">Getting "Cannot set property Data" error in [ComponentName].
-Fix using ViewModel initialization patterns from @claude_docs/CRITICAL_PATTERNS.md
+Fix using ViewModel initialization patterns from ../CRITICAL_PATTERNS.md
 Use init() method with Data reference pattern.</pre>
                                 </div>
                             </div>
@@ -392,8 +392,8 @@ Use init() method with Data reference pattern.</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'api-service')">Copy</button>
                                     </div>
                                     <pre id="api-service">Create [EntityName]Service with CRUD operations for PostgreSQL.
-Follow @claude_docs/backend/backend-blueprint.md patterns.
-Use GetEntityDataListAsync pattern from @claude_docs/backend/xos-backend-complete-guide.md
+Follow ../backend/backend-blueprint.md patterns.
+Use GetEntityDataListAsync pattern from ../backend/xos-backend-complete-guide.md
 POST endpoints only, return domain types directly.
 Target 80% test coverage.</pre>
                                 </div>
@@ -412,7 +412,7 @@ Target 80% test coverage.</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'api-controller')">Copy</button>
                                     </div>
                                     <pre id="api-controller">Create [EntityName]Controller with POST endpoints.
-Follow @claude_docs/backend/api-routes.md patterns.
+Follow ../backend/api-routes.md patterns.
 Return domain types directly, not IActionResult.
 Use dependency injection for services.</pre>
                                 </div>
@@ -435,8 +435,8 @@ Use dependency injection for services.</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'fullstack-module')">Copy</button>
                                     </div>
                                     <pre id="fullstack-module">Create complete [ModuleName] module with frontend + backend.
-Use module examples from @claude_docs/COMMON-MODULE-EXAMPLES.md
-Follow full workflow from @claude_docs/MODULE-DEVELOPMENT-GUIDE.md
+Use module examples from ../COMMON-MODULE-EXAMPLES.md
+Follow full workflow from ../MODULE-DEVELOPMENT-GUIDE.md
 Backend: PostgreSQL with raw SQL, POST-only endpoints
 Frontend: XOS MVVM with working keyboard inputs
 Target: 80% test coverage, working end-to-end</pre>
@@ -460,8 +460,8 @@ Target: 80% test coverage, working end-to-end</pre>
                                         <button class="copy-btn" onclick="copyCode(this, 'general-issue')">Copy</button>
                                     </div>
                                     <pre id="general-issue">[Describe your specific problem here]
-Fix using patterns from @claude_docs/CLAUDE-PROMPT-QUICK-REFERENCE.html
-Check @claude_docs/troubleshooting/[frontend|backend|api|database|testing]-issues.md for solutions.</pre>
+Fix using patterns from ../CLAUDE-PROMPT-QUICK-REFERENCE.html
+Check ../troubleshooting/[frontend|backend|api|database|testing]-issues.md for solutions.</pre>
                                 </div>
                             </div>
                         </div>
@@ -477,7 +477,7 @@ Check @claude_docs/troubleshooting/[frontend|backend|api|database|testing]-issue
                                         <span>Claude Confusion Fix</span>
                                         <button class="copy-btn" onclick="copyCode(this, 'claude-confused')">Copy</button>
                                     </div>
-                                    <pre id="claude-confused">Use XOS patterns from @claude_docs/CRITICAL_PATTERNS.md
+                                    <pre id="claude-confused">Use XOS patterns from ../CRITICAL_PATTERNS.md
 This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                                 </div>
                             </div>
@@ -498,29 +498,29 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     <div class="nav-card">
                         <h4><i class="bi bi-gear"></i> Development Agents</h4>
                         <ul>
-                            <li><a href="claude_docs/automation/agents/backend-service-builder.md">Backend Service Builder</a> - Complete service generation</li>
-                            <li><a href="claude_docs/automation/agents/frontend-architect.md">Frontend Architect</a> - Component architecture</li>
-                            <li><a href="claude_docs/automation/agents/database-architect.md">Database Architect</a> - Schema design</li>
-                            <li><a href="claude_docs/automation/agents/test-automation-engineer.md">Test Automation Engineer</a> - Test generation</li>
+                            <li><a href="claude_docs/automation/agents/backend-service-builder.html">Backend Service Builder</a> - Complete service generation</li>
+                            <li><a href="claude_docs/automation/agents/frontend-architect.html">Frontend Architect</a> - Component architecture</li>
+                            <li><a href="claude_docs/automation/agents/database-architect.html">Database Architect</a> - Schema design</li>
+                            <li><a href="claude_docs/automation/agents/test-automation-engineer.html">Test Automation Engineer</a> - Test generation</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4><i class="bi bi-tools"></i> Operations Agents</h4>
                         <ul>
-                            <li><a href="claude_docs/automation/agents/devops-automator.md">DevOps Automator</a> - Deployment & CI/CD</li>
-                            <li><a href="claude_docs/automation/agents/performance-optimizer.md">Performance Optimizer</a> - Code optimization</li>
-                            <li><a href="claude_docs/automation/agents/security-auditor.md">Security Auditor</a> - Security analysis</li>
-                            <li><a href="claude_docs/automation/agents/documentation-engineer.md">Documentation Engineer</a> - Docs generation</li>
+                            <li><a href="claude_docs/automation/agents/devops-automator.html">DevOps Automator</a> - Deployment & CI/CD</li>
+                            <li><a href="claude_docs/automation/agents/performance-optimizer.html">Performance Optimizer</a> - Code optimization</li>
+                            <li><a href="claude_docs/automation/agents/security-auditor.html">Security Auditor</a> - Security analysis</li>
+                            <li><a href="claude_docs/automation/agents/documentation-engineer.html">Documentation Engineer</a> - Docs generation</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4><i class="bi bi-git"></i> Git & Workflow</h4>
                         <ul>
-                            <li><a href="claude_docs/automation/agents/git-workflow-manager.md">Git Workflow Manager</a> - Git automation</li>
-                            <li><a href="claude_docs/automation/agents/code-reviewer.md">Code Reviewer</a> - Automated reviews</li>
-                            <li><a href="claude_docs/git-github/git-automation-guide.md">Git Automation Guide</a> - Workflow setup</li>
+                            <li><a href="claude_docs/automation/agents/git-workflow-manager.html">Git Workflow Manager</a> - Git automation</li>
+                            <li><a href="claude_docs/automation/agents/code-reviewer.html">Code Reviewer</a> - Automated reviews</li>
+                            <li><a href="claude_docs/git-github/git-automation-guide.html">Git Automation Guide</a> - Workflow setup</li>
                         </ul>
                     </div>
                 </div>
@@ -552,7 +552,7 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                         <ul>
                             <li><a href="claude_docs/hooks/optimized-hooks-windows.json">Optimized Hooks (Windows)</a> - Best performance setup</li>
                             <li><a href="claude_docs/hooks/claude-code-hooks-windows.json">Standard Hooks</a> - Basic configuration</li>
-                            <li><a href="claude_docs/hooks/hook-system.md">Hook System Guide</a> - Understanding hooks</li>
+                            <li><a href="claude_docs/hooks/hook-system.html">Hook System Guide</a> - Understanding hooks</li>
                         </ul>
                     </div>
                 </div>
@@ -565,18 +565,18 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     <div class="nav-card">
                         <h4><i class="bi bi-server"></i> Backend Testing</h4>
                         <ul>
-                            <li><a href="claude_docs/testing/backend-testing-guide.md">Backend Testing Guide</a> - Complete testing strategy</li>
-                            <li><a href="claude_docs/testing/test-examples/backend-examples.md">Backend Examples</a> - Sample tests</li>
-                            <li><a href="claude_docs/testing/xos-framework-testing.md">XOS Framework Testing</a> - Framework-specific tests</li>
+                            <li><a href="claude_docs/testing/backend-testing-guide.html">Backend Testing Guide</a> - Complete testing strategy</li>
+                            <li><a href="claude_docs/testing/test-examples/backend-examples.html">Backend Examples</a> - Sample tests</li>
+                            <li><a href="claude_docs/testing/xos-framework-testing.html">XOS Framework Testing</a> - Framework-specific tests</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4><i class="bi bi-palette"></i> Frontend Testing</h4>
                         <ul>
-                            <li><a href="claude_docs/testing/frontend-testing-guide.md">Frontend Testing Guide</a> - Component testing</li>
-                            <li><a href="claude_docs/testing/test-examples/frontend-examples.md">Frontend Examples</a> - Sample tests</li>
-                            <li><a href="claude_docs/testing/testing-best-practices.md">Testing Best Practices</a> - XOS-specific practices</li>
+                            <li><a href="claude_docs/testing/frontend-testing-guide.html">Frontend Testing Guide</a> - Component testing</li>
+                            <li><a href="claude_docs/testing/test-examples/frontend-examples.html">Frontend Examples</a> - Sample tests</li>
+                            <li><a href="claude_docs/testing/testing-best-practices.html">Testing Best Practices</a> - XOS-specific practices</li>
                         </ul>
                     </div>
                 </div>
@@ -596,32 +596,32 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                         <tbody>
                             <tr>
                                 <td><strong>START-HERE.md</strong></td>
-                                <td><code>@claude_docs/START-HERE.md</code></td>
+                                <td><code>../START-HERE.md</code></td>
                                 <td><span class="badge badge-critical">First time using XOS</span></td>
                             </tr>
                             <tr>
                                 <td><strong>CRITICAL_PATTERNS.md</strong></td>
-                                <td><code>@claude_docs/essential/CRITICAL_PATTERNS.md</code></td>
+                                <td><code>../essential/CRITICAL_PATTERNS.md</code></td>
                                 <td><span class="badge badge-critical">Every single prompt</span></td>
                             </tr>
                             <tr>
                                 <td><strong>component-complete.jsx</strong></td>
-                                <td><code>@claude_docs/xos-complete-patterns/frontend/component-complete.jsx</code></td>
+                                <td><code>../xos-complete-patterns/frontend/component-complete.jsx</code></td>
                                 <td>Building any frontend component</td>
                             </tr>
                             <tr>
                                 <td><strong>controller-complete.cs</strong></td>
-                                <td><code>@claude_docs/xos-complete-patterns/backend/controller-complete.cs</code></td>
+                                <td><code>../xos-complete-patterns/backend/controller-complete.cs</code></td>
                                 <td>Building any API endpoint</td>
                             </tr>
                             <tr>
                                 <td><strong>ABSOLUTE-RULES.md</strong></td>
-                                <td><code>@claude_docs/xos-complete-patterns/ABSOLUTE-RULES.md</code></td>
+                                <td><code>../xos-complete-patterns/ABSOLUTE-RULES.md</code></td>
                                 <td>Unbreakable XOS laws</td>
                             </tr>
                             <tr>
                                 <td><strong>SETUP.md</strong></td>
-                                <td><code>@claude_docs/essential/SETUP.md</code></td>
+                                <td><code>../essential/SETUP.md</code></td>
                                 <td>Initial project setup</td>
                             </tr>
                         </tbody>
@@ -637,7 +637,7 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                         <ol>
                             <li><strong>Always copy-paste the prompts above</strong> - they're tested and work</li>
                             <li><strong>Be specific about problems</strong> - "Username input won't type" vs "it's broken"</li>
-                            <li><strong>Reference exact file paths</strong> - <code>@claude_docs/path/file.md</code></li>
+                            <li><strong>Reference exact file paths</strong> - <code>../path/file.md</code></li>
                             <li><strong>Let Claude handle the complexity</strong> - just point it to the right docs</li>
                         </ol>
                     </div>
@@ -646,7 +646,7 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                         <ol>
                             <li>Don't assume Claude knows XOS patterns without references</li>
                             <li>Don't try to explain XOS yourself - let the docs do it</li>
-                            <li>Don't skip the <code>@claude_docs/CRITICAL_PATTERNS.md</code> reference</li>
+                            <li>Don't skip the <code>../CRITICAL_PATTERNS.md</code> reference</li>
                         </ol>
                     </div>
                 </div>
@@ -661,8 +661,8 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                             <li><strong>Need new feature?</strong> → Use "Full-Stack Module" prompt</li>
                             <li><strong>Component broken?</strong> → Use "Fixing Input Issues" or "Data/State Errors" prompts</li>
                             <li><strong>API not working?</strong> → Use "Creating API Service" prompt</li>
-                            <li><strong>Claude confused?</strong> → Reference <code>@claude_docs/CRITICAL_PATTERNS.md</code></li>
-                            <li><strong>Still stuck?</strong> → Check <code>@claude_docs/troubleshooting/</code></li>
+                            <li><strong>Claude confused?</strong> → Reference <code>../CRITICAL_PATTERNS.md</code></li>
+                            <li><strong>Still stuck?</strong> → Check <code>../troubleshooting/</code></li>
                         </ol>
                     </div>
                 </div>
@@ -695,9 +695,9 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     <div class="nav-card">
                         <h4><i class="bi bi-book"></i> Setup Guides</h4>
                         <ul>
-                            <li><a href="claude_docs/setup/xos-app-setup-guide.md">XOS App Setup Guide</a> - Step-by-step instructions</li>
-                            <li><a href="claude_docs/setup/postgres-mcp-complete-setup.md">PostgreSQL MCP Setup</a> - Database configuration</li>
-                            <li><a href="claude_docs/essential/SETUP.md">Essential Setup</a> - Core requirements</li>
+                            <li><a href="claude_docs/setup/xos-app-setup-guide.html">XOS App Setup Guide</a> - Step-by-step instructions</li>
+                            <li><a href="claude_docs/setup/postgres-mcp-complete-setup.html">PostgreSQL MCP Setup</a> - Database configuration</li>
+                            <li><a href="claude_docs/essential/SETUP.html">Essential Setup</a> - Core requirements</li>
                         </ul>
                     </div>
                 </div>
@@ -709,10 +709,10 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     <div class="nav-card">
                         <h4>🚀 Start Here</h4>
                         <ul>
-                            <li><a href="claude_docs/START-HERE.md">START-HERE.md</a> - <strong>New to XOS? Start here</strong></li>
-                            <li><a href="claude_docs/essential/CRITICAL_PATTERNS.md">CRITICAL_PATTERNS.md</a> - <strong>Essential reading</strong></li>
-                            <li><a href="claude_docs/xos-complete-patterns/ABSOLUTE-RULES.md">ABSOLUTE-RULES.md</a> - Unbreakable laws</li>
-                            <li><a href="claude_docs/essential/SETUP.md">SETUP.md</a> - Environment setup</li>
+                            <li><a href="claude_docs/START-HERE.html">START-HERE.md</a> - <strong>New to XOS? Start here</strong></li>
+                            <li><a href="claude_docs/essential/CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.md</a> - <strong>Essential reading</strong></li>
+                            <li><a href="claude_docs/xos-complete-patterns/ABSOLUTE-RULES.html">ABSOLUTE-RULES.md</a> - Unbreakable laws</li>
+                            <li><a href="claude_docs/essential/SETUP.html">SETUP.md</a> - Environment setup</li>
                         </ul>
                     </div>
 
@@ -739,7 +739,7 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     <div class="nav-card">
                         <h4>🩺 Troubleshooting</h4>
                         <ul>
-                            <li><a href="claude_docs/xos-complete-patterns/COMMON-PITFALLS.md">Common Pitfalls</a> - What breaks everything</li>
+                            <li><a href="claude_docs/xos-complete-patterns/COMMON-PITFALLS.html">Common Pitfalls</a> - What breaks everything</li>
                             <li><a href="claude_docs/html-docs/api-troubleshooting.html">API Issues</a> - Endpoint problems</li>
                             <li><a href="claude_docs/html-docs/database-troubleshooting.html">Database Issues</a> - PostgreSQL problems</li>
                             <li><a href="claude_docs/html-docs/testing-troubleshooting.html">Testing Issues</a> - Test failures</li>
@@ -755,7 +755,7 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                 
                 <p><strong>Need Help?</strong> Start with <a href="claude_docs/html-docs/README.html">README.html</a> or browse the <a href="#xos-complete-patterns">XOS Complete Patterns</a> section for production-ready code examples.</p>
                 
-                <p><strong>Pro Tip:</strong> Always reference <code>@claude_docs/</code> files in your Claude prompts for accurate XOS Framework assistance.</p>
+                <p><strong>Pro Tip:</strong> Always reference <code>../</code> files in your Claude prompts for accurate XOS Framework assistance.</p>
             </div>
         </main>
     </div>

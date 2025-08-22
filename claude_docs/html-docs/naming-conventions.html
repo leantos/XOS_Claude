@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>naming-conventions - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Project Naming Conventions</p><p><h2>File Naming</h2></p><p><h3>Backend Files (.cs)</h3>
+| Type | Pattern | Example |
+|------|---------|---------|
+| Service | {Name}Service.cs | OperaIncomeAuditService.cs |
+| Controller | {Name}Controller.cs | RefundController.cs |
+| Interface | I{Name}Service.cs | IRefundService.cs |
+| Domain Model | {Name}.cs | Refund.cs |
+| Utils | {Name}Utils.cs | ZipUtils.cs |</p><p><h3>Frontend Files (.jsx/.js)</h3>
+| Type | Pattern | Example |
+|------|---------|---------|
+| Component | index.jsx | {PROJECT}T020/index.jsx |
+| ViewModel | {ModuleCode}VM.js | {PROJECT}T020VM.js |
+| Style | index.css | {PROJECT}T020/index.css |</p><p><h2>Database Naming</h2></p><p><h3>Tables</h3>
+| Type | Pattern | Example |
+|------|---------|---------|
+| Entity | plural_lowercase | users, refunds |
+| Junction | table1_table2 | user_groups |
+| Lookup | lk_{name} | lk_status_types |
+| Archive | {table}_archive | workflow_archive |</p><p><h3>Columns</h3>
+| Type | Pattern | Example |
+|------|---------|---------|
+| Primary Key | {table_singular}_id | user_id |
+| Foreign Key | {ref_table}_id | site_id |
+| Boolean | is_{state} | is_active |
+| Date | {action}_date | created_date |
+| JSON | {name}_data | revenue_data |</p><p><h2>API Endpoints</h2></p><p><h3>RESTful Routes</h3>
+| Action | Pattern | Example |
+|--------|---------|---------|
+| List | GET /api/{resource} | GET /api/refunds |
+| Get | GET /api/{resource}/{id} | GET /api/refunds/123 |
+| Create | POST /api/{resource} | POST /api/refunds |
+| Update | PUT /api/{resource}/{id} | PUT /api/refunds/123 |
+| Delete | DELETE /api/{resource}/{id} | DELETE /api/refunds/123 |</p><p><h3>Custom Actions</h3>
+| Pattern | Example |
+|---------|---------|
+| POST /api/{resource}/{action} | POST /api/refunds/approve |
+| GET /api/{resource}/{id}/{sub} | GET /api/users/123/permissions |</p><p><h2>C# Conventions</h2></p><p><h3>Classes & Interfaces</h3>
+<div class="code-block"><pre><code>csharp
+public interface IRefundService { }  // PascalCase with I prefix
+public class RefundService { }       // PascalCase
+public abstract class ServiceBase { } // PascalCase with suffix
+</code></pre></div></p><p><h3>Methods & Properties</h3>
+<div class="code-block"><pre><code>csharp
+public async Task<Result> ProcessRefundAsync() // PascalCase + Async suffix
+public string RefundStatus { get; set; }       // PascalCase
+private void validateAmount()                  // camelCase for private
+</code></pre></div></p><p><h3>Variables</h3>
+<div class="code-block"><pre><code>csharp
+const int MAX_RETRIES = 3;        // UPPER_SNAKE for constants
+private readonly ILogger _logger;  // _camelCase for fields
+var refundAmount = 100.00m;       // camelCase for locals
+</code></pre></div></p><p><h2>JavaScript/React Conventions</h2></p><p><h3>Components</h3>
+<div class="code-block"><pre><code>javascript
+export default class {PROJECT}T020 extends Component  // PascalCase
+const DashboardWidget = () => { }              // PascalCase
+</code></pre></div></p><p><h3>Functions & Variables</h3>
+<div class="code-block"><pre><code>javascript
+const handleSubmit = () => { }     // camelCase
+let isLoading = false;             // camelCase
+const MAX_FILE_SIZE = 1024;        // UPPER_SNAKE for constants
+</code></pre></div></p><p><h3>Props & State</h3>
+<div class="code-block"><pre><code>javascript
+<Component isActive={true} />      // camelCase props
+const [userData, setUserData] = useState(); // camelCase
+</code></pre></div></p><p><h2>Module Codes</h2></p><p><h3>Pattern: {PROJECT}{Type}{Number}</h3>
+| Type | Description | Range |
+|------|-------------|-------|
+| M | Master/General | 001-099 |
+| T | Transaction | 001-099 |
+| R | Report | 001-099 |</p><p>Examples: {PROJECT}M001, {PROJECT}T020, {PROJECT}R005
+Replace {PROJECT} with your project abbreviation (e.g., ERP, CRM, CVS)</p><p><h2>Service Method Naming</h2></p><p>| Operation | Pattern | Example |
+|-----------|---------|---------|
+| Get single | Get{Entity}() | GetRefund() |
+| Get list | Get{Entities}() | GetRefunds() |
+| Create | Create{Entity}() | CreateRefund() |
+| Update | Update{Entity}() | UpdateRefund() |
+| Delete | Delete{Entity}() | DeleteRefund() |
+| Process | Process{Action}() | ProcessApproval() |
+| Validate | Validate{Entity}() | ValidateRefund() |</p><p><h2>Domain Model Properties</h2></p><p>| Type | Pattern | Example |
+|------|---------|---------|
+| ID | {Entity}Id | RefundId |
+| Status | {Entity}Status | RefundStatus |
+| Date | {Action}Date | CreatedDate |
+| User reference | {Action}By | CreatedBy |
+| Amount | {Type}Amount | RefundAmount |</p><p><h2>Error Codes</h2></p><p><h3>Pattern: {MODULE}_{ERROR_TYPE}_{NUMBER}</h3>
+<div class="code-block"><pre><code>
+REFUND_VALIDATION_001: Invalid amount
+{PROJECT}_IMPORT_001: File not found
+AUTH_ACCESS_001: Unauthorized
+</code></pre></div></p><p><h2>Configuration Keys</h2></p><p><h3>appsettings.json</h3>
+<div class="code-block"><pre><code>json
+{
+  "XOSConfig": {
+    "JwtOptions": { },      // PascalCase sections
+    "EmailSettings": { }    // PascalCase keys
+  }
+}
+</code></pre></div></p><p><h2>Git Conventions</h2></p><p><h3>Branch Names</h3>
+| Type | Pattern | Example |
+|------|---------|---------|
+| Feature | feature/{ticket}-{description} | feature/{PROJECT}-123-add-refund |
+| Bug | bug/{ticket}-{description} | bug/{PROJECT}-456-fix-login |
+| Hotfix | hotfix/{description} | hotfix/critical-security |</p><p><h3>Commit Messages</h3>
+<div class="code-block"><pre><code>
+{type}: {description}</p><p>feat: Add refund approval workflow
+fix: Resolve date formatting issue
+docs: Update API documentation
+</code></pre></div></p><p><h2>Test Naming</h2></p><p><div class="code-block"><pre><code>csharp
+[Test]
+public void ProcessRefund_ValidAmount_ReturnsSuccess() { }
+// Pattern: {Method}_{Condition}_{ExpectedResult}
+</code></pre></div></p><p><h2>Environment Variables</h2></p><p><div class="code-block"><pre><code>
+{PROJECT}_DB_CONNECTION      // APP_COMPONENT_PURPOSE
+{PROJECT}_JWT_SECRET
+{PROJECT}_SMTP_HOST
+</code></pre></div></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

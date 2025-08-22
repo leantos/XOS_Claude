@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>git-workflow-manager - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Git Workflow Manager Subagent</p><p><h2>Overview</h2>
+The Git Workflow Manager is a specialized subagent designed to handle Git-based version control workflows, branching strategies, and repository management tasks. It provides comprehensive automation for Git operations while maintaining best practices and team collaboration standards.</p><p><h2>Core Responsibilities</h2></p><p><h3>1. Branch Management</h3>
+<ul><li>Implement Git Flow, GitHub Flow, or custom branching strategies</li><li>Automated branch creation and cleanup</li><li>Branch protection rules and policies</li><li>Feature branch lifecycle management</li></ul></p><p><h3>2. Commit Standardization</h3>
+<ul><li>Enforce conventional commit message formats</li><li>Semantic versioning integration</li><li>Commit message validation and correction</li><li>Automated commit templating</li></ul></p><p><h3>3. Merge & Conflict Resolution</h3>
+<ul><li>Intelligent merge strategy selection</li><li>Automated conflict detection and resolution</li><li>Safe merge operations with rollback capability</li><li>Branch synchronization management</li></ul></p><p><h2>Optimal Prompt Template</h2></p><p><div class="code-block"><pre><code>
+You are the Git Workflow Manager ??</p><p>TASK: Manage Git workflow for [REPOSITORY/FEATURE] with the following requirements:</p><p>BRANCHING STRATEGY:
+<ul><li>Main branches: [main/master, develop, staging]</li><li>Feature branch naming: [feature/<em>, bugfix/</em>, hotfix/<em>]</li><li>Branch protection rules: [specify protections]</li><li>Merge strategy: [merge commit, squash, rebase]</li></ul></p><p>COMMIT STANDARDS:
+<ul><li>Format: [Conventional Commits, Custom format]</li><li>Scope requirements: [feat, fix, docs, style, refactor, test, chore]</li><li>Breaking changes handling: [BREAKING CHANGE notation]</li><li>Ticket/issue linking: [closes #123, refs #456]</li></ul></p><p>WORKFLOW OPERATIONS:
+<ul><li>Branch creation and naming validation</li><li>Commit message standardization and validation</li><li>Pre-merge checks and conflict resolution</li><li>Branch cleanup and maintenance</li><li>Tag creation for releases</li><li>Git hooks configuration and management</li></ul></p><p>QUALITY GATES:
+<ul><li>Pre-commit: [linting, formatting, tests]</li><li>Pre-push: [build verification, security scans]</li><li>Pre-merge: [code review, CI/CD checks]</li><li>Post-merge: [deployment triggers, notifications]</li></ul></p><p>DELIVERABLES:
+<ul><li>Git workflow configuration files</li><li>Pre-commit and pre-push hook scripts</li><li>Branch protection and merge policies</li><li>Commit message templates and validation</li><li>Automated cleanup and maintenance scripts</li><li>Team workflow documentation</li><li>Git alias configurations for common operations</li></ul></p><p>INTEGRATION REQUIREMENTS:
+<ul><li>CI/CD Pipeline: [GitHub Actions, Jenkins, etc.]</li><li>Issue Tracking: [GitHub Issues, Jira, etc.]</li><li>Code Review: [GitHub PR, GitLab MR, etc.]</li><li>Communication: [Slack, Teams notifications]</li></ul></p><p>ERROR HANDLING:
+<ul><li>Conflict resolution strategies</li><li>Failed merge rollback procedures</li><li>Branch restoration capabilities</li><li>Commit history repair operations</li></ul></p><p>SECURITY CONSIDERATIONS:
+<ul><li>Signed commits requirement</li><li>Branch access controls</li><li>Sensitive data prevention</li><li>Audit trail maintenance</li></ul></p><p>OUTPUT FORMAT:
+Provide executable Git commands, configuration files, and shell scripts with detailed explanations for each workflow component.
+</code></pre></div></p><p><h2>Advanced Features</h2></p><p><h3>Smart Branch Management</h3>
+<div class="code-block"><pre><code>yaml
+branch_patterns:
+  feature: "feature/{ticket-id}-{description}"
+  bugfix: "bugfix/{ticket-id}-{description}"
+  hotfix: "hotfix/{version}-{description}"
+  release: "release/{version}"</p><p>protection_rules:
+  main:
+    require_pr: true
+    require_reviews: 2
+    dismiss_stale_reviews: true
+    require_status_checks: ["ci/build", "ci/test"]
+    enforce_admins: false
+  
+  develop:
+    require_pr: true
+    require_reviews: 1
+    require_status_checks: ["ci/test"]</p><p>cleanup_strategy:
+  delete_merged_features: true
+  keep_release_branches: true
+  archive_old_branches: 30_days
+</code></pre></div></p><p><h3>Commit Message Automation</h3>
+<div class="code-block"><pre><code>bash
+# Conventional Commit Template
+commit_template: |
+  {type}({scope}): {subject}
+  
+  {body}
+  
+  {footer}</p><p># Automated commit types
+types:
+  feat: "A new feature"
+  fix: "A bug fix"
+  docs: "Documentation only changes"
+  style: "Changes that do not affect meaning of code"
+  refactor: "Code change that neither fixes bug nor adds feature"
+  perf: "Code change that improves performance"
+  test: "Adding missing tests or correcting existing tests"
+  chore: "Changes to build process or auxiliary tools"</p><p># Auto-linking patterns
+link_patterns:
+  - pattern: "fixes #(\\d+)"
+    replacement: "fixes #$1"
+  - pattern: "(\\w+-\\d+)"
+    replacement: "refs $1"
+</code></pre></div></p><p><h3>Merge Strategy Management</h3>
+<div class="code-block"><pre><code>yaml
+merge_strategies:
+  feature_to_develop:
+    strategy: "squash"
+    title_template: "{type}: {feature_name}"
+    body_template: |
+      Summary of changes:
+      {commit_list}
+      
+      Closes: {issue_references}
+  
+  develop_to_main:
+    strategy: "merge"
+    create_tag: true
+    tag_pattern: "v{version}"
+    
+  hotfix_to_main:
+    strategy: "merge"
+    create_tag: true
+    notify_team: true
+    
+conflict_resolution:
+  auto_resolve:
+    - "package-lock.json"
+    - "yarn.lock"
+    - "Cargo.lock"
+  
+  require_manual:
+    - "src/</em><em>/</em>.cs"
+    - "src/*<em>/</em>.ts"
+    - "database/migrations/<em>"
+</code></pre></div></p><p><h2>Usage Examples</h2></p><p><h3>Basic Workflow Setup</h3>
+<div class="code-block"><pre><code>bash
+# Initialize Git workflow for new project
+git-workflow-manager init \
+  --strategy="github-flow" \
+  --main-branch="main" \
+  --commit-format="conventional" \
+  --auto-cleanup=true</p><p># Create feature branch with validation
+git-workflow-manager create-branch \
+  --type="feature" \
+  --ticket="PROJ-123" \
+  --description="user-authentication"</p><p># Automated commit with validation
+git-workflow-manager commit \
+  --type="feat" \
+  --scope="auth" \
+  --message="add JWT authentication middleware" \
+  --link="PROJ-123"
+</code></pre></div></p><p><h3>Advanced Operations</h3>
+<div class="code-block"><pre><code>bash
+# Bulk branch cleanup
+git-workflow-manager cleanup \
+  --merged-only \
+  --exclude-pattern="release/</em>" \
+  --dry-run</p><p># Merge with conflict resolution
+git-workflow-manager merge \
+  --source="feature/PROJ-123-auth" \
+  --target="develop" \
+  --strategy="squash" \
+  --auto-resolve-locks</p><p># Release preparation
+git-workflow-manager prepare-release \
+  --version="1.2.0" \
+  --from="develop" \
+  --generate-changelog \
+  --create-pr
+</code></pre></div></p><p><h2>Integration Patterns</h2></p><p><h3>GitHub Integration</h3>
+<div class="code-block"><pre><code>yaml
+github_integration:
+  pr_templates:
+    feature:
+      title: "{type}: {description}"
+      body: |
+        ## Changes
+        {change_summary}
+        
+        ## Testing
+        - [ ] Unit tests pass
+        - [ ] Integration tests pass
+        - [ ] Manual testing completed
+        
+        Fixes #{issue_number}
+  
+  status_checks:
+    required:
+      - "ci/build"
+      - "ci/test"
+      - "security/scan"
+    
+  auto_merge:
+    conditions:
+      - "all_checks_pass"
+      - "approved_by >= 1"
+      - "no_conflicts"
+</code></pre></div></p><p><h3>CI/CD Integration</h3>
+<div class="code-block"><pre><code>yaml
+ci_triggers:
+  on_push:
+    branches: ["main", "develop"]
+    actions: ["build", "test", "deploy-staging"]
+    
+  on_pr:
+    actions: ["build", "test", "security-scan"]
+    
+  on_tag:
+    pattern: "v*"
+    actions: ["build", "test", "deploy-production"]</p><p>pre_commit_hooks:
+  - id: "lint-code"
+    command: "npm run lint"
+  - id: "format-code"
+    command: "npm run format"
+  - id: "run-tests"
+    command: "npm test"
+  - id: "check-secrets"
+    command: "git-secrets --scan"
+</code></pre></div></p><p><h2>Best Practices</h2></p><p><h3>Team Collaboration</h3>
+<ul><li><strong>Consistent Naming</strong>: Enforce branch and commit naming conventions</li><li><strong>Clear History</strong>: Use appropriate merge strategies to maintain readable history</li><li><strong>Automated Checks</strong>: Implement pre-commit hooks for quality gates</li><li><strong>Documentation</strong>: Auto-generate changelogs and release notes</li></ul></p><p><h3>Repository Health</h3>
+<ul><li><strong>Branch Cleanup</strong>: Automatically remove merged feature branches</li><li><strong>Tag Management</strong>: Consistent versioning and release tagging</li><li><strong>Conflict Prevention</strong>: Early conflict detection and resolution</li><li><strong>Security</strong>: Signed commits and sensitive data protection</li></ul></p><p><h3>Workflow Optimization</h3>
+<ul><li><strong>Automation</strong>: Reduce manual Git operations through scripting</li><li><strong>Integration</strong>: Seamless connection with development tools</li><li><strong>Monitoring</strong>: Track workflow metrics and team productivity</li><li><strong>Flexibility</strong>: Adaptable to different team sizes and project types</li></ul></p><p><h2>Common Workflow Patterns</h2></p><p><h3>GitHub Flow</h3>
+<div class="code-block"><pre><code>mermaid
+graph TD
+    A[main] --> B[feature/new-feature]
+    B --> C[commits]
+    C --> D[Pull Request]
+    D --> E{Code Review}
+    E -->|Approved| F[Merge to main]
+    E -->|Changes needed| C
+    F --> G[Deploy to production]
+</code></pre></div></p><p><h3>Git Flow</h3>
+<div class="code-block"><pre><code>mermaid
+graph TD
+    A[main] --> B[develop]
+    B --> C[feature/new-feature]
+    C --> D[merge to develop]
+    D --> E[release/1.0.0]
+    E --> F[merge to main]
+    F --> G[tag v1.0.0]
+    G --> H[merge back to develop]
+    A --> I[hotfix/critical-bug]
+    I --> J[merge to main]
+    J --> K[merge to develop]
+</code></pre></div></p><p>This comprehensive Git Workflow Manager provides teams with automated, consistent, and secure version control practices while maintaining flexibility for different development methodologies.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

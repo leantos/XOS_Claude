@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABSOLUTE-RULES - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># ?? ABSOLUTE RULES - The Unbreakable Laws of XOS Framework</p><p><h2>?? CRITICAL: These Rules Cannot Be Broken</h2></p><p>Violating ANY of these rules will cause runtime errors, broken functionality, or system instability. These are framework requirements, not suggestions.</p><p>---</p><p><h2>?? FRONTEND RULES (React/XOS Components)</h2></p><p><h3>RULE 1: Component Structure (MANDATORY)</h3>
+<div class="code-block"><pre><code>javascript
+// ? CORRECT - Always follow this EXACT structure
+export default class [ComponentName] extends cntrl.XOSComponent {
+    constructor(props) {
+        super(props, new [ComponentName]VM(props));  // MUST pass VM to super
+    }
+}</p><p>// ? WRONG - These will break
+class Component extends React.Component { }     // NO - Must extend XOSComponent
+class Component extends cntrl.XOSComponent {
+    constructor(props) {
+        super(props);  // NO - Must pass VM
+    }
+}
+</code></pre></div></p><p><h3>RULE 2: Import Pattern (MANDATORY)</h3>
+<div class="code-block"><pre><code>javascript
+// ? CORRECT - Always use this exact import
+import * as cntrl from '../../xos-components';</p><p>// ? WRONG - These will fail
+import { XOSComponent } from '../../xos-components/XOSComponent.js';
+import XOSComponent from '../../xos-components';
+</code></pre></div></p><p><h3>RULE 3: ViewModel Data Pattern (CRITICAL)</h3>
+<div class="code-block"><pre><code>javascript
+// ? CORRECT - Get reference to Data, then modify properties
+init() {
+    const model = this.Data;     // Step 1: Get reference
+    model.userName = '';         // Step 2: Set properties on reference
+    model.isLoading = false;
+}</p><p>// ? WRONG - These will throw "Cannot set property Data" error
+init() {
+    this.Data = { userName: '' };           // NEVER set Data directly
+    this.Data.userName = '';                // NEVER access Data directly
+}
+</code></pre></div></p><p><h3>RULE 4: Event Handler Pattern (CRITICAL)</h3>
+<div class="code-block"><pre><code>javascript
+// ? CORRECT - Three-step pattern (NEVER change this)
+handleInputChange = (e) => {
+    if (this.VM) {                    // Step 1: Check VM exists
+        const model = this.VM.Data;   // Step 2: Get Data reference  
+        model[e.name] = e.value;      // Step 3: Use e.value (NOT e.target.value)
+        this.VM.updateUI();           // Step 4: ALWAYS call updateUI()
+    }
+};</p><p>// ? WRONG - These will break input handling
+handleInputChange = (e) => {
+    this.VM.Data[e.name] = e.target.value;  // NO - Direct Data access
+    // Missing updateUI() - UI won't update
+};
+</code></pre></div></p><p><h3>RULE 5: XOS Input Requirements (MANDATORY)</h3>
+<div class="code-block"><pre><code>javascript
+// ? CORRECT - All XOS inputs MUST have name prop
+<cntrl.XOSTextbox
+    name="userName"                    // REQUIRED - Must match Data property
+    value={data.userName || ''}        // REQUIRED - Prevent undefined
+    onChange={this.handleInputChange}  // REQUIRED - Use exact handler
+/></p><p>// ? WRONG - These will break
+<cntrl.XOSTextbox
+    value={data.userName}              // NO - Will break if undefined
+    onChange={(e) => setValue(e.target.value)}  // NO - Wrong event object
+/>
+</code></pre></div></p><p>---</p><p><h2>?? BACKEND RULES (Controllers/Services)</h2></p><p><h3>RULE 6: API Endpoint Pattern (MANDATORY)</h3>
+<div class="code-block"><pre><code>csharp
+// ? CORRECT - 95% of endpoints MUST be POST
+[HttpPost("Save")]
+public async Task<EntityType> SaveAsync([FromBody] EntityType input)
+{
+    return await serviceManager.SaveAsync(input, this.GetRequestInfo());
+}</p><p>// ? WRONG - Avoid these patterns
+[HttpGet]           // NO - Use POST for consistency
+[HttpPut]           // NO - Use POST for consistency
+[HttpDelete]        // NO - Use POST for consistency
+public IActionResult Save()  // NO - Return domain types directly
+</code></pre></div></p><p><h3>RULE 7: Controller Base Class (MANDATORY)</h3>
+<div class="code-block"><pre><code>csharp
+// ? CORRECT - Always extend XOSBaseController
+public class EntityController : XOSBaseController
+{
+    // Access to this.ClientID, this.SiteID, this.GetRequestInfo()
+}</p><p>// ? WRONG - These break XOS functionality
+public class EntityController : ControllerBase { }  // NO - Missing XOS context
+public class EntityController : Controller { }      // NO - Missing XOS context
+</code></pre></div></p><p><h3>RULE 8: Service Base Class (MANDATORY)</h3>
+<div class="code-block"><pre><code>csharp
+// ? CORRECT - Always extend XOSServiceBase
+public class EntityService : XOSServiceBase, IEntityService
+{
+    public EntityService(IServiceProvider serviceProvider, ILogger<EntityService> logger) 
+        : base(serviceProvider, logger) { }
+}</p><p>// ? WRONG - These break data access
+public class EntityService : IEntityService { }  // NO - Missing XOS infrastructure
+</code></pre></div></p><p>---</p><p><h2>?? DATABASE RULES (Data Access)</h2></p><p><h3>RULE 9: Database Query Pattern (CRITICAL)</h3>
+<div class="code-block"><pre><code>csharp
+// ? CORRECT - MUST use GetValue<T> pattern
+await dbService.GetEntityDataAsync<Entity>(query, dbParams, (row) => {
+    return new Entity {
+        ID = row.GetValue<int>("id"),                    // REQUIRED pattern
+        Name = row.GetValue<string>("name", "default"),  // With default value
+        Date = row.GetValue<DateTime?>("date")           // Nullable types
+    };
+});</p><p>// ? WRONG - These will cause runtime errors
+return new Entity {
+    ID = row["id"],              // NO - Use GetValue<T>
+    Name = row.GetString(0),     // NO - Use GetValue<T>
+    ID = (int)row["id"]          // NO - Use GetValue<T>
+};
+</code></pre></div></p><p><h3>RULE 10: Database Service Pattern (MANDATORY)</h3>
+<div class="code-block"><pre><code>csharp
+// ? CORRECT - Always use GetDBService pattern
+using (var dbService = this.GetDBService(clientId.ToString(), false))
+{
+    // Database operations
+}</p><p>// ? WRONG - These break multi-tenancy
+using (var connection = new NpgsqlConnection(connectionString)) { }  // NO
+// Direct ADO.NET usage breaks XOS data framework
+</code></pre></div></p><p><h3>RULE 11: Transaction Pattern (CRITICAL)</h3>
+<div class="code-block"><pre><code>csharp
+// ? CORRECT - Always commit before SignalR
+using (var dbService = this.GetDBService(clientId.ToString(), false))
+using (var tran = dbService.BeginTransaction())
+{
+    try
+    {
+        // Database operations
+        tran.Commit();                    // MUST commit first
+        
+        // SignalR AFTER commit
+        await HubContext.Clients.All.SendAsync("Updated", data);
+    }
+    catch
+    {
+        tran.Rollback();
+        throw;
+    }
+}</p><p>// ? WRONG - This will cause deadlocks
+// SignalR before commit
+// Missing rollback on error
+</code></pre></div></p><p>---</p><p><h2>?? STYLING RULES (CSS/Bootstrap)</h2></p><p><h3>RULE 12: Theme Integration (MANDATORY)</h3>
+<div class="code-block"><pre><code>javascript
+// ? CORRECT - Import theme.css in App.js ONLY
+import './theme.css';  // MUST be in src/ folder</p><p>// ? WRONG - These will fail
+import '../../../assets/css/theme.css';  // NO - Can't import outside src/
+// Multiple theme imports in different components
+</code></pre></div></p><p><h3>RULE 13: Bootstrap Class Usage (REQUIRED)</h3>
+<div class="code-block"><pre><code>jsx
+// ? CORRECT - Always use Bootstrap classes for layout
+<div className="container">
+    <div className="row">
+        <div className="col-md-6">
+            <div className="card">
+                <div className="card-body">
+</code></pre></div></p><p><h3>RULE 14: Icon Classes (MANDATORY)</h3>
+<div class="code-block"><pre><code>jsx
+// ? CORRECT - Use 'fa' not 'fas'
+<i className="fa fa-save"></i>
+<i className="fa fa-user"></i></p><p>// ? WRONG - These won't display
+<i className="fas fa-save"></i>  // NO - Use 'fa'
+<i className="fab fa-user"></i>  // NO - Use 'fa'
+</code></pre></div></p><p>---</p><p><h2>?? API RULES (Frontend to Backend)</h2></p><p><h3>RULE 15: API Call Pattern (MANDATORY)</h3>
+<div class="code-block"><pre><code>javascript
+// ? CORRECT - Use Utils.ajax with relative URLs
+Utils.ajax({
+    url: '/api/Entity/Save',     // MUST be relative
+    data: { id: 1, name: 'test' }
+}, (response) => {
+    // Success callback
+});</p><p>// ? WRONG - These patterns will fail
+fetch('/api/Entity/Save', { ... });        // NO - Use Utils.ajax
+axios.post('/api/Entity/Save', data);       // NO - Use Utils.ajax
+Utils.ajax({ url: 'http://localhost/...' }); // NO - Relative URLs only
+</code></pre></div></p><p><h3>RULE 16: Error Handling Pattern (REQUIRED)</h3>
+<div class="code-block"><pre><code>javascript
+// ? CORRECT - Always handle errors
+Utils.ajax({
+    url: '/api/Entity/Save',
+    data: input
+}).then(response => {
+    model.successMessage = 'Saved successfully';
+}).catch(error => {
+    model.errorMessage = error.message || 'Save failed';
+}).finally(() => {
+    model.isLoading = false;
+    this.updateUI();  // NEVER forget this
+});
+</code></pre></div></p><p>---</p><p><h2>?? JQUERY RULES (Required Dependencies)</h2></p><p><h3>RULE 17: jQuery Usage (MANDATORY)</h3>
+<div class="code-block"><pre><code>javascript
+// ? CORRECT - jQuery is REQUIRED, cannot be removed
+$('body').addClass('overflow-hidden');
+$('.modal').modal('show');
+$(element).val(value);</p><p>// ? WRONG - Don't try to remove jQuery
+// XOS framework depends on jQuery internally
+// Bootstrap components require jQuery
+</code></pre></div></p><p>---</p><p><h2>?? WHAT HAPPENS IF YOU BREAK THESE RULES</h2></p><p><h3>Frontend Rule Violations:</h3>
+<ul><li><strong>Data property errors</strong>: "Cannot set property Data of #<VMBase>"</li><li><strong>Input not working</strong>: Textboxes won't accept keyboard input</li><li><strong>UI not updating</strong>: Changes don't reflect in the interface</li><li><strong>Import errors</strong>: "Cannot resolve module" errors</li></ul></p><p><h3>Backend Rule Violations:</h3>
+<ul><li><strong>Database errors</strong>: "Column does not exist" runtime errors</li><li><strong>Connection failures</strong>: Multi-tenant routing breaks</li><li><strong>Transaction deadlocks</strong>: Database locks and timeouts</li><li><strong>Authorization failures</strong>: Missing XOS security context</li></ul></p><p><h3>API Rule Violations:</h3>
+<ul><li><strong>CORS errors</strong>: Cross-origin request failures</li><li><strong>404 errors</strong>: Endpoints not found</li><li><strong>Timeout errors</strong>: Requests hang indefinitely</li><li><strong>Data corruption</strong>: Invalid data formats</li></ul></p><p>---</p><p><h2>? COMPLIANCE CHECKLIST</h2></p><p>Before deploying any XOS module, verify:</p><p><h3>Frontend Checklist:</h3>
+<ul><li>[ ] Component extends <code>cntrl.XOSComponent</code></li><li>[ ] ViewModel passed to <code>super(props, vm)</code></li><li>[ ] Data property uses reference pattern</li><li>[ ] All inputs have <code>name</code> prop</li><li>[ ] Event handlers call <code>updateUI()</code></li><li>[ ] Theme.css imported in App.js only</li></ul></p><p><h3>Backend Checklist:</h3>
+<ul><li>[ ] Controller extends <code>XOSBaseController</code></li><li>[ ] Service extends <code>XOSServiceBase</code></li><li>[ ] All endpoints are POST</li><li>[ ] Database uses <code>GetValue<T></code> pattern</li><li>[ ] Transactions commit before SignalR</li><li>[ ] Returns domain types directly</li></ul></p><p><h3>API Checklist:</h3>
+<ul><li>[ ] Uses <code>Utils.ajax</code> pattern</li><li>[ ] Relative URLs only</li><li>[ ] Error handling implemented</li><li>[ ] Loading states managed</li></ul></p><p><strong>Remember</strong>: These rules exist because the XOS framework requires them. They are not optional suggestions - they are the foundation that makes XOS work correctly.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

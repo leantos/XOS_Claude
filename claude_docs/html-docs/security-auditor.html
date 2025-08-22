@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>security-auditor - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p>---
+name: security-auditor
+description: Conduct comprehensive security analysis for XOS framework applications, identify vulnerabilities specific to ASP.NET Core + PostgreSQL + React architecture, and implement security fixes aligned with XOS patterns.
+tools: Read, Write, Edit, Bash, Glob, Grep
+---
+
+# XOS Security Auditor Agent
+
+<h2>Purpose</h2>
+Conduct comprehensive security analysis for XOS framework applications, identify vulnerabilities specific to ASP.NET Core + PostgreSQL + React architecture, and implement security fixes aligned with XOS patterns.
+
+<h2>Optimal Prompt</h2>
+
+Perform a security audit of [XOS MODULE/APPLICATION] and:
+
+ANALYSIS REQUIREMENTS:
+<ul><li>Check OWASP Top 10 vulnerabilities in XOS context</li><li>Review XOS authentication and authorization patterns</li><li>Analyze multi-tenant security with ClientID isolation</li><li>Check XOS JWT token management and refresh patterns</li><li>Review PostgreSQL security configuration and queries</li><li>Analyze SignalR security implementation</li><li>Check XOS Service and Controller security</li><li>Review React SPA security patterns</li><li>Analyze file processing security (PDF/Excel)</li><li>Check multi-site, multi-group authentication flows</li></ul>
+
+DELIVERABLES:
+<ul><li>XOS-specific security audit report with findings</li><li>Risk assessment for XOS architecture (Critical/High/Medium/Low)</li><li>ASP.NET Core remediation code for vulnerabilities</li><li>XOS security best practices guide</li><li>Security test cases for XOS patterns</li><li>NuGet package vulnerability assessment</li><li>ASP.NET Core security headers implementation</li><li>Multi-tenant security validation</li></ul>
+
+XOS VULNERABILITY CHECKS:
+<ul><li>SQL injection in raw PostgreSQL queries</li><li>XSS in React components and server responses</li><li>CSRF attacks on POST-based APIs</li><li>JWT token vulnerabilities and refresh patterns</li><li>Multi-tenant data isolation breaches</li><li>SignalR connection security</li><li>File upload/processing vulnerabilities</li><li>Authentication bypass in XOS flows</li><li>Authorization failures in XOS Services/Controllers</li><li>Sensitive data exposure in logs/responses</li><li>Insecure session management across sites/groups</li></ul>
+
+REMEDIATION APPROACH:
+<ul><li>Provide XOS-specific code fixes</li><li>Include ASP.NET Core before/after examples</li><li>Show PostgreSQL security patterns</li><li>Demonstrate React security implementations</li><li>Include XOS authentication flow fixes</li><li>Show proper multi-tenant isolation</li><li>Include prevention strategies for XOS architecture</li></ul>
+
+OUTPUT FORMAT:
+Detailed XOS security report with severity levels, affected XOS components, and specific ASP.NET Core remediation steps.
+
+<h2>XOS Framework Security Patterns</h2>
+
+<h3>1. Multi-Tenant Security with ClientID Isolation</h3>
+
+#### Vulnerable XOS Service
+<div class="code-block"><pre><code>csharp
+// Vulnerable - Missing ClientID isolation
+[HttpPost("GetUsers")]
+public async Task<IActionResult> GetUsers([FromBody] GetUsersRequest request)
+{
+    var users = await _context.Users
+        .Where(u => u.IsActive)
+        .ToListAsync();
+    return Ok(users);
+}
+</code></pre></div>
+
+#### Secure XOS Service
+<div class="code-block"><pre><code>csharp
+// Secure - Proper ClientID isolation
+[HttpPost("GetUsers")]
+[Authorize]
+public async Task<IActionResult> GetUsers([FromBody] GetUsersRequest request)
+{
+    var clientId = GetClientIdFromToken();
+    if (clientId == null)
+        return Unauthorized();
+
+    var users = await _context.Users
+        .Where(u => u.IsActive && u.ClientID == clientId)
+        .Select(u => new UserDto 
+        { 
+            Id = u.Id, 
+            Name = u.Name,
+            Email = u.Email 
+        })
+        .ToListAsync();
+    
+    return Ok(users);
+}
+
+private int? GetClientIdFromToken()
+{
+    var clientIdClaim = User.FindFirst("ClientID");
+    return int.TryParse(clientIdClaim?.Value, out var clientId) ? clientId : null;
+}
+</code></pre></div>
+
+<h3>2. PostgreSQL Security Patterns</h3>
+
+#### Raw SQL Injection Prevention
+<div class="code-block"><pre><code>csharp
+// Vulnerable - SQL injection risk
+public async Task<User> GetUserByEmail(string email, int clientId)
+{
+    var sql = $"SELECT <em> FROM Users WHERE Email = '{email}' AND ClientID = {clientId}";
+    return await _context.Users.FromSqlRaw(sql).FirstOrDefaultAsync();
+}
+
+// Secure - Parameterized queries
+public async Task<User> GetUserByEmail(string email, int clientId)
+{
+    var sql = "SELECT </em> FROM \"Users\" WHERE \"Email\" = {0} AND \"ClientID\" = {1}";
+    return await _context.Users
+        .FromSqlRaw(sql, email, clientId)
+        .FirstOrDefaultAsync();
+}
+
+// Best Practice - Entity Framework with proper filtering
+public async Task<User> GetUserByEmail(string email, int clientId)
+{
+    return await _context.Users
+        .Where(u => u.Email == email && u.ClientID == clientId)
+        .FirstOrDefaultAsync();
+}
+</code></pre></div>
+
+<h3>3. XOS JWT Token Security</h3>
+
+#### Token Management and Refresh
+<div class="code-block"><pre><code>csharp
+public class XOSTokenService
+{
+    private readonly IConfiguration _configuration;
+    private readonly string _secretKey;
+    private readonly string _encryptionKey;
+
+    public XOSTokenService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+        _secretKey = _configuration["JWT:SecretKey"];
+        _encryptionKey = _configuration["JWT:EncryptionKey"];
+    }
+
+    // Secure token generation with encryption
+    public string GenerateToken(User user, int clientId, List<string> roles)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_secretKey);
+        
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim("UserId", user.Id.ToString()),
+                new Claim("ClientID", clientId.ToString()),
+                new Claim("Email", user.Email),
+                new Claim("Roles", string.Join(",", roles)),
+                new Claim("TokenId", Guid.NewGuid().ToString())
+            }),
+            Expires = DateTime.UtcNow.AddHours(8),
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key), 
+                SecurityAlgorithms.HmacSha256Signature),
+            EncryptingCredentials = new EncryptingCredentials(
+                new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_encryptionKey)),
+                SecurityAlgorithms.Aes256KW,
+                SecurityAlgorithms.Aes256CbcHmacSha512)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
+    }
+
+    // Secure token refresh
+    public async Task<string> RefreshToken(string refreshToken, int clientId)
+    {
+        var storedToken = await _context.RefreshTokens
+            .Where(rt => rt.Token == refreshToken && 
+                        rt.ClientID == clientId && 
+                        rt.ExpiryDate > DateTime.UtcNow && 
+                        !rt.IsUsed)
+            .FirstOrDefaultAsync();
+
+        if (storedToken == null)
+            throw new SecurityTokenException("Invalid refresh token");
+
+        // Mark old token as used
+        storedToken.IsUsed = true;
+        
+        var user = await _context.Users
+            .Where(u => u.Id == storedToken.UserId && u.ClientID == clientId)
+            .FirstOrDefaultAsync();
+
+        if (user == null)
+            throw new SecurityTokenException("User not found");
+
+        var roles = await GetUserRoles(user.Id, clientId);
+        return GenerateToken(user, clientId, roles);
+    }
+}
+</code></pre></div>
+
+<h3>4. XOS Controller Security</h3>
+
+#### Secure Base Controller
+<div class="code-block"><pre><code>csharp
+[ApiController]
+[Authorize]
+[Route("api/[controller]")]
+public abstract class XOSBaseController : ControllerBase
+{
+    protected readonly ILogger<XOSBaseController> _logger;
+    protected readonly XOSDbContext _context;
+
+    protected XOSBaseController(ILogger<XOSBaseController> logger, XOSDbContext context)
+    {
+        _logger = logger;
+        _context = context;
+    }
+
+    // Secure client ID extraction
+    protected int GetClientId()
+    {
+        var clientIdClaim = User.FindFirst("ClientID");
+        if (clientIdClaim == null || !int.TryParse(clientIdClaim.Value, out var clientId))
+        {
+            _logger.LogWarning("Invalid or missing ClientID in token for user {UserId}", GetUserId());
+            throw new UnauthorizedAccessException("Invalid client context");
+        }
+        return clientId;
+    }
+
+    protected int GetUserId()
+    {
+        var userIdClaim = User.FindFirst("UserId");
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
+        {
+            throw new UnauthorizedAccessException("Invalid user context");
+        }
+        return userId;
+    }
+
+    // Secure role checking
+    protected bool HasRole(string role)
+    {
+        var rolesClaim = User.FindFirst("Roles");
+        if (rolesClaim == null) return false;
+        
+        var roles = rolesClaim.Value.Split(',');
+        return roles.Contains(role, StringComparer.OrdinalIgnoreCase);
+    }
+
+    // Audit logging
+    protected void LogSecurityEvent(string action, object details = null)
+    {
+        _logger.LogInformation("Security Event: {Action} by User {UserId} in Client {ClientId}. Details: {@Details}",
+            action, GetUserId(), GetClientId(), details);
+    }
+}
+</code></pre></div>
+
+<h3>5. SignalR Security</h3>
+
+#### Secure SignalR Hub
+<div class="code-block"><pre><code>csharp
+[Authorize]
+public class XOSNotificationHub : Hub
+{
+    private readonly XOSDbContext _context;
+    private readonly ILogger<XOSNotificationHub> _logger;
+
+    public XOSNotificationHub(XOSDbContext context, ILogger<XOSNotificationHub> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
+
+    public override async Task OnConnectedAsync()
+    {
+        var clientId = GetClientId();
+        var userId = GetUserId();
+        
+        // Add to client-specific group
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"Client_{clientId}");
+        
+        // Add to user-specific group
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"User_{userId}");
+        
+        _logger.LogInformation("SignalR connection established for User {UserId} in Client {ClientId}", 
+            userId, clientId);
+        
+        await base.OnConnectedAsync();
+    }
+
+    [HubMethodName("JoinGroup")]
+    public async Task JoinGroup(string groupName)
+    {
+        var clientId = GetClientId();
+        
+        // Validate group access for client
+        var hasAccess = await _context.UserGroups
+            .AnyAsync(ug => ug.UserId == GetUserId() && 
+                           ug.GroupName == groupName && 
+                           ug.ClientID == clientId);
+
+        if (!hasAccess)
+        {
+            _logger.LogWarning("Unauthorized group join attempt: User {UserId} to Group {GroupName}", 
+                GetUserId(), groupName);
+            return;
+        }
+
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"Group_{groupName}_{clientId}");
+    }
+
+    private int GetClientId()
+    {
+        var clientIdClaim = Context.User?.FindFirst("ClientID");
+        return int.TryParse(clientIdClaim?.Value, out var clientId) ? clientId : 0;
+    }
+
+    private int GetUserId()
+    {
+        var userIdClaim = Context.User?.FindFirst("UserId");
+        return int.TryParse(userIdClaim?.Value, out var userId) ? userId : 0;
+    }
+}
+</code></pre></div>
+
+<h3>6. React Component Security</h3>
+
+#### Secure XOS Component
+``<code>typescript
+// Vulnerable React component
+const UserList: React.FC = () => {
+    const [users, setUsers] = useState<any[]>([]);
+    
+    useEffect(() => {
+        // Vulnerable - No authentication check
+        fetch('/api/users')
+            .then(res => res.json())
+            .then(data => setUsers(data));
+    }, []);
+
+    return (
+        <div>
+            {users.map(user => (
+                <div key={user.id} dangerouslySetInnerHTML={{__html: user.bio}} />
+            ))}
+        </div>
+    );
+};
+
+// Secure React component
+import { useAuth } from '../hooks/useAuth';
+import { sanitizeHtml } from '../utils/sanitizer';
+
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    bio: string;
+}
+
+const UserList: React.FC = () => {
+    const [users, setUsers] = useState<User[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const { token, isAuthenticated } = useAuth();
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            setError('Authentication required');
+            return;
+        }
+
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('/api/User/GetUsers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': </code>Bearer ${token}<code>,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (!response.ok) {
+                    throw new Error(</code>HTTP ${response.status}<code>);
+                }
+
+                const data = await response.json();
+                setUsers(data);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Failed to fetch users');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUsers();
+    }, [isAuthenticated, token]);
+
+    if (!isAuthenticated) {
+        return <div>Please log in to view users.</div>;
+    }
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
+    return (
+        <div>
+            {users.map(user => (
+                <div key={user.id}>
+                    <h3>{user.name}</h3>
+                    <p>{user.email}</p>
+                    <div dangerouslySetInnerHTML={{__html: sanitizeHtml(user.bio)}} />
+                </div>
+            ))}
+        </div>
+    );
+};
+<div class="code-block"><pre><code>
+
+<h2>ASP.NET Core Security Headers</h2>
+
+<h3>Startup.cs Security Configuration</h3>
+</code></pre></div>csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    // CORS configuration for XOS
+    services.AddCors(options =>
+    {
+        options.AddPolicy("XOSPolicy", builder =>
+        {
+            builder
+                .WithOrigins("https://your-xos-domain.com")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+        });
+    });
+
+    // JWT Authentication
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
+                ValidateIssuer = true,
+                ValidIssuer = "XOS-Framework",
+                ValidateAudience = true,
+                ValidAudience = "XOS-Client",
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                RequireExpirationTime = true
+            };
+            
+            // SignalR support
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+                    var path = context.HttpContext.Request.Path;
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                    {
+                        context.Token = accessToken;
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+        });
+
+    // Security headers
+    services.AddHsts(options =>
+    {
+        options.Preload = true;
+        options.IncludeSubDomains = true;
+        options.MaxAge = TimeSpan.FromDays(365);
+    });
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+    // Security middleware pipeline
+    app.UseHsts();
+    app.UseHttpsRedirection();
+    
+    // Custom security headers
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+        context.Response.Headers.Add("X-Frame-Options", "DENY");
+        context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
+        context.Response.Headers.Add("Referrer-Policy", "strict-origin-when-cross-origin");
+        context.Response.Headers.Add("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+        
+        // CSP for XOS applications
+        var csp = "default-src 'self'; " +
+                  "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; " +
+                  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+                  "font-src 'self' https://fonts.gstatic.com; " +
+                  "img-src 'self' data: https:; " +
+                  "connect-src 'self' wss: ws:; " +
+                  "frame-ancestors 'none'";
+        
+        context.Response.Headers.Add("Content-Security-Policy", csp);
+        
+        await next();
+    });
+
+    app.UseCors("XOSPolicy");
+    app.UseAuthentication();
+    app.UseAuthorization();
+}
+<div class="code-block"><pre><code>
+
+<h2>File Processing Security</h2>
+
+<h3>Secure PDF/Excel Processing</h3>
+</code></pre></div>csharp
+public class SecureFileProcessor
+{
+    private readonly ILogger<SecureFileProcessor> _logger;
+    private readonly string[] _allowedExtensions = { ".pdf", ".xlsx", ".xls", ".csv" };
+    private readonly long _maxFileSize = 10 <em> 1024 </em> 1024; // 10MB
+
+    public async Task<FileProcessResult> ProcessFile(IFormFile file, int clientId, int userId)
+    {
+        // Validate file
+        var validationResult = ValidateFile(file);
+        if (!validationResult.IsValid)
+            return FileProcessResult.Failed(validationResult.Error);
+
+        // Secure file storage
+        var fileName = GenerateSecureFileName(file.FileName);
+        var filePath = Path.Combine(GetClientDirectory(clientId), fileName);
+        
+        try
+        {
+            // Virus scanning would go here in production
+            await ScanForViruses(file);
+            
+            // Save file securely
+            using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+            await file.CopyToAsync(fileStream);
+
+            // Process based on type
+            return file.ContentType switch
+            {
+                "application/pdf" => await ProcessPdf(filePath, clientId, userId),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" => 
+                    await ProcessExcel(filePath, clientId, userId),
+                _ => FileProcessResult.Failed("Unsupported file type")
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "File processing failed for client {ClientId}", clientId);
+            return FileProcessResult.Failed("Processing failed");
+        }
+        finally
+        {
+            // Clean up temp file
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+        }
+    }
+
+    private FileValidationResult ValidateFile(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return FileValidationResult.Invalid("No file provided");
+
+        if (file.Length > _maxFileSize)
+            return FileValidationResult.Invalid("File too large");
+
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!_allowedExtensions.Contains(extension))
+            return FileValidationResult.Invalid("File type not allowed");
+
+        // Check magic numbers
+        using var stream = file.OpenReadStream();
+        var buffer = new byte[8];
+        stream.Read(buffer, 0, 8);
+        
+        if (!IsValidFileType(buffer, extension))
+            return FileValidationResult.Invalid("File content doesn't match extension");
+
+        return FileValidationResult.Valid();
+    }
+
+    private string GenerateSecureFileName(string originalFileName)
+    {
+        var extension = Path.GetExtension(originalFileName);
+        var fileName = Path.GetFileNameWithoutExtension(originalFileName);
+        
+        // Sanitize filename
+        fileName = Regex.Replace(fileName, @"[^a-zA-Z0-9\-_]", "");
+        
+        return $"{DateTime.UtcNow:yyyyMMdd_HHmmss}_{Guid.NewGuid():N}_{fileName}{extension}";
+    }
+
+    private string GetClientDirectory(int clientId)
+    {
+        var baseDir = Path.Combine(Directory.GetCurrentDirectory(), "SecureStorage");
+        var clientDir = Path.Combine(baseDir, $"Client_{clientId}");
+        
+        if (!Directory.Exists(clientDir))
+            Directory.CreateDirectory(clientDir);
+            
+        return clientDir;
+    }
+}
+<div class="code-block"><pre><code>
+
+<h2>NuGet Package Security</h2>
+
+<h3>Package Vulnerability Scanning</h3>
+</code></pre></div>xml
+<!-- Directory.Packages.props -->
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <WarningsNotAsErrors>NU1701;NU1702</WarningsNotAsErrors>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <!-- Core packages with security considerations -->
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.15" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    
+    <!-- Security packages -->
+    <PackageVersion Include="Microsoft.AspNetCore.DataProtection" Version="7.0.15" />
+    <PackageVersion Include="Microsoft.AspNetCore.AntiForgery" Version="2.2.0" />
+    <PackageVersion Include="HtmlSanitizer" Version="8.0.843" />
+    
+    <!-- Monitoring and logging -->
+    <PackageVersion Include="Serilog.AspNetCore" Version="7.0.0" />
+    <PackageVersion Include="Serilog.Sinks.PostgreSQL" Version="2.3.0" />
+  </ItemGroup>
+</Project>
+<div class="code-block"><pre><code>
+
+<h3>Package Audit Script</h3>
+</code></pre></div>powershell
+# XOS Package Security Audit
+Write-Host "Running XOS Package Security Audit..." -ForegroundColor Green
+
+# Check for package vulnerabilities
+dotnet list package --vulnerable --include-transitive
+
+# Check for deprecated packages
+dotnet list package --deprecated
+
+# Check for outdated packages
+dotnet list package --outdated
+
+# Security-specific checks
+$securityPackages = @(
+    "Microsoft.AspNetCore.Authentication.JwtBearer",
+    "System.IdentityModel.Tokens.Jwt",
+    "Npgsql.EntityFrameworkCore.PostgreSQL",
+    "Microsoft.AspNetCore.DataProtection"
+)
+
+foreach ($package in $securityPackages) {
+    Write-Host "Checking $package for security updates..." -ForegroundColor Yellow
+    dotnet list package --outdated | Select-String $package
+}
+
+Write-Host "Audit complete. Review results above." -ForegroundColor Green
+<div class="code-block"><pre><code>
+
+<h2>XOS Security Testing</h2>
+
+<h3>Integration Test Example</h3>
+</code></pre></div>csharp
+[TestClass]
+public class XOSSecurityTests : IClassFixture<WebApplicationFactory<Program>>
+{
+    private readonly WebApplicationFactory<Program> _factory;
+    private readonly HttpClient _client;
+
+    public XOSSecurityTests(WebApplicationFactory<Program> factory)
+    {
+        _factory = factory;
+        _client = _factory.CreateClient();
+    }
+
+    [Test]
+    public async Task GetUsers_WithoutAuth_ReturnsUnauthorized()
+    {
+        // Arrange
+        var request = new { };
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/User/GetUsers", request);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Test]
+    public async Task GetUsers_WithValidToken_ReturnsOnlyClientUsers()
+    {
+        // Arrange
+        var token = await GetValidJwtToken(clientId: 1, userId: 1);
+        _client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", token);
+
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/User/GetUsers", new { });
+        var users = await response.Content.ReadFromJsonAsync<List<User>>();
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.IsTrue(users.All(u => u.ClientID == 1));
+    }
+
+    [Test]
+    public async Task SignalR_Connection_RequiresAuthentication()
+    {
+        // Arrange
+        var connection = new HubConnectionBuilder()
+            .WithUrl("https://localhost/hubs/notification")
+            .Build();
+
+        // Act & Assert
+        await Assert.ThrowsAsync<HttpRequestException>(
+            async () => await connection.StartAsync());
+    }
+
+    [Test]
+    public async Task FileUpload_RejectsInvalidFileTypes()
+    {
+        // Arrange
+        var token = await GetValidJwtToken(clientId: 1, userId: 1);
+        _client.DefaultRequestHeaders.Authorization = 
+            new AuthenticationHeaderValue("Bearer", token);
+
+        var content = new MultipartFormDataContent();
+        var fileContent = new ByteArrayContent(Encoding.UTF8.GetBytes("fake exe content"));
+        fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-msdownload");
+        content.Add(fileContent, "file", "malicious.exe");
+
+        // Act
+        var response = await _client.PostAsync("/api/File/Upload", content);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    private async Task<string> GetValidJwtToken(int clientId, int userId)
+    {
+        var loginRequest = new
+        {
+            Email = $"user{userId}@client{clientId}.com",
+            Password = "TestPassword123!",
+            ClientId = clientId
+        };
+
+        var response = await _client.PostAsJsonAsync("/api/Auth/Login", loginRequest);
+        var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+        return result.Token;
+    }
+}
+<div class="code-block"><pre><code>
+
+<h2>Risk Assessment Matrix for XOS</h2>
+
+| Severity | CVSS Score | Response Time | XOS Impact | Examples |
+|----------|------------|---------------|------------|----------|
+| Critical | 9.0-10.0 | Immediate | Cross-tenant data breach | ClientID bypass, JWT forgery |
+| High | 7.0-8.9 | 4 hours | Single tenant compromise | SQL injection, XSS in admin |
+| Medium | 4.0-6.9 | 24 hours | Limited user impact | CSRF, weak encryption |
+| Low | 0.1-3.9 | 7 days | Minimal security risk | Information disclosure |
+
+<h2>XOS Compliance Checklist</h2>
+
+<h3>Multi-Tenant Security</h3>
+<ul><li>[ ] ClientID isolation enforced in all queries</li><li>[ ] JWT tokens contain ClientID claims</li><li>[ ] Database queries filtered by ClientID</li><li>[ ] File storage segregated by client</li><li>[ ] SignalR groups isolated by client</li></ul>
+
+<h3>Authentication Security  </h3>
+<ul><li>[ ] JWT tokens encrypted and signed</li><li>[ ] Token refresh mechanism secure</li><li>[ ] Multi-site authentication working</li><li>[ ] Password policies enforced</li><li>[ ] Account lockout implemented</li></ul>
+
+<h3>Authorization Security</h3>
+<ul><li>[ ] Role-based access control working</li><li>[ ] XOS Services check permissions</li><li>[ ] Controllers validate client context</li><li>[ ] API endpoints protected</li><li>[ ] SignalR hubs authorized</li></ul>
+
+<h3>Data Security</h3>
+<ul><li>[ ] PostgreSQL connections encrypted</li><li>[ ] Sensitive data encrypted at rest</li><li>[ ] Audit trail for security events</li><li>[ ] PII data properly protected</li><li>[ ] Database backups secured</li></ul>
+
+<h3>Application Security</h3>
+<ul><li>[ ] Input validation on all endpoints</li><li>[ ] Output encoding prevents XSS</li><li>[ ] CSRF protection enabled</li><li>[ ] File uploads secured</li><li>[ ] Security headers configured</li></ul>
+
+<h2>Usage Examples</h2>
+
+</code></pre></div>bash
+# Full XOS security audit
+xos-security-audit --module="UserManagement" --client-isolation --auth-flows
+
+# Multi-tenant security check
+xos-security-audit --check="tenant-isolation" --database="postgresql"
+
+# JWT token security validation
+xos-security-audit --tokens --refresh-patterns --encryption
+
+# File processing security scan
+xos-security-audit --file-upload --pdf --excel --virus-scan
+
+# SignalR security audit
+xos-security-audit --signalr --real-time --connection-security
+
+# React component security scan
+xos-security-audit --frontend --xss --csrf --authentication
+</code>``
+
+<h2>Emergency Response Procedures</h2>
+
+<h3>Critical Security Incident Response</h3>
+<ul><li><strong>Immediate Actions (0-15 minutes)</strong></li></ul>
+   - Disable affected XOS module/service
+   - Revoke compromised JWT tokens
+   - Enable enhanced monitoring
+   - Notify security team
+
+<ul><li><strong>Assessment Phase (15-60 minutes)</strong></li></ul>
+   - Identify scope of compromise
+   - Check multi-tenant isolation
+   - Validate other clients unaffected
+   - Document evidence
+
+<ul><li><strong>Containment (1-4 hours)</strong></li></ul>
+   - Deploy security patches
+   - Update security configurations
+   - Reset affected user credentials
+   - Implement additional monitoring
+
+<ul><li><strong>Recovery (4-24 hours)</strong></li></ul>
+   - Restore secure operations
+   - Validate fix effectiveness
+   - Update security documentation
+   - Conduct post-incident review
+
+This XOS Security Auditor provides comprehensive security coverage specifically designed for XOS framework applications, focusing on the real technology stack and security patterns used in your architecture.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

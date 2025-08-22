@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>testing-best-practices - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Testing Best Practices</p><p>Universal principles and practices for writing effective, maintainable tests across different frameworks and technologies.</p><p><h2>Table of Contents</h2>
+<ul><li><a href="#tdd-module-development-requirements">TDD Module Development Requirements</a></li><li><a href="#core-testing-principles">Core Testing Principles</a></li><li><a href="#test-design-patterns">Test Design Patterns</a></li><li><a href="#testing-pyramid">Testing Pyramid</a></li><li><a href="#test-organization">Test Organization</a></li><li><a href="#naming-conventions">Naming Conventions</a></li><li><a href="#test-data-management">Test Data Management</a></li><li><a href="#performance-considerations">Performance Considerations</a></li><li><a href="#continuous-integration">Continuous Integration</a></li></ul></p><p><h2>TDD Module Development Requirements</h2></p><p><h3>Standardized TDD Cycle Requirements</h3>
+<strong>All module development in this project must follow the TDD workflow defined in <code>../development-guide/TDD-MODULE-WORKFLOW.md</code>.</strong></p><p>#### Test-First Development Rules
+<ul><li><strong>Write ALL tests before implementation</strong> - Define expected behavior completely before writing any production code</li><li><strong>Two-round maximum approach</strong> - Either achieve 100% test pass rate or clearly document what needs human help</li><li><strong>80% minimum pass rate in first round</strong> - First implementation must pass at least 80% of written tests</li><li><strong>100% target in second round</strong> - Final goal is 100% passing tests or documented blockers for human developer</li></ul></p><p>#### Test Coverage Requirements
+<ul><li><strong>Minimum 30+ test scenarios</strong> for a typical backend module</li><li><strong>Cover all happy paths</strong> - Normal operation scenarios</li><li><strong>Cover all edge cases</strong> - Null inputs, empty data, boundary values</li><li><strong>Cover all error conditions</strong> - Invalid inputs, network failures, security violations</li><li><strong>Include integration tests</strong> - Database operations, API calls, external service interactions</li></ul></p><p>#### Test Quality Standards
+<div class="code-block"><pre><code>csharp
+// Example comprehensive test suite structure
+public class UserLoginServiceTests
+{
+    #region Happy Path Tests (8-12 tests)
+    [Fact] public void Login_ValidCredentials_ReturnsToken() { }
+    [Fact] public void Login_ValidRefreshToken_ReturnsNewToken() { }
+    [Fact] public void Logout_ValidSession_ClearsSession() { }
+    
+    #endregion</p><p>    #region Edge Cases (10-15 tests)
+    [Fact] public void Login_EmptyUsername_ThrowsValidationException() { }
+    [Fact] public void Login_NullPassword_ThrowsValidationException() { }
+    [Fact] public void Login_WhitespaceOnlyUsername_ThrowsValidationException() { }
+    
+    #endregion</p><p>    #region Error Scenarios (8-10 tests)
+    [Fact] public void Login_InvalidCredentials_ThrowsUnauthorizedException() { }
+    [Fact] public void Login_LockedAccount_ThrowsAccountLockedException() { }
+    [Fact] public void Login_DatabaseUnavailable_ThrowsServiceException() { }
+    
+    #endregion</p><p>    #region Security Tests (5-8 tests)
+    [Fact] public void Login_ExceedsRateLimit_ThrowsRateLimitException() { }
+    [Fact] public void Login_SqlInjectionAttempt_SafelyHandled() { }
+    [Fact] public void TokenGeneration_ContainsNoSensitiveData() { }
+    
+    #endregion
+}
+</code></pre></div></p><p>#### Pass Rate Progression
+| Round | Test Status | Expected Outcome | Action Required |
+|-------|-------------|------------------|-----------------|
+| 1 | 40/50 pass (80%) | ? Acceptable minimum | Continue to Round 2 |
+| 1 | 35/50 pass (70%) | ? Below threshold | Fix critical issues, try again |
+| 2 | 50/50 pass (100%) | ? Perfect completion | Generate documentation |
+| 2 | 48/50 pass (96%) | ? Document blockers | List specific issues for human help |</p><p>#### Documentation Requirements
+Every module must generate complete documentation package:
+<ul><li><strong>README.md</strong> - Module overview, setup instructions, usage examples</li><li><strong>API.md</strong> - All endpoints, request/response formats, error codes  </li><li><strong>TESTS.md</strong> - Test coverage summary, important test scenarios</li><li><strong>TROUBLESHOOTING.md</strong> - Issues encountered during development, solutions applied</li></ul></p><p>#### Integration with Troubleshooting Guides
+When issues are encountered during TDD development, update appropriate guides:
+<ul><li><strong>Backend logic issues</strong> ? <code>../troubleshooting/backend-issues.md</code></li><li><strong>XOS component issues</strong> ? <code>../troubleshooting/frontend-issues.md</code></li><li><strong>API endpoint issues</strong> ? <code>../troubleshooting/api-issues.md</code></li><li><strong>Database problems</strong> ? <code>../troubleshooting/database-issues.md</code></li><li><strong>Testing framework issues</strong> ? <code>../troubleshooting/testing-issues.md</code></li></ul></p><p><h3>Command Template for TDD Development</h3>
+<div class="code-block"><pre><code>
+"Follow ../development-guide/TDD-MODULE-WORKFLOW.md to implement [ModuleName] module. Target: 80% minimum test pass rate in round 1, 100% in round 2 or document blockers for human help."
+</code></pre></div></p><p><h2>Core Testing Principles</h2></p><p><h3>1. The Three A's Pattern</h3></p><p>Every test should follow the <strong>Arrange-Act-Assert</strong> (AAA) pattern:</p><p><div class="code-block"><pre><code>typescript
+// ? Good Example
+test('calculateDiscount should return 10% for standard customers', () => {
+  // Arrange - Setup test data and dependencies
+  const customer = new Customer({ type: 'standard' });
+  const order = new Order({ total: 100 });
+  const calculator = new DiscountCalculator();</p><p>  // Act - Execute the operation being tested
+  const discount = calculator.calculate(customer, order);</p><p>  // Assert - Verify the result
+  expect(discount).toBe(10);
+});
+</code></pre></div></p><p><h3>2. Test One Thing at a Time</h3></p><p>Each test should verify a single behavior or outcome:</p><p><div class="code-block"><pre><code>typescript
+// ? Bad - Testing multiple behaviors
+test('user management operations', () => {
+  const user = createUser();
+  expect(user).toBeDefined();
+  
+  const updated = updateUser(user.id, { name: 'New Name' });
+  expect(updated.name).toBe('New Name');
+  
+  deleteUser(user.id);
+  expect(getUser(user.id)).toBeNull();
+});</p><p>// ? Good - Separate tests for each behavior
+test('should create user with valid data', () => {
+  const user = createUser();
+  expect(user).toBeDefined();
+});</p><p>test('should update user name when provided', () => {
+  const user = createUser();
+  const updated = updateUser(user.id, { name: 'New Name' });
+  expect(updated.name).toBe('New Name');
+});</p><p>test('should delete user and make it unavailable', () => {
+  const user = createUser();
+  deleteUser(user.id);
+  expect(getUser(user.id)).toBeNull();
+});
+</code></pre></div></p><p><h3>3. Test Behavior, Not Implementation</h3></p><p>Focus on what the code does, not how it does it:</p><p><div class="code-block"><pre><code>typescript
+// ? Bad - Testing implementation details
+test('should call internal validation method', () => {
+  const service = new UserService();
+  const spy = jest.spyOn(service, 'validateEmail' as any);
+  
+  service.createUser({ email: 'test@example.com' });
+  
+  expect(spy).toHaveBeenCalled(); // Testing internal method
+});</p><p>// ? Good - Testing behavior
+test('should create user with valid email', () => {
+  const service = new UserService();
+  const userData = { email: 'test@example.com', name: 'Test User' };
+  
+  const user = service.createUser(userData);
+  
+  expect(user.email).toBe('test@example.com'); // Testing outcome
+});</p><p>test('should reject user creation with invalid email', () => {
+  const service = new UserService();
+  const userData = { email: 'invalid-email', name: 'Test User' };
+  
+  expect(() => service.createUser(userData)).toThrow('Invalid email format');
+});
+</code></pre></div></p><p><h3>4. Make Tests Independent</h3></p><p>Tests should not depend on the execution order or state from other tests:</p><p><div class="code-block"><pre><code>typescript
+// ? Bad - Tests depend on each other
+describe('UserService', () => {
+  let createdUserId: number;</p><p>  test('should create user', () => {
+    const user = userService.create({ name: 'Test' });
+    createdUserId = user.id; // Setting shared state
+    expect(user).toBeDefined();
+  });</p><p>  test('should find created user', () => {
+    const user = userService.findById(createdUserId); // Depending on previous test
+    expect(user.name).toBe('Test');
+  });
+});</p><p>// ? Good - Independent tests
+describe('UserService', () => {
+  test('should create user', () => {
+    const user = userService.create({ name: 'Test' });
+    expect(user).toBeDefined();
+  });</p><p>  test('should find existing user', () => {
+    const createdUser = userService.create({ name: 'Test' });
+    const foundUser = userService.findById(createdUser.id);
+    expect(foundUser.name).toBe('Test');
+  });
+});
+</code></pre></div></p><p><h3>5. Write Deterministic Tests</h3></p><p>Tests should produce the same result every time they run:</p><p><div class="code-block"><pre><code>typescript
+// ? Bad - Non-deterministic due to current date
+test('should calculate age correctly', () => {
+  const user = new User({ birthDate: '1990-01-01' });
+  expect(user.getAge()).toBe(34); // Will fail in future years
+});</p><p>// ? Good - Deterministic with fixed date
+test('should calculate age correctly', () => {
+  const mockDate = new Date('2024-01-01');
+  jest.useFakeTimers();
+  jest.setSystemTime(mockDate);
+  
+  const user = new User({ birthDate: '1990-01-01' });
+  expect(user.getAge()).toBe(34);
+  
+  jest.useRealTimers();
+});</p><p>// ? Even better - Test with specific date
+test('should calculate age correctly for given date', () => {
+  const user = new User({ birthDate: '1990-01-01' });
+  const currentDate = new Date('2024-01-01');
+  expect(user.getAgeAt(currentDate)).toBe(34);
+});
+</code></pre></div></p><p><h2>Test Design Patterns</h2></p><p><h3>1. Builder Pattern for Test Data</h3></p><p>Create reusable test data builders:</p><p><div class="code-block"><pre><code>typescript
+class UserBuilder {
+  private user: Partial<User> = {};</p><p>  withId(id: number): UserBuilder {
+    this.user.id = id;
+    return this;
+  }</p><p>  withName(name: string): UserBuilder {
+    this.user.name = name;
+    return this;
+  }</p><p>  withEmail(email: string): UserBuilder {
+    this.user.email = email;
+    return this;
+  }</p><p>  asAdmin(): UserBuilder {
+    this.user.role = 'admin';
+    this.user.permissions = ['read', 'write', 'delete'];
+    return this;
+  }</p><p>  withDefaults(): UserBuilder {
+    this.user = {
+      id: 1,
+      name: 'Test User',
+      email: 'test@example.com',
+      role: 'user',
+      isActive: true,
+    };
+    return this;
+  }</p><p>  build(): User {
+    return { ...this.user } as User;
+  }
+}</p><p>// Usage
+const adminUser = new UserBuilder()
+  .withDefaults()
+  .asAdmin()
+  .withEmail('admin@example.com')
+  .build();
+</code></pre></div></p><p><h3>2. Object Mother Pattern</h3></p><p>Pre-defined test objects for common scenarios:</p><p><div class="code-block"><pre><code>typescript
+export class UserMother {
+  static standardUser(): User {
+    return {
+      id: 1,
+      name: 'John Doe',
+      email: 'john@example.com',
+      role: 'user',
+      isActive: true,
+    };
+  }</p><p>  static adminUser(): User {
+    return {
+      id: 2,
+      name: 'Jane Admin',
+      email: 'jane@example.com',
+      role: 'admin',
+      isActive: true,
+    };
+  }</p><p>  static inactiveUser(): User {
+    return {
+      ...this.standardUser(),
+      id: 3,
+      isActive: false,
+    };
+  }</p><p>  static userWithoutEmail(): User {
+    return {
+      ...this.standardUser(),
+      email: '',
+    };
+  }
+}</p><p>// Usage
+test('should handle inactive users', () => {
+  const user = UserMother.inactiveUser();
+  expect(userService.canLogin(user)).toBe(false);
+});
+</code></pre></div></p><p><h3>3. Test Double Patterns</h3></p><p>Use appropriate test doubles for different scenarios:</p><p><div class="code-block"><pre><code>typescript
+// Stub - Provides predefined responses
+const userRepositoryStub = {
+  findById: (id: number) => Promise.resolve({ id, name: 'Test User' }),
+  save: (user: User) => Promise.resolve(user),
+};</p><p>// Mock - Verifies interactions
+const mockEmailService = jest.fn();
+mockEmailService.sendWelcomeEmail = jest.fn();</p><p>// Spy - Wraps real object to observe behavior
+const emailService = new EmailService();
+const sendSpy = jest.spyOn(emailService, 'sendWelcomeEmail');</p><p>// Fake - Working implementation with shortcuts
+class FakeUserRepository implements IUserRepository {
+  private users: User[] = [];</p><p>  async save(user: User): Promise<User> {
+    const saved = { ...user, id: this.users.length + 1 };
+    this.users.push(saved);
+    return saved;
+  }</p><p>  async findById(id: number): Promise<User | null> {
+    return this.users.find(u => u.id === id) || null;
+  }
+}
+</code></pre></div></p><p><h2>Testing Pyramid</h2></p><p><h3>1. Unit Tests (Foundation - 70%)</h3></p><p>Test individual components in isolation:</p><p><div class="code-block"><pre><code>typescript
+// Fast, focused, isolated
+describe('PriceCalculator', () => {
+  test('should calculate tax correctly', () => {
+    const calculator = new PriceCalculator();
+    const result = calculator.calculateTax(100, 0.08);
+    expect(result).toBe(8);
+  });
+});
+</code></pre></div></p><p><strong>Characteristics:</strong>
+<ul><li>Fast execution (< 1ms per test)</li><li>High coverage of business logic</li><li>No external dependencies</li><li>Cheap to maintain</li></ul></p><p><h3>2. Integration Tests (Middle - 20%)</h3></p><p>Test component interactions:</p><p><div class="code-block"><pre><code>typescript
+// Test multiple components working together
+describe('UserRegistration Integration', () => {
+  test('should send welcome email after user registration', async () => {
+    const userService = new UserService(userRepository, emailService);
+    
+    await userService.registerUser({
+      name: 'Test User',
+      email: 'test@example.com'
+    });</p><p>    expect(emailService.sendWelcomeEmail).toHaveBeenCalledWith('test@example.com');
+  });
+});
+</code></pre></div></p><p><strong>Characteristics:</strong>
+<ul><li>Moderate execution time</li><li>Test realistic scenarios</li><li>Limited external dependencies</li><li>Higher maintenance cost</li></ul></p><p><h3>3. End-to-End Tests (Top - 10%)</h3></p><p>Test complete user workflows:</p><p><div class="code-block"><pre><code>typescript
+// Test full user journey
+describe('User Registration E2E', () => {
+  test('user can register and receive welcome email', async () => {
+    // Navigate to registration page
+    await page.goto('/register');
+    
+    // Fill registration form
+    await page.fill('[data-testid=name-input]', 'Test User');
+    await page.fill('[data-testid=email-input]', 'test@example.com');
+    
+    // Submit form
+    await page.click('[data-testid=submit-button]');
+    
+    // Verify success message
+    await expect(page.locator('[data-testid=success-message]')).toBeVisible();
+    
+    // Verify welcome email was sent (check email service)
+    const emails = await getTestEmails();
+    expect(emails).toContainEqual(
+      expect.objectContaining({
+        to: 'test@example.com',
+        subject: expect.stringContaining('Welcome')
+      })
+    );
+  });
+});
+</code></pre></div></p><p><strong>Characteristics:</strong>
+<ul><li>Slow execution (seconds/minutes)</li><li>High confidence in critical paths</li><li>Full system integration</li><li>Expensive to maintain</li></ul></p><p><h2>Test Organization</h2></p><p><h3>1. Directory Structure</h3></p><p>Organize tests to mirror production code:</p><p><div class="code-block"><pre><code>
+src/
++-- components/
+¦   +-- UserCard/
+¦   ¦   +-- UserCard.tsx
+¦   ¦   +-- UserCard.test.tsx
+¦   ¦   +-- UserCard.stories.tsx
+¦   +-- DataTable/
+¦       +-- DataTable.tsx
+¦       +-- DataTable.test.tsx
++-- services/
+¦   +-- UserService.ts
+¦   +-- UserService.test.ts
++-- utils/
+¦   +-- validation.ts
+¦   +-- validation.test.ts
++-- __tests__/
+    +-- integration/
+    ¦   +-- userWorkflow.test.ts
+    ¦   +-- apiIntegration.test.ts
+    +-- e2e/
+        +-- userRegistration.e2e.ts
+        +-- paymentFlow.e2e.ts
+</code></pre></div></p><p><h3>2. Test Grouping with Describe Blocks</h3></p><p><div class="code-block"><pre><code>typescript
+describe('UserService', () => {
+  describe('when creating a user', () => {
+    describe('with valid data', () => {
+      test('should create user successfully', () => {});
+      test('should send welcome email', () => {});
+      test('should assign default role', () => {});
+    });</p><p>    describe('with invalid data', () => {
+      test('should reject empty name', () => {});
+      test('should reject invalid email', () => {});
+      test('should reject duplicate email', () => {});
+    });
+  });</p><p>  describe('when updating a user', () => {
+    // Update-specific tests
+  });
+});
+</code></pre></div></p><p><h3>3. Setup and Teardown</h3></p><p><div class="code-block"><pre><code>typescript
+describe('DatabaseUserRepository', () => {
+  let repository: DatabaseUserRepository;
+  let connection: DatabaseConnection;</p><p>  beforeAll(async () => {
+    // Expensive setup once per test suite
+    connection = await createTestDatabase();
+  });</p><p>  afterAll(async () => {
+    // Cleanup after all tests
+    await connection.close();
+  });</p><p>  beforeEach(async () => {
+    // Setup for each test
+    repository = new DatabaseUserRepository(connection);
+    await seedTestData();
+  });</p><p>  afterEach(async () => {
+    // Cleanup after each test
+    await clearTestData();
+  });
+});
+</code></pre></div></p><p><h2>Naming Conventions</h2></p><p><h3>1. Test File Naming</h3></p><p><div class="code-block"><pre><code>
+// Unit tests
+UserService.test.ts
+PriceCalculator.test.ts</p><p>// Component tests
+UserCard.test.tsx
+DataTable.test.tsx</p><p>// Integration tests
+userRegistration.integration.test.ts
+paymentFlow.integration.test.ts</p><p>// E2E tests
+userJourney.e2e.test.ts
+checkoutProcess.e2e.test.ts
+</code></pre></div></p><p><h3>2. Test Method Naming</h3></p><p>Use descriptive names that explain the scenario:</p><p><div class="code-block"><pre><code>typescript
+// ? Good - Descriptive and clear
+test('should return 404 when user does not exist', () => {});
+test('should calculate 10% discount for premium customers', () => {});
+test('should send email notification when order is completed', () => {});</p><p>// ? Bad - Vague or implementation-focused
+test('getUserTest', () => {});
+test('testDiscountCalculation', () => {});
+test('shouldCallEmailService', () => {});</p><p>// Pattern options:
+// should_ExpectedBehavior_When_StateUnderTest
+test('should_ReturnUser_When_ValidIdProvided', () => {});</p><p>// Given_When_Then
+test('Given_ValidUserId_When_GetUser_Then_ReturnUser', () => {});</p><p>// Simple descriptive
+test('returns user for valid ID', () => {});
+</code></pre></div></p><p><h2>Test Data Management</h2></p><p><h3>1. Test Data Strategies</h3></p><p><div class="code-block"><pre><code>typescript
+// In-memory test data
+const TEST_USERS = [
+  { id: 1, name: 'John', email: 'john@example.com' },
+  { id: 2, name: 'Jane', email: 'jane@example.com' },
+];</p><p>// Factory functions
+function createTestUser(overrides: Partial<User> = {}): User {
+  return {
+    id: Math.random(),
+    name: 'Test User',
+    email: 'test@example.com',
+    role: 'user',
+    isActive: true,
+    ...overrides,
+  };
+}</p><p>// Using libraries like Faker or Bogus
+const fakeUser = faker.helpers.createCard();
+</code></pre></div></p><p><h3>2. Database Test Data</h3></p><p>``<code>typescript
+// Seed data for integration tests
+async function seedTestData() {
+  await database.execute(</code>
+    INSERT INTO users (name, email, role) VALUES 
+    ('Test User 1', 'test1@example.com', 'user'),
+    ('Test User 2', 'test2@example.com', 'admin')
+  <code>);
+}</p><p>// Clean up after tests
+async function cleanupTestData() {
+  await database.execute('DELETE FROM users WHERE email LIKE "%@example.com"');
+}
+<div class="code-block"><pre><code></p><p><h3>3. Fixtures and Snapshots</h3></p><p></code></pre></div>typescript
+// JSON fixtures
+// tests/fixtures/users.json
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com"
+  }
+]</p><p>// Loading fixtures
+const users = require('./fixtures/users.json');</p><p>// Snapshot testing
+test('renders user card correctly', () => {
+  const component = render(<UserCard user={testUser} />);
+  expect(component).toMatchSnapshot();
+});
+<div class="code-block"><pre><code></p><p><h2>Performance Considerations</h2></p><p><h3>1. Fast Test Execution</h3></p><p></code></pre></div>typescript
+// ? Good - Fast setup
+beforeEach(() => {
+  userService = new UserService(mockRepository);
+});</p><p>// ? Bad - Slow setup
+beforeEach(async () => {
+  await database.connect();
+  userService = new UserService(new DatabaseRepository(database));
+});
+<div class="code-block"><pre><code></p><p><h3>2. Parallel Test Execution</h3></p><p></code></pre></div>javascript
+// jest.config.js
+module.exports = {
+  maxWorkers: 4, // Run tests in parallel
+  testTimeout: 10000, // Set reasonable timeout
+};
+<div class="code-block"><pre><code></p><p><h3>3. Resource Management</h3></p><p></code></pre></div>typescript
+describe('FileProcessor', () => {
+  afterEach(() => {
+    // Clean up temporary files
+    fs.rmSync('./temp', { recursive: true, force: true });
+  });</p><p>  afterAll(() => {
+    // Close database connections, etc.
+    database.close();
+  });
+});
+<div class="code-block"><pre><code></p><p><h2>Continuous Integration</h2></p><p><h3>1. CI Test Pipeline</h3></p><p></code></pre></div>yaml
+# .github/workflows/tests.yml
+name: Tests</p><p>on: [push, pull_request]</p><p>jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run unit tests
+        run: npm run test:unit
+        
+      - name: Run integration tests
+        run: npm run test:integration
+        
+      - name: Run E2E tests
+        run: npm run test:e2e
+        
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+<div class="code-block"><pre><code></p><p><h3>2. Test Categories</h3></p><p></code></pre></div>javascript
+// package.json
+{
+  "scripts": {
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=unit",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:e2e": "jest --testPathPattern=e2e",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
+  }
+}
+<div class="code-block"><pre><code></p><p><h3>3. Quality Gates</h3></p><p></code></pre></div>javascript
+// jest.config.js
+module.exports = {
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+    './src/services/': {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+  },
+};
+<div class="code-block"><pre><code></p><p><h2>Common Anti-Patterns to Avoid</h2></p><p><h3>1. Testing the Framework</h3></p><p></code></pre></div>typescript
+// ? Bad - Testing React instead of your component
+test('should update state when props change', () => {
+  const { rerender } = render(<MyComponent prop="initial" />);
+  rerender(<MyComponent prop="updated" />);
+  // Testing React's behavior, not your component's
+});</p><p>// ? Good - Testing your component's behavior
+test('should display updated message when prop changes', () => {
+  const { rerender } = render(<MyComponent message="initial" />);
+  expect(screen.getByText('initial')).toBeInTheDocument();
+  
+  rerender(<MyComponent message="updated" />);
+  expect(screen.getByText('updated')).toBeInTheDocument();
+});
+<div class="code-block"><pre><code></p><p><h3>2. Over-Mocking</h3></p><p></code></pre></div>typescript
+// ? Bad - Mocking everything
+test('should process user data', () => {
+  const mockValidator = jest.fn(() => true);
+  const mockFormatter = jest.fn(x => x.toUpperCase());
+  const mockLogger = jest.fn();
+  
+  const processor = new UserProcessor(mockValidator, mockFormatter, mockLogger);
+  // Test becomes meaningless
+});</p><p>// ? Good - Mock only external dependencies
+test('should process user data', () => {
+  const mockApiClient = jest.fn();
+  const processor = new UserProcessor(mockApiClient);
+  // Test actual business logic
+});
+<div class="code-block"><pre><code></p><p><h3>3. Slow Tests</h3></p><p></code></pre></div>typescript
+// ? Bad - Unnecessary async operations
+test('should validate email format', async () => {
+  await new Promise(resolve => setTimeout(resolve, 100)); // Why?
+  const result = validateEmail('test@example.com');
+  expect(result).toBe(true);
+});</p><p>// ? Good - Synchronous when possible
+test('should validate email format', () => {
+  const result = validateEmail('test@example.com');
+  expect(result).toBe(true);
+});
+</code>``</p><p><h2>Summary</h2></p><p>Effective testing requires:</p><p><ul><li><strong>Clear Intent</strong> - Tests should clearly communicate what they're verifying</li><li><strong>Reliability</strong> - Tests should be deterministic and independent</li><li><strong>Maintainability</strong> - Tests should be easy to understand and modify</li><li><strong>Performance</strong> - Tests should run quickly to provide fast feedback</li><li><strong>Coverage</strong> - Tests should cover critical business logic and edge cases</li></ul></p><p>Remember: Good tests are an investment in code quality, team productivity, and confidence in deployments.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

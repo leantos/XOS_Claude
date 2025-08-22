@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>critical-paths - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># CVS Critical Paths Reference</p><p><h2>Critical Features & File Locations</h2></p><p><h3>1. User Authentication Flow</h3>
+<strong>Files:</strong>
+<ul><li>CVS.WebApi/Controllers/AuthController.cs</li><li>CVS.WebApi/Services/TokenStoreService.cs</li><li>CVS.WebApi/Services/TokenValidatorService.cs</li><li>CVS.Transaction/Services/UserService.cs</li><li>UIPages/src/components/Common/Login/index.jsx</li></ul></p><p><strong>Critical Path:</strong>
+<ul><li>Login request ? AuthController.Login()</li><li>Validate credentials ? UserService.ValidateUser()</li><li>Generate JWT ? TokenStoreService.CreateToken()</li><li>Store refresh token ? Database</li><li>Return tokens ? Client</li></ul></p><p><h3>2. Opera Income Audit Processing</h3>
+<strong>Files:</strong>
+<ul><li>CVS.Transaction/Services/OperaIncomeAuditService.cs</li><li>CVS.WebApi/Controllers/OperaIncomeAuditController.cs</li><li>UIPages/src/components/Transaction/CVST020/index.jsx</li><li>CVS.Transaction/Domain/OperaIncomeAudit.cs</li></ul></p><p><strong>Critical Path:</strong>
+<ul><li>Import Opera file ? OperaIncomeAuditService.AutoFillData()</li><li>Parse and validate ? ProcessOperaFile()</li><li>Create workflow ? WorkFlowMasterService.InitiateWorkflow()</li><li>Route for approval ? RouteToNext()</li><li>Generate report ? ReportService.GenerateAuditReport()</li></ul></p><p><h3>3. Bank Reconciliation</h3>
+<strong>Files:</strong>
+<ul><li>CVS.Transaction/Services/BankReconciliationService.cs</li><li>CVS.Transaction/Services/BankDataService.cs</li><li>CVS.WebApi/Controllers/BankReconciliationController.cs</li><li>UIPages/src/components/Transaction/CVST005/index.jsx</li></ul></p><p><strong>Critical Path:</strong>
+<ul><li>Import statement ? BankDataService.ImportStatement()</li><li>Parse format ? BankStatementFormatService.DetectFormat()</li><li>Auto-match ? BankReconciliationService.AutoMatch()</li><li>Manual match ? User interface</li><li>Complete reconciliation ? UpdateStatus()</li></ul></p><p><h3>4. Refund Processing</h3>
+<strong>Files:</strong>
+<ul><li>CVS.Transaction/Services/RefundService.cs</li><li>CVS.Transaction/Services/BacsRefundService.cs</li><li>CVS.WebApi/Controllers/RefundController.cs</li><li>UIPages/src/components/Transaction/CVST010/index.jsx</li></ul></p><p><strong>Critical Path:</strong>
+<ul><li>Create refund ? RefundService.CreateRefund()</li><li>Validate details ? ValidateRefund()</li><li>Route approval ? WorkFlowMasterService.RouteToNext()</li><li>Process payment ? BacsRefundService.ProcessBatch()</li><li>Update status ? CompleteRefund()</li></ul></p><p><h2>Common Troubleshooting Paths</h2></p><p><h3>Login Issues</h3>
+<div class="code-block"><pre><code>
+Check: AuthController.cs:45-60 (Login method)
+? UserService.cs:120-150 (ValidateUser)
+? appsettings.json (JwtOptions)
+? TokenStoreService.cs:30-50 (CreateToken)
+</code></pre></div></p><p><h3>Opera Import Failures</h3>
+<div class="code-block"><pre><code>
+Check: OperaIncomeAuditService.cs:200-250 (ProcessOperaFile)
+? File format validation
+? Database connection (workflow_master table)
+? Error logs in Logs/transaction-log.txt
+</code></pre></div></p><p><h3>Bank Reconciliation Mismatches</h3>
+<div class="code-block"><pre><code>
+Check: BankReconciliationService.cs:300-400 (AutoMatch)
+? Matching rules configuration
+? Date format issues
+? Amount rounding differences
+</code></pre></div></p><p><h2>Performance Bottlenecks</h2></p><p>| Feature | Bottleneck Location | Impact | Solution |
+|---------|-------------------|--------|----------|
+| Opera Import | File parsing (>10MB) | 30+ sec | Implement streaming |
+| Bank Reconciliation | Auto-matching algorithm | O(n²) | Add indexes, optimize query |
+| Report Generation | PDF creation | Memory spike | Use async generation |
+| Dashboard | Metrics calculation | Every request | Implement caching |</p><p><h2>Error-Prone Areas</h2></p><p><h3>Database Transactions</h3>
+<strong>Files:</strong> 
+<ul><li>CVS.Transaction/Core/XOSServiceBase.cs:150-200</li></ul>
+<strong>Issues:</strong> Transaction not rolled back on error
+<strong>Fix:</strong> Ensure using statement or try-finally</p><p><h3>File Upload</h3>
+<strong>Files:</strong>
+<ul><li>CVS.Transaction/Services/FileManagerService.cs:50-100</li></ul>
+<strong>Issues:</strong> No file size validation, path traversal
+<strong>Fix:</strong> Add validation, sanitize paths</p><p><h3>JWT Validation</h3>
+<strong>Files:</strong>
+<ul><li>CVS.WebApi/Services/TokenValidatorService.cs:30-60</li></ul>
+<strong>Issues:</strong> Token expiry not checked properly
+<strong>Fix:</strong> Verify exp claim correctly</p><p><h2>Configuration Dependencies</h2></p><p><h3>Critical Config Files</h3>
+<div class="code-block"><pre><code>
+CVS.WebApi/appsettings.json
++-- XOSConfig.DBSettings (Database connections)
++-- XOSConfig.JwtOptions (Authentication)
++-- Serilog (Logging)
++-- XOSConfig.CorsIPs (CORS)</p><p>UIPages/public/config.json
++-- API_URL (Backend endpoint)
++-- SIGNALR_URL (WebSocket)
++-- FEATURES (Feature flags)
+</code></pre></div></p><p><h2>Service Dependencies Map</h2></p><p><div class="code-block"><pre><code>
+OperaIncomeAuditService
++-- WorkFlowMasterService (required)
++-- EmailService (required)
++-- ReportService (optional)
++-- AuditService (required)</p><p>RefundService
++-- BacsRefundService (conditional)
++-- WorkFlowMasterService (required)
++-- EmailService (required)</p><p>BankReconciliationService
++-- BankDataService (required)
++-- BankStatementFormatService (required)
++-- ExportService (optional)
+</code></pre></div></p><p><h2>Known Issues & Workarounds</h2></p><p>| Issue | Location | Workaround |
+|-------|----------|------------|
+| Memory leak in report generation | ReportService.cs:200 | Dispose PDF objects explicitly |
+| Race condition in workflow | WorkFlowMasterService.cs:150 | Add database row locking |
+| SignalR disconnect | NotificationsHub.cs | Implement auto-reconnect |
+| File lock on import | FileManagerService.cs:75 | Use FileShare.Read |</p><p><h2>Critical Database Queries</h2></p><p><h3>Most Resource-Intensive</h3>
+<div class="code-block"><pre><code>sql
+-- Opera audit summary (OperaIncomeAuditService.cs:350)
+SELECT complex_aggregation FROM opera_income_audit
+JOIN workflow_master ON ...
+-- Add index on audit_date, site_id</p><p>-- Bank transaction matching (BankReconciliationService.cs:400)
+SELECT * FROM bank_transactions bt
+LEFT JOIN statement_transactions st ON ...
+-- Add composite index on amount, transaction_date
+</code></pre></div></p><p><h2>Deployment Critical Paths</h2></p><p><h3>Pre-deployment Checklist</h3>
+<ul><li>Database migrations applied</li><li>appsettings.json configured</li><li>File permissions set (/data folders)</li><li>SSL certificates valid</li><li>SignalR endpoint accessible</li></ul></p><p><h3>Post-deployment Verification</h3>
+<ul><li>Login functionality</li><li>Opera import test file</li><li>Report generation</li><li>Email notifications</li><li>SignalR connections</li></ul></p><p><h2>Emergency Recovery Procedures</h2></p><p><h3>Database Connection Lost</h3>
+<div class="code-block"><pre><code>
+Location: XOSServiceBase.cs
+Fallback: SQLite local cache
+Recovery: Retry with exponential backoff
+</code></pre></div></p><p><h3>File System Full</h3>
+<div class="code-block"><pre><code>
+Location: FileManagerService.cs
+Cleanup: /data/temp older than 24h
+Archive: /data/exports older than 30d
+</code></pre></div></p><p><h3>High Memory Usage</h3>
+<div class="code-block"><pre><code>
+Monitor: ReportService, OperaIncomeAuditService
+Action: Restart IIS application pool
+Long-term: Implement pagination
+</code></pre></div></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

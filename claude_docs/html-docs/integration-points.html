@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>integration-points - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># CVS Integration Points Reference</p><p><h2>External Systems</h2></p><p>| System | Type | Protocol | Service | Files/Endpoints |
+|--------|------|----------|---------|----------------|
+| Opera PMS | Hotel System | File Import | OperaIncomeAuditService | Excel/CSV files |
+| Bank Systems | Financial | File Import | BankDataService | CSV/PDF statements |
+| BACS Network | Payment | File Export | BacsRefundService | BACS format files |
+| SMTP Server | Communication | SMTP | EmailService | Email endpoints |
+| SignalR | Real-time | WebSocket | SignalRNotifierService | /hubs/* |
+| PDF Generator | Document | Library | HtmlToPDFService | HTML to PDF |</p><p><h2>Opera PMS Integration</h2></p><p><h3>Import Files</h3>
+| File Type | Format | Schedule | Location |
+|-----------|--------|----------|----------|
+| Manager Flash | Excel | Daily 06:00 | /imports/opera/flash/ |
+| Trial Balance | Excel | Daily 06:00 | /imports/opera/tb/ |
+| Room Statistics | CSV | Daily 06:00 | /imports/opera/stats/ |
+| Cashier Report | Excel | Daily 06:00 | /imports/opera/cashier/ |</p><p><h3>Data Mapping</h3>
+<div class="code-block"><pre><code>
+Opera Field ? CVS Field
+RoomsSold ? Statistics.RoomsSold
+RoomRevenue ? Revenue.RoomRevenue
+F&BRevenue ? Revenue.FBRevenue
+OtherRevenue ? Revenue.OtherRevenue
+</code></pre></div></p><p><h3>Service Methods</h3>
+<ul><li>OperaIncomeAuditService.ProcessOperaFile()</li><li>OperaIncomeAuditService.ValidateOperaData()</li><li>OperaIncomeAuditService.MapOperaFields()</li></ul></p><p><h2>Bank Integration</h2></p><p><h3>Supported Formats</h3>
+| Bank | Format | Parser | Service Method |
+|------|--------|--------|----------------|
+| HSBC | CSV | HSBCParser | ParseHSBCStatement() |
+| Barclays | CSV | BarclaysParser | ParseBarclaysStatement() |
+| Lloyds | PDF/CSV | LloydsParser | ParseLloydsStatement() |
+| NatWest | CSV | NatWestParser | ParseNatWestStatement() |
+| Custom | XML | XMLParser | ParseCustomXML() |</p><p><h3>Import Process</h3>
+<ul><li>File upload ? BankDataController</li><li>Format detection ? BankStatementFormatService</li><li>Parse data ? BankDataService</li><li>Store transactions ? Database</li><li>Trigger reconciliation ? BankReconciliationService</li></ul></p><p><h2>BACS Integration</h2></p><p><h3>File Generation</h3>
+<div class="code-block"><pre><code>
+Service: BacsRefundService
+Method: GenerateBACSFile()
+Format: Standard 18 format
+Output: /exports/bacs/[date]_[batch].txt
+</code></pre></div></p><p><h3>BACS Record Structure</h3>
+| Field | Position | Length | Format |
+|-------|----------|--------|--------|
+| Record Type | 1-2 | 2 | Numeric |
+| Sort Code | 3-8 | 6 | Numeric |
+| Account Number | 9-16 | 8 | Numeric |
+| Transaction Code | 17-18 | 2 | Numeric |
+| Amount | 19-29 | 11 | Numeric |
+| Reference | 30-47 | 18 | Alphanumeric |</p><p><h2>Email Integration</h2></p><p><h3>SMTP Configuration</h3>
+<div class="code-block"><pre><code>json
+{
+  "EmailSettings": {
+    "Host": "smtp.server.com",
+    "Port": 587,
+    "EnableSSL": true,
+    "From": "system@cvs.com",
+    "Username": "smtp_user",
+    "Password": "encrypted_password"
+  }
+}
+</code></pre></div></p><p><h3>Email Templates</h3>
+| Template | Trigger | Recipients |
+|----------|---------|------------|
+| AuditComplete | Opera audit approved | Finance team |
+| RefundApproved | Refund approved | Guest, Finance |
+| ReconciliationAlert | Unmatched items | Bank team |
+| WorkflowNotification | Pending approval | Approvers |</p><p><h2>SignalR Real-time</h2></p><p><h3>Hubs</h3>
+| Hub | Path | Purpose | Methods |
+|-----|------|---------|---------|
+| NotificationsHub | /hubs/notifications | User notifications | SendNotification, BroadcastAlert |
+| DashboardHub | /hubs/dashboard | Dashboard updates | UpdateMetrics, RefreshData |</p><p><h3>Client Connection</h3>
+<div class="code-block"><pre><code>javascript
+connection = new signalR.HubConnectionBuilder()
+  .withUrl("/hubs/notifications", { accessTokenFactory: () => token })
+  .build();
+</code></pre></div></p><p><h2>File System Integration</h2></p><p><h3>Storage Paths</h3>
+| Type | Path | Service |
+|------|------|---------|
+| Imports | /data/imports/ | FileManagerService |
+| Exports | /data/exports/ | ExportService |
+| Reports | /data/reports/ | ReportService |
+| Temp | /data/temp/ | Various |
+| Archives | /data/archives/ | FileManagerService |</p><p><h3>File Operations</h3>
+<ul><li>StorageManager.SaveFile()</li><li>StorageManager.ReadFile()</li><li>StorageManager.DeleteFile()</li><li>StorageManager.ArchiveFile()</li></ul></p><p><h2>PDF Processing</h2></p><p><h3>HTML to PDF</h3>
+<div class="code-block"><pre><code>
+Service: HtmlToPDFService
+Library: iTextSharp / PuppeteerSharp
+Input: HTML string + CSS
+Output: PDF byte array
+</code></pre></div></p><p><h3>PDF Data Extraction</h3>
+<div class="code-block"><pre><code>
+Service: PdfDataReader
+Library: Tabula (Java)
+Tool: tabula-1.0.5-jar-with-dependencies.jar
+Method: ExtractTableData()
+</code></pre></div></p><p><h2>Database Connections</h2></p><p><h3>PostgreSQL</h3>
+<div class="code-block"><pre><code>
+Provider: Npgsql
+Connection: Server={host};Port=5432;Database={db};User Id={user};Password={pwd}
+Pooling: Min=5, Max=100
+</code></pre></div></p><p><h3>SQLite (Local)</h3>
+<div class="code-block"><pre><code>
+Provider: Microsoft.Data.Sqlite
+Connection: Data Source=Files/DB File/SqliteDB.db
+Usage: Local cache, offline mode
+</code></pre></div></p><p><h2>Authentication Integration</h2></p><p><h3>JWT Configuration</h3>
+<div class="code-block"><pre><code>json
+{
+  "JwtOptions": {
+    "SecretKey": "{key}",
+    "Issuer": "http://localhost:5139",
+    "Audience": "CVS",
+    "AccessTokenExpiration": 5,
+    "RefreshTokenExpiration": 1440
+  }
+}
+</code></pre></div></p><p><h3>Token Flow</h3>
+<ul><li>Login ? AuthController</li><li>Generate JWT ? TokenStoreService</li><li>Validate ? TokenValidatorService</li><li>Refresh ? AuthController</li></ul></p><p><h2>External API Calls</h2></p><p>| API | Purpose | Method | Endpoint |
+|-----|---------|--------|----------|
+| Opera Cloud | Room rates | GET | /opera/api/rates |
+| Bank API | Balance check | GET | /bank/api/balance |
+| SMS Gateway | Alerts | POST | /sms/send |</p><p><h2>Error Recovery</h2></p><p>| Integration | Failure | Recovery Strategy |
+|-------------|---------|-------------------|
+| Opera Import | File corrupt | Request resend, use backup |
+| Bank Import | Parse error | Manual review queue |
+| BACS Export | Network fail | Retry queue (3 attempts) |
+| Email | SMTP down | Queue for later delivery |
+| SignalR | Disconnect | Auto-reconnect with backoff |</p><p><h2>Monitoring Points</h2></p><p>| Integration | Metric | Alert Threshold |
+|-------------|--------|-----------------|
+| Opera Import | Success rate | < 95% |
+| Bank Reconciliation | Match rate | < 80% |
+| Email Delivery | Failure rate | > 5% |
+| SignalR | Active connections | < 10 |
+| File Processing | Processing time | > 5 min |</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

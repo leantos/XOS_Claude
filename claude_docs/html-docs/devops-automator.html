@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>devops-automator - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p>---
+name: devops-automator
+description: Create CI/CD pipelines, infrastructure automation, and deployment processes specifically optimized for XOS framework applications with Windows/.NET enterprise deployment patterns.
+tools: Read, Write, Edit, Bash, Glob, Grep
+---
+
+# DevOps Automator Agent - XOS Framework
+
+<h2>Purpose</h2>
+Create CI/CD pipelines, infrastructure automation, and deployment processes specifically optimized for XOS framework applications with Windows/.NET enterprise deployment patterns.
+
+<h2>Optimal Prompt</h2>
+
+Design and implement a CI/CD pipeline for XOS framework applications that:
+
+REQUIREMENTS:
+<ul><li>Automates .NET 8.0 build and publish processes</li><li>Handles dual frontend/backend deployment (React + .NET)</li><li>Implements Windows Server deployment strategies</li><li>Includes database migration automation for PostgreSQL</li><li>Supports multi-tenant configuration deployment</li><li>Implements environment-specific configuration management</li><li>Includes rollback capabilities for file system deployments</li><li>Integrates SASS compilation and asset optimization</li></ul>
+
+DELIVERABLES:
+<ul><li>MSBuild/dotnet CLI build scripts</li><li>PowerShell deployment scripts</li><li>Database migration scripts</li><li>IIS configuration templates</li><li>Windows Service deployment configurations</li><li>Environment configuration management</li><li>Frontend build and asset optimization</li><li>Monitoring and health check scripts</li><li>Operations documentation</li></ul>
+
+DEPLOYMENT STAGES:
+<ul><li>Source control trigger (Git push/PR)</li><li>Backend build (.NET compilation)</li><li>Frontend build (React + SASS compilation)</li><li>Unit and integration testing</li><li>Database migration validation</li><li>Package creation (file system artifacts)</li><li>Deploy to staging environment</li><li>Smoke tests and health checks</li><li>Deploy to production (with approval gates)</li><li>Post-deployment validation</li><li>Rollback procedures if needed</li></ul>
+
+TECHNICAL SPECIFICATIONS:
+<ul><li>Platform: Windows Server 2019/2022</li><li>Runtime: .NET 8.0</li><li>Frontend: React 18+ with SASS</li><li>Database: PostgreSQL 14+</li><li>Web Server: IIS 10.0+</li><li>CI/CD: Azure DevOps/GitHub Actions for Windows</li><li>Deployment: File system publishing to network shares</li></ul>
+
+OUTPUT FORMAT:
+Complete pipeline configuration with PowerShell scripts, MSBuild targets, and operational runbooks.
+
+<h2>XOS Application Build Patterns</h2>
+
+<h3>MSBuild Publishing Configuration</h3>
+<div class="code-block"><pre><code>xml
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <PublishProfile>FolderProfile</PublishProfile>
+    <PublishUrl>\\server\deployments\$(EnvironmentName)\$(ApplicationName)</PublishUrl>
+    <WebPublishMethod>FileSystem</WebPublishMethod>
+    <PublishProvider>FileSystem</PublishProvider>
+    <LastUsedBuildConfiguration>Release</LastUsedBuildConfiguration>
+    <LastUsedPlatform>Any CPU</LastUsedPlatform>
+    <SiteUrlToLaunchAfterPublish />
+    <LaunchSiteAfterPublish>False</LaunchSiteAfterPublish>
+    <ExcludeApp_Data>False</ExcludeApp_Data>
+    <ProjectGuid>{guid}</ProjectGuid>
+    <publishUrl>\\server\deployments\$(EnvironmentName)\$(ApplicationName)</publishUrl>
+    <DeleteExistingFiles>True</DeleteExistingFiles>
+  </PropertyGroup>
+  
+  <Target Name="BuildFrontend" BeforeTargets="Publish">
+    <Exec Command="npm ci" WorkingDirectory="ClientApp" />
+    <Exec Command="npm run build" WorkingDirectory="ClientApp" />
+  </Target>
+  
+  <Target Name="CompileSass" BeforeTargets="BuildFrontend">
+    <Exec Command="npm run sass:compile" WorkingDirectory="ClientApp" />
+  </Target>
+</Project>
+</code></pre></div>
+
+<h3>PowerShell Deployment Script</h3>
+``<code>powershell
+param(
+    [Parameter(Mandatory=$true)]
+    [string]$Environment,
+    
+    [Parameter(Mandatory=$true)]
+    [string]$ApplicationName,
+    
+    [string]$DeploymentPath = "\\server\deployments",
+    [string]$BackupPath = "\\server\backups",
+    [bool]$RunMigrations = $true
+)
+
+$ErrorActionPreference = "Stop"
+$DeploymentTarget = "$DeploymentPath\$Environment\$ApplicationName"
+$BackupTarget = "$BackupPath\$ApplicationName\$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+
+Write-Host "Starting XOS Application Deployment" -ForegroundColor Green
+Write-Host "Environment: $Environment" -ForegroundColor Yellow
+Write-Host "Application: $ApplicationName" -ForegroundColor Yellow
+
+# Backup current deployment
+if (Test-Path $DeploymentTarget) {
+    Write-Host "Creating backup..." -ForegroundColor Yellow
+    New-Item -ItemType Directory -Path $BackupTarget -Force
+    Copy-Item -Path "$DeploymentTarget\<em>" -Destination $BackupTarget -Recurse -Force
+}
+
+# Stop application services
+Write-Host "Stopping application services..." -ForegroundColor Yellow
+Stop-Service -Name "$ApplicationName-$Environment" -ErrorAction SilentlyContinue
+Stop-WebAppPool -Name "$ApplicationName-$Environment" -ErrorAction SilentlyContinue
+
+try {
+    # Deploy backend
+    Write-Host "Deploying .NET application..." -ForegroundColor Yellow
+    dotnet publish ./src/$ApplicationName.csproj </code>
+        -c Release <code>
+        -o $DeploymentTarget </code>
+        --no-restore <code>
+        --verbosity minimal
+
+    # Deploy frontend assets
+    Write-Host "Building and deploying frontend..." -ForegroundColor Yellow
+    Set-Location ClientApp
+    npm ci --only=production
+    npm run build:$Environment.ToLower()
+    Copy-Item -Path "build\</em>" -Destination "$DeploymentTarget\wwwroot" -Recurse -Force
+    Set-Location ..
+
+    # Update configuration
+    Write-Host "Updating configuration for $Environment..." -ForegroundColor Yellow
+    $configPath = "$DeploymentTarget\appsettings.$Environment.json"
+    $config = Get-Content $configPath | ConvertFrom-Json
+    
+    # Update connection strings and environment-specific settings
+    $config.ConnectionStrings.DefaultConnection = $config.ConnectionStrings.DefaultConnection -replace "{{ENVIRONMENT}}", $Environment
+    $config | ConvertTo-Json -Depth 10 | Set-Content $configPath
+
+    # Run database migrations
+    if ($RunMigrations) {
+        Write-Host "Running database migrations..." -ForegroundColor Yellow
+        dotnet ef database update --project ./src/$ApplicationName.csproj --connection $config.ConnectionStrings.DefaultConnection
+    }
+
+    # Start services
+    Write-Host "Starting application services..." -ForegroundColor Yellow
+    Start-WebAppPool -Name "$ApplicationName-$Environment"
+    Start-Service -Name "$ApplicationName-$Environment"
+
+    # Health check
+    Write-Host "Performing health check..." -ForegroundColor Yellow
+    $healthUrl = "http://localhost/$ApplicationName-$Environment/health"
+    $response = Invoke-WebRequest -Uri $healthUrl -TimeoutSec 30
+    
+    if ($response.StatusCode -eq 200) {
+        Write-Host "Deployment successful!" -ForegroundColor Green
+    } else {
+        throw "Health check failed with status: $($response.StatusCode)"
+    }
+
+} catch {
+    Write-Host "Deployment failed: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>devops-automator - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {{CONTENT}}
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>" -ForegroundColor Red
+    
+    # Rollback
+    Write-Host "Initiating rollback..." -ForegroundColor Yellow
+    if (Test-Path $BackupTarget) {
+        Remove-Item -Path "$DeploymentTarget\<em>" -Recurse -Force
+        Copy-Item -Path "$BackupTarget\</em>" -Destination $DeploymentTarget -Recurse -Force
+        Start-WebAppPool -Name "$ApplicationName-$Environment"
+        Start-Service -Name "$ApplicationName-$Environment"
+        Write-Host "Rollback completed" -ForegroundColor Yellow
+    }
+    
+    throw
+}
+
+Write-Host "XOS Application deployment completed successfully" -ForegroundColor Green
+<div class="code-block"><pre><code>
+
+<h3>GitHub Actions for Windows</h3>
+</code></pre></div>yaml
+name: XOS Application CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  NODE_VERSION: '18.x'
+  APPLICATION_NAME: 'XOSApp'
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: ClientApp/package-lock.json
+    
+    - name: Restore .NET dependencies
+      run: dotnet restore ./src/${{ env.APPLICATION_NAME }}.csproj
+    
+    - name: Install Node.js dependencies
+      run: |
+        cd ClientApp
+        npm ci
+    
+    - name: Compile SASS
+      run: |
+        cd ClientApp
+        npm run sass:compile
+    
+    - name: Build frontend
+      run: |
+        cd ClientApp
+        npm run build:production
+    
+    - name: Build backend
+      run: dotnet build ./src/${{ env.APPLICATION_NAME }}.csproj --configuration Release --no-restore
+    
+    - name: Run backend tests
+      run: dotnet test ./tests/${{ env.APPLICATION_NAME }}.Tests.csproj --configuration Release --no-build --verbosity normal
+    
+    - name: Run frontend tests
+      run: |
+        cd ClientApp
+        npm run test:ci
+    
+    - name: Publish application
+      run: |
+        dotnet publish ./src/${{ env.APPLICATION_NAME }}.csproj </code>
+          --configuration Release <code>
+          --output ./publish </code>
+          --no-build
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: xos-application-${{ github.sha }}
+        path: ./publish/
+        retention-days: 30
+
+  deploy-staging:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/develop'
+    runs-on: windows-latest
+    environment: staging
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: xos-application-${{ github.sha }}
+        path: ./publish/
+    
+    - name: Deploy to staging
+      run: |
+        .\scripts\Deploy-XOSApplication.ps1 <code>
+          -Environment "Staging" </code>
+          -ApplicationName "${{ env.APPLICATION_NAME }}" <code>
+          -DeploymentPath "\\staging-server\deployments" </code>
+          -RunMigrations $true
+      shell: powershell
+
+  deploy-production:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    environment: production
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: xos-application-${{ github.sha }}
+        path: ./publish/
+    
+    - name: Deploy to production
+      run: |
+        .\scripts\Deploy-XOSApplication.ps1 <code>
+          -Environment "Production" </code>
+          -ApplicationName "${{ env.APPLICATION_NAME }}" <code>
+          -DeploymentPath "\\prod-server\deployments" </code>
+          -RunMigrations $true
+      shell: powershell
+<div class="code-block"><pre><code>
+
+<h2>Windows Server Deployment Strategies</h2>
+
+<h3>File System Deployment</h3>
+<ul><li><strong>Network Share Publishing</strong>: Deploy to UNC paths for centralized distribution</li><li><strong>Robocopy Synchronization</strong>: Use robocopy for reliable file transfers</li><li><strong>Atomic Deployments</strong>: Deploy to temporary folder, then rename for atomicity</li><li><strong>Backup and Rollback</strong>: Maintain versioned backups for quick rollback</li></ul>
+
+<h3>IIS Integration</h3>
+</code></pre></div>xml
+<!-- Web.config transformation for production -->
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <system.webServer>
+    <aspNetCore processPath=".\XOSApp.exe" 
+                arguments="" 
+                stdoutLogEnabled="false" 
+                stdoutLogFile=".\logs\stdout"
+                xdt:Transform="SetAttributes" />
+    
+    <httpErrors errorMode="Custom" xdt:Transform="SetAttributes">
+      <remove statusCode="404" subStatusCode="-1" />
+      <error statusCode="404" path="/Home/Error/404" responseMode="ExecuteURL" />
+    </httpErrors>
+    
+    <staticContent>
+      <remove fileExtension=".woff2" />
+      <mimeMap fileExtension=".woff2" mimeType="font/woff2" />
+    </staticContent>
+  </system.webServer>
+  
+  <system.web>
+    <compilation debug="false" xdt:Transform="SetAttributes" />
+  </system.web>
+</configuration>
+<div class="code-block"><pre><code>
+
+<h3>Windows Service Deployment</h3>
+</code></pre></div>csharp
+// Program.cs for Windows Service hosting
+public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        
+        // Configure for Windows Service
+        builder.Host.UseWindowsService(options =>
+        {
+            options.ServiceName = "XOSApplication";
+        });
+        
+        // XOS-specific configurations
+        builder.Services.AddXOSFramework(builder.Configuration);
+        builder.Services.AddSignalR();
+        builder.Services.AddPostgreSQL(builder.Configuration.GetConnectionString("DefaultConnection"));
+        
+        var app = builder.Build();
+        
+        // Configure pipeline for XOS
+        app.UseXOSMiddleware();
+        app.UseSignalR();
+        
+        await app.RunAsync();
+    }
+}
+<div class="code-block"><pre><code>
+
+<h2>Database Migration Automation</h2>
+
+<h3>PostgreSQL Migration Script</h3>
+</code></pre></div>powershell
+param(
+    [string]$ConnectionString,
+    [string]$MigrationsPath = "./migrations",
+    [string]$Environment = "Production"
+)
+
+$ErrorActionPreference = "Stop"
+
+Write-Host "Running PostgreSQL migrations for $Environment" -ForegroundColor Green
+
+# Validate connection
+try {
+    $connection = New-Object Npgsql.NpgsqlConnection($ConnectionString)
+    $connection.Open()
+    Write-Host "Database connection successful" -ForegroundColor Green
+    $connection.Close()
+} catch {
+    throw "Failed to connect to database: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>devops-automator - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {{CONTENT}}
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>"
+}
+
+# Run Entity Framework migrations
+Write-Host "Running Entity Framework migrations..." -ForegroundColor Yellow
+dotnet ef database update --connection $ConnectionString --verbose
+
+# Run custom migration scripts
+Write-Host "Running custom migration scripts..." -ForegroundColor Yellow
+$migrationFiles = Get-ChildItem -Path $MigrationsPath -Filter "<em>.sql" | Sort-Object Name
+
+foreach ($file in $migrationFiles) {
+    Write-Host "Executing: $($file.Name)" -ForegroundColor Yellow
+    psql -f $file.FullName $ConnectionString
+    if ($LASTEXITCODE -ne 0) {
+        throw "Migration script failed: $($file.Name)"
+    }
+}
+
+# Update migration log
+$logEntry = @{
+    Timestamp = Get-Date
+    Environment = $Environment
+    Version = (Get-Content "./version.txt" -ErrorAction SilentlyContinue)
+    Status = "Success"
+} | ConvertTo-Json
+
+Add-Content -Path "./migration.log" -Value $logEntry
+
+Write-Host "Database migrations completed successfully" -ForegroundColor Green
+<div class="code-block"><pre><code>
+
+<h2>Multi-Tenant Configuration Management</h2>
+
+<h3>Environment Configuration Template</h3>
+</code></pre></div>json
+{
+  "Environment": "{{ENVIRONMENT}}",
+  "ConnectionStrings": {
+    "DefaultConnection": "Host={{DB_HOST}};Database={{DB_NAME}};Username={{DB_USER}};Password={{DB_PASSWORD}};Port=5432;SSL Mode=Require;Trust Server Certificate=true;"
+  },
+  "XOSFramework": {
+    "TenantResolution": "Subdomain",
+    "DefaultTenant": "{{DEFAULT_TENANT}}",
+    "TenantStore": "Database",
+    "MultiTenancy": {
+      "Enabled": true,
+      "IsolationLevel": "Schema"
+    }
+  },
+  "SignalR": {
+    "HubUrl": "/xoshub",
+    "ConnectionTimeoutSeconds": 30,
+    "HandshakeTimeoutSeconds": 15
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "{{LOG_LEVEL}}",
+      "Microsoft.AspNetCore": "Warning",
+      "XOS": "Information"
+    },
+    "EventLog": {
+      "LogLevel": {
+        "Default": "Warning"
+      },
+      "SourceName": "XOSApplication"
+    }
+  },
+  "SASS": {
+    "CompileOnBuild": false,
+    "OutputPath": "wwwroot/css",
+    "WatchFiles": false
+  }
+}
+<div class="code-block"><pre><code>
+
+<h3>Configuration Deployment Script</h3>
+</code></pre></div>powershell
+param(
+    [string]$Environment,
+    [string]$ConfigPath,
+    [hashtable]$Variables
+)
+
+$configContent = Get-Content $ConfigPath -Raw
+
+foreach ($key in $Variables.Keys) {
+    $placeholder = "{{$key}}"
+    $configContent = $configContent -replace [regex]::Escape($placeholder), $Variables[$key]
+}
+
+$outputPath = "$ConfigPath.$Environment.json"
+$configContent | Set-Content $outputPath
+
+Write-Host "Configuration updated for $Environment environment" -ForegroundColor Green
+<div class="code-block"><pre><code>
+
+<h2>Frontend Build Integration</h2>
+
+<h3>Package.json Scripts for XOS</h3>
+</code></pre></div>json
+{
+  "scripts": {
+    "build:development": "cross-env NODE_ENV=development webpack --config webpack.dev.js",
+    "build:staging": "cross-env NODE_ENV=staging webpack --config webpack.staging.js",
+    "build:production": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
+    "sass:compile": "sass src/styles/main.scss:wwwroot/css/app.css --style=compressed",
+    "sass:watch": "sass src/styles/main.scss:wwwroot/css/app.css --watch --style=expanded",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "optimize:images": "imagemin src/assets/images/</em> --out-dir=wwwroot/images"
+  }
+}
+<div class="code-block"><pre><code>
+
+<h3>Webpack Configuration for XOS Assets</h3>
+</code></pre></div>javascript
+const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+module.exports = {
+  entry: './src/index.tsx',
+  output: {
+    path: path.resolve(__dirname, '../wwwroot/js'),
+    filename: '[name].[contenthash].js',
+    publicPath: '/js/'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(ts|tsx)$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ]
+      }
+    ]
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '../css/[name].[contenthash].css'
+    })
+  ]
+};
+<div class="code-block"><pre><code>
+
+<h2>Monitoring and Health Checks</h2>
+
+<h3>Application Health Check</h3>
+</code></pre></div>csharp
+public class XOSHealthCheck : IHealthCheck
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<XOSHealthCheck> _logger;
+
+    public XOSHealthCheck(IServiceProvider serviceProvider, ILogger<XOSHealthCheck> logger)
+    {
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+    }
+
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // Check database connectivity
+            using var scope = _serviceProvider.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<XOSDbContext>();
+            await dbContext.Database.CanConnectAsync(cancellationToken);
+
+            // Check SignalR hub
+            var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<XOSHub>>();
+            
+            // Check file system access
+            var deploymentPath = Environment.GetEnvironmentVariable("DEPLOYMENT_PATH") ?? @"C:\inetpub\wwwroot";
+            if (!Directory.Exists(deploymentPath))
+                return HealthCheckResult.Unhealthy($"Deployment path not accessible: {deploymentPath}");
+
+            return HealthCheckResult.Healthy("XOS Application is healthy");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Health check failed");
+            return HealthCheckResult.Unhealthy($"XOS Application health check failed: {ex.Message}");
+        }
+    }
+}
+<div class="code-block"><pre><code>
+
+<h3>PowerShell Health Monitor</h3>
+</code></pre></div>powershell
+param(
+    [string]$ApplicationUrl = "http://localhost/xosapp",
+    [string]$ServiceName = "XOSApplication",
+    [int]$TimeoutSeconds = 30
+)
+
+function Test-XOSApplication {
+    param($Url, $Timeout)
+    
+    try {
+        $response = Invoke-WebRequest -Uri "$Url/health" -TimeoutSec $Timeout
+        return @{
+            Status = "Healthy"
+            StatusCode = $response.StatusCode
+            ResponseTime = $response.Headers.'Response-Time'
+        }
+    } catch {
+        return @{
+            Status = "Unhealthy"
+            Error = <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>devops-automator - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {{CONTENT}}
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>.Exception.Message
+        }
+    }
+}
+
+function Test-XOSService {
+    param($ServiceName)
+    
+    $service = Get-Service -Name $ServiceName -ErrorAction SilentlyContinue
+    if ($service) {
+        return @{
+            Status = $service.Status
+            StartType = $service.StartType
+        }
+    }
+    return @{ Status = "NotFound" }
+}
+
+# Run health checks
+$healthResult = Test-XOSApplication -Url $ApplicationUrl -Timeout $TimeoutSeconds
+$serviceResult = Test-XOSService -ServiceName $ServiceName
+
+$report = @{
+    Timestamp = Get-Date
+    Application = $healthResult
+    Service = $serviceResult
+} | ConvertTo-Json -Depth 3
+
+Write-Host $report
+<div class="code-block"><pre><code>
+
+<h2>Usage Examples</h2>
+
+</code></pre></div>powershell
+# Deploy XOS application to staging
+.\Deploy-XOSApplication.ps1 -Environment "Staging" -ApplicationName "MyXOSApp"
+
+# Build and deploy with custom configuration
+dotnet publish .\src\MyXOSApp.csproj -c Release -o "\\server\deployments\prod\MyXOSApp"
+.\Update-XOSConfiguration.ps1 -Environment "Production" -TenantId "client1"
+
+# Run database migrations
+.\Run-XOSMigrations.ps1 -Environment "Production" -ConnectionString $connectionString
+
+# Monitor application health
+.\Monitor-XOSHealth.ps1 -ApplicationUrl "https://myxosapp.company.com" -ServiceName "MyXOSApp-Production"
+
+# Create IIS application pool and site
+New-WebAppPool -Name "MyXOSApp-Production"
+New-Website -Name "MyXOSApp-Production" -ApplicationPool "MyXOSApp-Production" -PhysicalPath "\\server\deployments\prod\MyXOSApp"
+```
+
+<h2>Best Practices for XOS Applications</h2>
+
+<h3>Security Considerations</h3>
+<ul><li>Use Windows Authentication for internal applications</li><li>Implement proper SSL certificate management</li><li>Secure database connection strings in configuration</li><li>Enable request validation and CSRF protection</li><li>Configure proper file system permissions</li></ul>
+
+<h3>Performance Optimization</h3>
+<ul><li>Enable output caching for static content</li><li>Configure IIS compression</li><li>Optimize database connection pooling</li><li>Implement SignalR scaling with Redis backplane</li><li>Use SASS compilation for efficient CSS delivery</li></ul>
+
+<h3>Operational Excellence</h3>
+<ul><li>Implement structured logging with Serilog</li><li>Monitor database performance with pg_stat_statements</li><li>Use Windows Event Log for system-level logging</li><li>Implement automated backup strategies</li><li>Create disaster recovery procedures</li></ul>
+
+This agent is specifically tailored for XOS framework applications running on Windows Server environments, providing enterprise-grade deployment automation with proper rollback capabilities and monitoring.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

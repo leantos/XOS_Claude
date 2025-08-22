@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>user-guide - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># CVS - Hotel Revenue Management System
+<h2>Comprehensive User Guide</h2></p><p>---</p><p><h2>Table of Contents</h2></p><p><ul><li><a href="#introduction">Introduction</a></li><li><a href="#getting-started">Getting Started</a></li><li><a href="#system-overview">System Overview</a></li><li><a href="#core-features">Core Features</a></li><li><a href="#user-workflows">User Workflows</a></li><li><a href="#module-reference">Module Reference</a></li><li><a href="#troubleshooting">Troubleshooting</a></li><li><a href="#frequently-asked-questions">FAQ</a></li><li><a href="#reference-materials">Reference Materials</a></li></ul></p><p>---</p><p><h2>Introduction</h2></p><p><h3>What is CVS?</h3></p><p>CVS (Central Verification System) is a comprehensive enterprise-level hotel revenue management system designed for hospitality businesses. It provides integrated financial operations, automated workflows, and real-time reporting capabilities to streamline daily operations and ensure accurate financial reporting.</p><p><h3>Who Should Use This Guide?</h3></p><p>This guide is designed for:
+<ul><li><strong>Hotel Staff</strong>: Daily operations users</li><li><strong>Managers</strong>: Approval workflow participants</li><li><strong>Finance Team</strong>: Revenue reconciliation specialists  </li><li><strong>IT Administrators</strong>: System setup and maintenance</li><li><strong>New Users</strong>: Getting started with the system</li></ul></p><p><h3>Key Benefits</h3></p><p><ul><li><strong>Automated Revenue Auditing</strong>: Streamlined Opera PMS integration</li><li><strong>Bank Reconciliation</strong>: Automated transaction matching</li><li><strong>Workflow Management</strong>: Multi-level approval processes</li><li><strong>Real-time Reporting</strong>: Live dashboards and analytics</li><li><strong>Refund Processing</strong>: BACS-enabled payment management</li><li><strong>Multi-site Support</strong>: Centralized management across properties</li></ul></p><p>---</p><p><h2>Getting Started</h2></p><p><h3>Prerequisites</h3></p><p>Before using CVS, ensure you have:
+<ul><li>Web browser (Chrome, Firefox, Safari, Edge)</li><li>Valid user account with assigned permissions</li><li>Network access to the CVS server</li><li>Basic understanding of hotel operations</li></ul></p><p><h3>First Time Login</h3></p><p><ul><li><strong>Access the System</strong></li></ul>
+   - Navigate to your CVS URL (provided by your administrator)
+   - You'll see the login screen</p><p><ul><li><strong>Enter Credentials</strong></li></ul>
+   - <strong>Username</strong>: Your assigned username
+   - <strong>Password</strong>: Your secure password
+   - <strong>Site</strong>: Select your property/location</p><p><ul><li><strong>Initial Setup</strong></li></ul>
+   - Complete your profile information
+   - Set up notification preferences
+   - Review your dashboard permissions</p><p><h3>Dashboard Overview</h3></p><p>Upon login, you'll see the main dashboard containing:</p><p><ul><li><strong>Pending Tasks</strong>: Items requiring your attention</li><li><strong>Quick Actions</strong>: Frequently used functions</li><li><strong>Recent Activity</strong>: Latest transactions and updates</li><li><strong>System Notifications</strong>: Important alerts and messages</li><li><strong>Performance Metrics</strong>: Key performance indicators</li></ul></p><p><h3>Navigation Basics</h3></p><p>The system uses a modular navigation structure:</p><p><ul><li><strong>Left Sidebar</strong>: Main navigation menu</li><li><strong>Top Header</strong>: User profile, notifications, logout</li><li><strong>Breadcrumbs</strong>: Current location within the system</li><li><strong>Module Tabs</strong>: Switch between related functions</li></ul></p><p>---</p><p><h2>System Overview</h2></p><p><h3>Architecture</h3></p><p>CVS is built using modern web technologies:</p><p><ul><li><strong>Frontend</strong>: React-based user interface</li><li><strong>Backend</strong>: ASP.NET Core API</li><li><strong>Database</strong>: PostgreSQL for data storage</li><li><strong>Authentication</strong>: JWT-based secure access</li><li><strong>Real-time Updates</strong>: SignalR for live notifications</li></ul></p><p><h3>Module Categories</h3></p><p>#### CVSM Series - General/Master Configuration
+<ul><li>User management and permissions</li><li>Site configuration and settings</li><li>Workflow and routing setup</li><li>System templates and formats</li></ul></p><p>#### CVST Series - Transaction Processing
+<ul><li>Opera income audit processing</li><li>Bank reconciliation workflows</li><li>Refund management and BACS processing</li><li>F&B void handling</li></ul></p><p>#### CVSR Series - Reports and Analytics
+<ul><li>Revenue reports and analytics</li><li>Audit trail reporting</li><li>Management dashboard metrics</li><li>Reconciliation summaries</li></ul></p><p><h3>Security Features</h3></p><p><ul><li><strong>Multi-factor Authentication</strong>: Enhanced security options</li><li><strong>Role-based Access Control</strong>: Granular permissions</li><li><strong>Audit Logging</strong>: Complete activity tracking</li><li><strong>Data Encryption</strong>: Secure data transmission</li><li><strong>Session Management</strong>: Automatic timeout protection</li></ul></p><p>---</p><p><h2>Core Features</h2></p><p><h3>1. Opera Income Audit (CVST020)</h3></p><p><strong>Purpose</strong>: Automate daily revenue auditing from Opera PMS</p><p><strong>Key Functions</strong>:
+<ul><li>Import Opera data files (Excel/CSV)</li><li>Validate revenue figures automatically</li><li>Compare statistics and balances</li><li>Generate variance reports</li><li>Route for approval workflow</li></ul></p><p><strong>How to Use</strong>:
+<ul><li>Navigate to <strong>Transaction > Opera Income Audit</strong></li><li>Click <strong>Auto Fill Data</strong> to import Opera files</li><li>Review the imported revenue figures</li><li>Check for discrepancies in the validation section</li><li>Add comments for any adjustments</li><li>Click <strong>Submit for Approval</strong> when ready</li></ul></p><p><strong>Important Notes</strong>:
+<ul><li>Files must be in the correct format</li><li>Daily processing typically occurs at 6 AM</li><li>Discrepancies over $100 require manager approval</li></ul></p><p><h3>2. Bank Reconciliation (CVST005)</h3></p><p><strong>Purpose</strong>: Match bank statements with internal transactions</p><p><strong>Key Functions</strong>:
+<ul><li>Import bank statement files</li><li>Auto-match transactions by amount and date</li><li>Manual matching for complex transactions</li><li>Exception handling for unmatched items</li><li>Generate reconciliation reports</li></ul></p><p><strong>How to Use</strong>:
+<ul><li>Navigate to <strong>Transaction > Bank Reconciliation</strong></li><li>Click <strong>Import Statement</strong> and select your bank file</li><li>Review the auto-matched transactions (green indicators)</li><li>Manually match suggested transactions (yellow indicators)</li><li>Investigate unmatched items (red indicators)</li><li>Click <strong>Complete Reconciliation</strong> when finished</li></ul></p><p><strong>Supported Bank Formats</strong>:
+<ul><li>HSBC: CSV format</li><li>Barclays: CSV format</li><li>Lloyds: PDF or CSV format</li><li>NatWest: CSV format</li></ul></p><p><h3>3. Refund Processing (CVST010/CVST011/CVST015)</h3></p><p><strong>Purpose</strong>: Handle guest refunds through approval workflows</p><p><strong>Key Functions</strong>:
+<ul><li>Create refund requests</li><li>Multi-level approval process</li><li>BACS batch processing</li><li>Refund tracking and reporting</li><li>Guest notification management</li></ul></p><p><strong>How to Use</strong>:</p><p><strong>Creating a Refund</strong> (CVST010):
+<ul><li>Navigate to <strong>Transaction > Refund Processing</strong></li><li>Click <strong>New Refund</strong></li><li>Enter guest details and refund amount</li><li>Select refund method (Credit Card or Bank Transfer)</li><li>Add justification comments</li><li>Submit for approval</li></ul></p><p><strong>Quick Refund</strong> (CVST011):
+<ul><li>Use for amounts under $100</li><li>Streamlined single-screen process</li><li>Immediate processing for authorized users</li></ul></p><p><strong>BACS Refunds</strong> (CVST015):
+<ul><li>Bank transfer refunds are automatically queued</li><li>Daily BACS batch runs at 2 PM</li><li>Cutoff time is 1:30 PM for same-day processing</li></ul></p><p><h3>4. F&B Void Management (CVST016/CVST017/CVST018)</h3></p><p><strong>Purpose</strong>: Handle food & beverage transaction voids</p><p><strong>Key Functions</strong>:
+<ul><li>Create void requests with justification</li><li>Manager approval workflow</li><li>POS system integration</li><li>Void audit trail</li><li>Exception reporting</li></ul></p><p><strong>How to Use</strong>:
+<ul><li>Navigate to <strong>Transaction > F&B Voids</strong></li><li>Select the transaction to void</li><li>Enter reason code and comments</li><li>Submit for manager approval</li><li>Approved voids are automatically processed in POS</li></ul></p><p><h3>5. Workflow Management (CVSM045/CVSM046)</h3></p><p><strong>Purpose</strong>: Manage approval processes and routing</p><p><strong>Key Functions</strong>:
+<ul><li>Configure approval hierarchies</li><li>Set routing rules by amount/type</li><li>Track workflow progress</li><li>Reassign pending approvals</li><li>Performance reporting</li></ul></p><p><strong>How to Use</strong>:
+<ul><li>Navigate to <strong>General > Workflow Master</strong></li><li>View pending approvals in your queue</li><li>Click on items to review details</li><li>Approve, reject, or return with comments</li><li>Use <strong>Workflow Search</strong> to find specific items</li></ul></p><p><h3>6. Dashboard and Reporting (CVSM040/CVSR005)</h3></p><p><strong>Purpose</strong>: Real-time monitoring and reporting</p><p><strong>Key Functions</strong>:
+<ul><li>Live performance metrics</li><li>Pending item alerts</li><li>Revenue trend analysis</li><li>Exception reporting</li><li>Custom report generation</li></ul></p><p><strong>Dashboard Widgets</strong>:
+<ul><li><strong>Revenue Summary</strong>: Daily/monthly revenue tracking</li><li><strong>Pending Approvals</strong>: Items awaiting your action</li><li><strong>Exception Alerts</strong>: Items requiring attention</li><li><strong>Performance KPIs</strong>: Key metrics and trends</li></ul></p><p>---</p><p><h2>User Workflows</h2></p><p><h3>Daily Operations Workflow</h3></p><p>#### Morning Routine (6:00 AM - 9:00 AM)
+<ul><li><strong>Check Dashboard</strong>: Review overnight alerts and pending items</li><li><strong>Opera Income Audit</strong>: Process automatic imports or manual uploads</li><li><strong>Bank Reconciliation</strong>: Import overnight bank statements</li><li><strong>Review Exceptions</strong>: Address any system alerts or discrepancies</li></ul></p><p>#### Business Hours (9:00 AM - 6:00 PM)
+<ul><li><strong>Process Refunds</strong>: Handle guest refund requests</li><li><strong>Approve Workflows</strong>: Review and approve pending items</li><li><strong>Handle F&B Voids</strong>: Process void requests from outlets</li><li><strong>Monitor Alerts</strong>: Respond to real-time notifications</li></ul></p><p>#### End of Day (6:00 PM - 11:00 PM)
+<ul><li><strong>Final Reconciliation</strong>: Ensure all transactions are processed</li><li><strong>Generate Reports</strong>: Run daily revenue and audit reports</li><li><strong>Review Tomorrow's Schedule</strong>: Check upcoming automated tasks</li><li><strong>System Maintenance</strong>: Review system health and performance</li></ul></p><p><h3>Approval Workflow Process</h3></p><p>#### For Standard Users
+<ul><li><strong>Create Request</strong>: Enter transaction details and justification</li><li><strong>Submit to Supervisor</strong>: Route to immediate supervisor</li><li><strong>Track Progress</strong>: Monitor approval status in real-time</li><li><strong>Receive Notification</strong>: Get updates via email/SignalR</li><li><strong>Follow Up</strong>: Contact approvers if delays occur</li></ul></p><p>#### For Supervisors/Managers
+<ul><li><strong>Review Queue</strong>: Check pending approvals dashboard</li><li><strong>Evaluate Request</strong>: Review details and supporting documentation</li><li><strong>Make Decision</strong>: Approve, reject, or return for more information</li><li><strong>Add Comments</strong>: Provide feedback for decisions</li><li><strong>Route Forward</strong>: Send to next level if required</li></ul></p><p><h3>Exception Handling Workflow</h3></p><p>#### When Discrepancies Occur
+<ul><li><strong>Identify Issue</strong>: System flags discrepancy or user reports problem</li><li><strong>Investigate</strong>: Review transaction history and supporting documents</li><li><strong>Research</strong>: Contact relevant departments or external parties</li><li><strong>Document</strong>: Record findings and corrective actions</li><li><strong>Resolve</strong>: Process corrections and update records</li><li><strong>Report</strong>: Generate exception report for management</li></ul></p><p>---</p><p><h2>Module Reference</h2></p><p><h3>General Configuration Modules (CVSM Series)</h3></p><p>| Module | Name | Purpose | User Level |
+|--------|------|---------|------------|
+| CVSM001 | User Management | Manage user accounts and permissions | Admin |
+| CVSM005 | Site Configuration | Configure property settings | Admin/Manager |
+| CVSM006 | Site Settings | Detailed site parameters | Manager |
+| CVSM007 | Department Setup | Define organizational departments | Manager |
+| CVSM008 | User Groups | Manage user group permissions | Admin |
+| CVSM020 | Routing Master | Configure approval workflows | Admin |
+| CVSM025 | Bank Statement Format | Set up bank import formats | Admin |
+| CVSM026 | Email Templates | Configure notification templates | Admin |
+| CVSM030 | User Access Rights | Individual user permissions | Admin |
+| CVSM040 | Dashboard Config | Customize dashboard layouts | Manager |</p><p><h3>Transaction Modules (CVST Series)</h3></p><p>| Module | Name | Purpose | User Level |
+|--------|------|---------|------------|
+| CVST005 | Bank Reconciliation | Match bank transactions | User/Supervisor |
+| CVST010 | Refund Processing | Handle guest refunds | User/Supervisor |
+| CVST011 | Quick Refund | Fast-track small refunds | User |
+| CVST015 | BACS Refund | Bank transfer processing | Supervisor |
+| CVST016 | F&B Voids | Process outlet voids | User |
+| CVST017 | F&B Void Approval | Approve void requests | Manager |
+| CVST020 | Opera Income Audit | Daily revenue validation | User/Supervisor |
+| CVST025 | Night Audit Checklist | Complete audit tasks | Night Auditor |</p><p><h3>Reporting Modules (CVSR Series)</h3></p><p>| Module | Name | Purpose | User Level |
+|--------|------|---------|------------|
+| CVSR005 | Revenue Reports | Generate revenue analytics | All Users |
+| CVSR010 | Audit Reports | Audit trail and compliance | Manager |
+| CVSR015 | Management Flash | Executive summary reports | Manager |
+| CVSR020 | Reconciliation Reports | Bank rec summaries | All Users |</p><p>---</p><p><h2>Troubleshooting</h2></p><p><h3>Common Issues and Solutions</h3></p><p>#### Login Problems</p><p><strong>Issue</strong>: Cannot login to the system
+<strong>Symptoms</strong>: 
+<ul><li>Invalid credentials error</li><li>System timeout</li><li>Blank login screen</li></ul></p><p><strong>Solutions</strong>:
+<ul><li><strong>Check Credentials</strong>: Verify username, password, and site selection</li><li><strong>Clear Browser Cache</strong>: Delete cookies and cached files</li><li><strong>Try Different Browser</strong>: Use Chrome or Firefox</li><li><strong>Check Network</strong>: Ensure internet connectivity</li><li><strong>Contact IT</strong>: If problem persists, contact system administrator</li></ul></p><p>#### File Upload Issues</p><p><strong>Issue</strong>: Cannot import Opera or bank files
+<strong>Symptoms</strong>:
+<ul><li>File upload fails</li><li>Invalid format error</li><li>Timeout during import</li></ul></p><p><strong>Solutions</strong>:
+<ul><li><strong>Check File Format</strong>: Ensure file matches expected format (CSV/Excel)</li><li><strong>Verify File Size</strong>: Maximum 10MB for bank statements, 5MB for Opera files</li><li><strong>Check File Content</strong>: Ensure file contains valid data with required columns</li><li><strong>Close Excel</strong>: Close the file in Excel before uploading</li><li><strong>Retry Upload</strong>: Wait 30 seconds and try again</li></ul></p><p>#### Performance Issues</p><p><strong>Issue</strong>: System running slowly
+<strong>Symptoms</strong>:
+<ul><li>Long loading times</li><li>Unresponsive pages</li><li>Timeout errors</li></ul></p><p><strong>Solutions</strong>:
+<ul><li><strong>Refresh Browser</strong>: Press F5 or Ctrl+R to reload</li><li><strong>Close Other Tabs</strong>: Reduce browser memory usage</li><li><strong>Check Internet Speed</strong>: Ensure adequate bandwidth</li><li><strong>Clear Browser Data</strong>: Remove temporary files and cookies</li><li><strong>Update Browser</strong>: Use latest version of your web browser</li></ul></p><p>#### Report Generation Problems</p><p><strong>Issue</strong>: Reports not generating or displaying
+<strong>Symptoms</strong>:
+<ul><li>Report stays in "Processing" status</li><li>Blank or incomplete reports</li><li>Download fails</li></ul></p><p><strong>Solutions</strong>:
+<ul><li><strong>Check Date Range</strong>: Ensure valid date parameters</li><li><strong>Reduce Data Volume</strong>: Try smaller date ranges</li><li><strong>Wait for Processing</strong>: Large reports may take 2-3 minutes</li><li><strong>Check Permissions</strong>: Verify you have access to requested data</li><li><strong>Try Different Format</strong>: Switch between PDF/Excel formats</li></ul></p><p>#### Workflow Approval Issues</p><p><strong>Issue</strong>: Approvals not routing correctly
+<strong>Symptoms</strong>:
+<ul><li>Items stuck in pending status</li><li>Wrong approver assigned</li><li>Missing notification emails</li></ul></p><p><strong>Solutions</strong>:
+<ul><li><strong>Check Routing Rules</strong>: Verify workflow configuration</li><li><strong>Confirm User Status</strong>: Ensure approver is active and available</li><li><strong>Review Amount Limits</strong>: Check if amount exceeds approval authority</li><li><strong>Manual Reassign</strong>: Use workflow management to reassign</li><li><strong>Contact Administrator</strong>: For routing rule modifications</li></ul></p><p><h3>Error Messages</h3></p><p>#### "Invalid Token" or "Authentication Failed"
+<ul><li><strong>Cause</strong>: Session expired or invalid login</li><li><strong>Solution</strong>: Logout and login again with valid credentials</li></ul></p><p>#### "Insufficient Permissions"
+<ul><li><strong>Cause</strong>: User lacks required access rights</li><li><strong>Solution</strong>: Contact administrator to review permissions</li></ul></p><p>#### "File Format Not Supported"
+<ul><li><strong>Cause</strong>: Uploaded file doesn't match expected format</li><li><strong>Solution</strong>: Check format requirements and convert file if needed</li></ul></p><p>#### "Database Connection Error"
+<ul><li><strong>Cause</strong>: System connectivity issue</li><li><strong>Solution</strong>: Wait 5 minutes and retry; contact IT if persistent</li></ul></p><p>#### "Validation Failed"
+<ul><li><strong>Cause</strong>: Data doesn't meet business rules</li><li><strong>Solution</strong>: Review error details and correct input data</li></ul></p><p><h3>Getting Help</h3></p><p>#### Self-Service Options
+<ul><li><strong>System Help</strong>: Click the "?" icon in any module</li><li><strong>User Guide</strong>: Access this guide from the Help menu</li><li><strong>FAQ Section</strong>: Check frequently asked questions below</li><li><strong>Video Tutorials</strong>: Available in the Training section</li></ul></p><p>#### Support Contacts
+<ul><li><strong>Level 1 Support</strong>: help@cvs-system.com or ext. 1234</li><li><strong>Technical Issues</strong>: technical@cvs-system.com or ext. 1235</li><li><strong>Training Requests</strong>: training@cvs-system.com or ext. 1236</li><li><strong>Emergency Support</strong>: emergency@cvs-system.com or ext. 9999 (24/7)</li></ul></p><p>---</p><p><h2>Frequently Asked Questions</h2></p><p><h3>General System Questions</h3></p><p><strong>Q: How often should I change my password?</strong>
+A: Passwords should be changed every 90 days. The system will prompt you when it's time to update.</p><p><strong>Q: Can I access the system from mobile devices?</strong>
+A: Yes, the system is mobile-responsive and works on tablets and smartphones through web browsers.</p><p><strong>Q: What browsers are supported?</strong>
+A: Chrome (recommended), Firefox, Safari, and Edge. Internet Explorer is not supported.</p><p><strong>Q: How long are user sessions active?</strong>
+A: Sessions timeout after 30 minutes of inactivity for security purposes.</p><p><h3>Workflow and Approvals</h3></p><p><strong>Q: Why is my approval request stuck in pending?</strong>
+A: Check if the designated approver is active and available. You can also check workflow routing rules or contact the administrator.</p><p><strong>Q: Can I approve my own requests?</strong>
+A: No, the system prevents self-approval to maintain proper controls and audit trails.</p><p><strong>Q: How do I know when something needs my approval?</strong>
+A: You'll receive email notifications and see items in your dashboard's pending section.</p><p><strong>Q: What happens if an approver is on vacation?</strong>
+A: The system supports reassignment and delegation features. Contact your administrator to set up coverage.</p><p><h3>Financial Operations</h3></p><p><strong>Q: How accurate is the auto-matching for bank reconciliation?</strong>
+A: The system achieves 85-90% auto-matching accuracy based on amount and date matching within defined tolerances.</p><p><strong>Q: Can I process refunds for any amount?</strong>
+A: Refund processing limits depend on your user role. Typically: Users ({{CONTENT}}-$500), Supervisors ({{CONTENT}}-$2,000), Managers (unlimited).</p><p><strong>Q: When do BACS refunds get processed?</strong>
+A: BACS batches run daily at 2:00 PM. The cutoff for same-day processing is 1:30 PM.</p><p><strong>Q: What's the difference between F&B voids and refunds?</strong>
+A: F&B voids cancel POS transactions (same-day typically), while refunds return money to guests and can be for any transaction.</p><p><h3>Reports and Data</h3></p><p><strong>Q: How long does report generation take?</strong>
+A: Simple reports: 10-30 seconds. Complex reports with large datasets: 2-5 minutes.</p><p><strong>Q: Can I schedule reports to run automatically?</strong>
+A: Yes, use the Report Scheduler feature to set up recurring reports with email delivery.</p><p><strong>Q: How far back can I access historical data?</strong>
+A: Transaction data is available for 7 years, audit logs for 5 years, and performance data for 1 year.</p><p><strong>Q: Can I export data to Excel?</strong>
+A: Yes, most reports and data grids support Excel export functionality.</p><p><h3>Technical Issues</h3></p><p><strong>Q: Why are pages loading slowly?</strong>
+A: This could be due to network connectivity, browser performance, or system load. Try refreshing, clearing cache, or using a different browser.</p><p><strong>Q: What should I do if I get a database error?</strong>
+A: Database errors are usually temporary. Wait 5 minutes and retry. If persistent, contact technical support.</p><p><strong>Q: Can I work offline?</strong>
+A: No, CVS is a web-based system requiring internet connectivity for all functions.</p><p><strong>Q: How do I update my notification preferences?</strong>
+A: Go to User Profile > Notification Settings to configure email and in-app notification preferences.</p><p>---</p><p><h2>Reference Materials</h2></p><p><h3>System Requirements</h3></p><p>#### Minimum System Requirements
+<ul><li><strong>Operating System</strong>: Windows 10, macOS 10.14, or Linux (Ubuntu 18.04+)</li><li><strong>Browser</strong>: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+</li><li><strong>Memory</strong>: 4GB RAM minimum, 8GB recommended</li><li><strong>Network</strong>: Stable internet connection (5 Mbps minimum)</li><li><strong>Screen Resolution</strong>: 1024x768 minimum, 1920x1080 recommended</li></ul></p><p><h3>File Format Specifications</h3></p><p>#### Opera Import Files
+<ul><li><strong>Format</strong>: Excel (.xlsx) or CSV</li><li><strong>Size Limit</strong>: 5MB maximum</li><li><strong>Required Columns</strong>: Date, Revenue Type, Amount, Description</li><li><strong>Date Format</strong>: DD/MM/YYYY or MM/DD/YYYY</li></ul></p><p>#### Bank Statement Files
+<ul><li><strong>Supported Banks</strong>: HSBC, Barclays, Lloyds, NatWest</li><li><strong>Format</strong>: CSV (preferred) or PDF</li><li><strong>Size Limit</strong>: 10MB maximum</li><li><strong>Required Columns</strong>: Date, Description, Amount, Balance</li></ul></p><p>#### BACS Export Files
+<ul><li><strong>Format</strong>: Fixed-width text file</li><li><strong>Character Set</strong>: ASCII</li><li><strong>Maximum Records</strong>: 500 per batch</li><li><strong>Naming Convention</strong>: BACS_YYYYMMDD_HHMMSS.txt</li></ul></p><p><h3>Keyboard Shortcuts</h3></p><p>| Shortcut | Function | Context |
+|----------|----------|---------|
+| Ctrl + S | Save current form | Data entry screens |
+| Ctrl + Enter | Submit for approval | Workflow forms |
+| F5 | Refresh page | All screens |
+| Ctrl + F | Search within page | Grid views |
+| Alt + D | Go to dashboard | All screens |
+| Ctrl + L | Logout | All screens |
+| F1 | Context help | All screens |</p><p><h3>Business Rules Summary</h3></p><p>#### Approval Thresholds
+<ul><li><strong>Refunds</strong>: {{CONTENT}}-$500 (User), $501-$2,000 (Supervisor), $2,001+ (Manager)</li><li><strong>F&B Voids</strong>: Same day < $50 (Auto), Previous day (Manager), 2+ days (GM)</li><li><strong>Bank Adjustments</strong>: Any amount requires supervisor approval</li><li><strong>Opera Corrections</strong>: Discrepancies > $100 require manager approval</li></ul></p><p>#### Processing Times
+<ul><li><strong>BACS Refunds</strong>: Daily at 2:00 PM (cutoff 1:30 PM)</li><li><strong>Opera Import</strong>: Daily at 6:00 AM automatic, on-demand manual</li><li><strong>Report Generation</strong>: 10 seconds (simple) to 5 minutes (complex)</li><li><strong>Session Timeout</strong>: 30 minutes of inactivity</li></ul></p><p>#### Data Retention
+<ul><li><strong>Transaction Records</strong>: 7 years</li><li><strong>Audit Logs</strong>: 5 years</li><li><strong>User Activity</strong>: 1 year</li><li><strong>System Logs</strong>: 90 days</li><li><strong>Report Cache</strong>: 30 days</li></ul></p><p><h3>Contact Information</h3></p><p>#### Development Team
+<ul><li><strong>Project Manager</strong>: projects@cvs-system.com</li><li><strong>Technical Lead</strong>: technical@cvs-system.com</li><li><strong>UI/UX Team</strong>: design@cvs-system.com</li></ul></p><p>#### Support Team
+<ul><li><strong>Help Desk</strong>: help@cvs-system.com | +1-800-CVS-HELP</li><li><strong>Training</strong>: training@cvs-system.com</li><li><strong>Emergency Support</strong>: emergency@cvs-system.com (24/7)</li></ul></p><p>#### Business Contacts
+<ul><li><strong>Account Manager</strong>: accounts@cvs-system.com</li><li><strong>Sales Team</strong>: sales@cvs-system.com</li><li><strong>Billing Support</strong>: billing@cvs-system.com</li></ul></p><p>---</p><p><h2>Appendix</h2></p><p><h3>Glossary</h3></p><p><strong>BACS</strong>: Bankers' Automated Clearing Services - UK electronic payment system
+<strong>CVS</strong>: Central Verification System - This hotel revenue management system
+<strong>F&B</strong>: Food & Beverage - Hotel restaurant and bar operations
+<strong>JWT</strong>: JSON Web Token - Security authentication method
+<strong>Opera PMS</strong>: Hotel property management system by Oracle
+<strong>POS</strong>: Point of Sale - Transaction processing system
+<strong>SignalR</strong>: Real-time communication framework
+<strong>Workflow</strong>: Automated business process with approval stages</p><p><h3>Version Information</h3></p><p><ul><li><strong>System Version</strong>: 1.0.0</li><li><strong>User Guide Version</strong>: 1.0</li><li><strong>Last Updated</strong>: January 2025</li><li><strong>Compatible Browsers</strong>: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+</li></ul></p><p><h3>Legal Notice</h3></p><p>This user guide is proprietary information of CVS Hotel Revenue Management System. All rights reserved. No part of this guide may be reproduced or transmitted without written permission.</p><p>---</p><p><em>For the most up-to-date information, please check the system's built-in help documentation or contact your system administrator.</em></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

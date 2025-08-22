@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>postgres-mcp-complete-setup - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># PostgreSQL MCP Server Setup for Claude Code on Windows
+
+A complete, tested guide for setting up PostgreSQL MCP server with Claude Code on Windows. This method has been verified to work correctly.
+
+<h2>Prerequisites</h2>
+
+<ul><li><strong>Windows 10/11</strong></li><li><strong>Python 3.12+</strong> installed</li><li><strong>PostgreSQL database</strong> running locally or remotely</li><li><strong>Claude Code CLI</strong> installed and working</li><li>Database credentials (username, password, database name)</li></ul>
+
+<h2>Step-by-Step Installation</h2>
+
+<h3>Step 1: Install Python (if not already installed)</h3>
+
+<ul><li>Check if Python is installed:</li></ul>
+<div class="code-block"><pre><code>bash
+python --version
+</code></pre></div>
+
+<ul><li>If not installed, download from <a href="https://python.org">python.org</a></li></ul>
+   - Choose Python 3.12 or higher
+   - Check "Add Python to PATH" during installation
+
+<h3>Step 2: Install pipx Package Manager</h3>
+
+pipx allows you to install Python applications in isolated environments.
+
+<div class="code-block"><pre><code>bash
+# Install pipx using pip
+python -m pip install --user pipx
+
+# Add pipx to your PATH
+python -m pipx ensurepath
+</code></pre></div>
+
+<strong>Important</strong>: After running <code>ensurepath</code>, you may need to:
+<ul><li>Close and reopen your terminal</li><li>Or restart your computer for PATH changes to take effect</li></ul>
+
+<h3>Step 3: Install postgres-mcp Server</h3>
+
+<div class="code-block"><pre><code>bash
+# Install the postgres-mcp server globally
+python -m pipx install postgres-mcp
+
+# Verify installation
+postgres-mcp --help
+</code></pre></div>
+
+You should see help output showing available options like <code>--access-mode</code> and <code>--transport</code>.
+
+<h3>Step 4: Configure Claude Code with Your Database</h3>
+
+This is the <strong>critical step</strong> that makes everything work. You must use the Claude Code CLI command, NOT manual configuration:
+
+<div class="code-block"><pre><code>bash
+claude mcp add postgres --env DATABASE_URI=postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE -- postgres-mcp --access-mode=unrestricted
+</code></pre></div>
+
+<strong>Example with real values:</strong>
+<div class="code-block"><pre><code>bash
+claude mcp add postgres --env DATABASE_URI=postgresql://postgres:admin@localhost:5432/CVS -- postgres-mcp --access-mode=unrestricted
+</code></pre></div>
+
+<strong>Important Notes:</strong>
+<ul><li>Replace <code>USERNAME</code>, <code>PASSWORD</code>, <code>HOST</code>, <code>PORT</code>, and <code>DATABASE</code> with your actual values</li><li>Database names are <strong>case-sensitive</strong> on Windows (use <code>CVS</code> not <code>cvs</code>)</li><li>Use <code>--access-mode=unrestricted</code> for development</li><li>Use <code>--access-mode=restricted</code> for production (read-only)</li></ul>
+
+<h3>Step 5: Verify Configuration</h3>
+
+Check that the MCP server is configured correctly:
+
+<div class="code-block"><pre><code>bash
+claude mcp list
+</code></pre></div>
+
+You should see output like:
+<div class="code-block"><pre><code>
+Checking MCP server health...
+postgres: postgres-mcp --access-mode=unrestricted - ? Connected
+</code></pre></div>
+
+<h3>Step 6: Restart Claude Code</h3>
+
+<strong>This step is mandatory!</strong> Claude Code must be restarted to load the MCP tools.
+
+<ul><li>Close Claude Code completely</li><li>Start Claude Code again</li><li>Resume or start a new conversation</li></ul>
+
+<h3>Step 7: Test the Connection</h3>
+
+After restarting, test by asking Claude:
+<ul><li>"List all tables in my database"</li><li>"Show me the database schemas"</li><li>"Check database health"</li></ul>
+
+<h2>Configuration Details</h2>
+
+<h3>Where Configuration is Stored</h3>
+
+The configuration is automatically saved to:
+<ul><li><strong>Windows</strong>: <code>C:\Users\%USERNAME%\.claude.json</code></li><li><strong>Project-specific</strong>: Can also be in <code>.mcp.json</code> in project root</li></ul>
+
+<h3>Environment Variables (Optional)</h3>
+
+For additional configuration, create a <code>.env</code> file in your project:
+
+<div class="code-block"><pre><code>env
+# PostgreSQL MCP Configuration
+DATABASE_URI=postgresql://postgres:admin@localhost:5432/CVS
+ACCESS_MODE=unrestricted
+</code></pre></div>
+
+<h2>Available MCP Tools</h2>
+
+Once configured, these tools become available in Claude Code:
+
+| Tool | Description | Example Usage |
+|------|-------------|---------------|
+| <code>list_schemas</code> | List all database schemas | "Show me all schemas" |
+| <code>list_objects</code> | List tables, views, sequences | "List all tables in public schema" |
+| <code>get_object_details</code> | Get table structure | "Show me the columns in users table" |
+| <code>execute_sql</code> | Run SQL queries | "Select all users created today" |
+| <code>explain_query</code> | Analyze query performance | "Explain this query's execution plan" |
+| <code>get_top_queries</code> | Find slow queries | "What are the slowest queries?" |
+| <code>analyze_workload_indexes</code> | Recommend indexes | "Suggest indexes for my database" |
+| <code>analyze_db_health</code> | Health check | "Check database health" |
+
+<h2>Troubleshooting</h2>
+
+<h3>Issue: "postgres-mcp not found"</h3>
+
+<strong>Solution</strong>: PATH not updated after pipx installation
+<div class="code-block"><pre><code>bash
+# Manually run pipx ensurepath again
+python -m pipx ensurepath
+
+# Then restart your terminal
+</code></pre></div>
+
+<h3>Issue: "Database 'xyz' does not exist"</h3>
+
+<strong>Solution</strong>: Database names are case-sensitive on Windows
+<ul><li>Check exact database name: Use <code>CVS</code> not <code>cvs</code></li><li>Verify with: <code>psql -U postgres -l</code></li></ul>
+
+<h3>Issue: MCP tools not available in Claude Code</h3>
+
+<strong>Solution</strong>: Must restart Claude Code after configuration
+<ul><li>Run <code>claude mcp add</code> command</li><li>Completely close Claude Code</li><li>Start Claude Code fresh</li><li>Start NEW conversation (not resume)</li></ul>
+
+<h3>Issue: "Connection refused" or timeout</h3>
+
+<strong>Solution</strong>: PostgreSQL not running or firewall blocking
+<div class="code-block"><pre><code>bash
+# Check if PostgreSQL is running
+tasklist | findstr postgres
+
+# Check PostgreSQL is listening on correct port
+netstat -an | findstr 5432
+</code></pre></div>
+
+<h3>Issue: Authentication failed</h3>
+
+<strong>Solution</strong>: Verify credentials
+<div class="code-block"><pre><code>bash
+# Test connection directly
+psql -h localhost -U postgres -d CVS
+</code></pre></div>
+
+<h2>Security Considerations</h2>
+
+<h3>For Development</h3>
+<ul><li>Use <code>--access-mode=unrestricted</code> for full access</li><li>Keep connection strings in <code>.env</code> files</li><li>Add <code>.env</code> to <code>.gitignore</code></li></ul>
+
+<h3>For Production</h3>
+<ul><li>Use <code>--access-mode=restricted</code> (read-only)</li><li>Create dedicated read-only database user</li><li>Never commit credentials to version control</li><li>Consider using environment variables or secrets management</li></ul>
+
+<h2>Quick Setup Script</h2>
+
+For automated setup, use the provided PowerShell script:
+
+<div class="code-block"><pre><code>powershell
+.\claude_docs\setup\install-postgres-mcp.ps1
+</code></pre></div>
+
+This script will:
+<ul><li>Check Python installation</li><li>Install pipx if needed</li><li>Install postgres-mcp</li><li>Configure Claude Code</li><li>Test the connection</li></ul>
+
+<h2>Common Commands</h2>
+
+<div class="code-block"><pre><code>bash
+# List configured MCP servers
+claude mcp list
+
+# Remove MCP server
+claude mcp remove postgres
+
+# Re-add with different database
+claude mcp add postgres --env DATABASE_URI=postgresql://user:pass@host:port/newdb -- postgres-mcp --access-mode=restricted
+
+# Check postgres-mcp version
+pipx list
+
+# Upgrade postgres-mcp
+python -m pipx upgrade postgres-mcp
+
+# Uninstall postgres-mcp
+python -m pipx uninstall postgres-mcp
+</code></pre></div>
+
+<h2>Important Notes</h2>
+
+<ul><li><strong>One Installation, Multiple Projects</strong>: postgres-mcp is installed globally but each project can have different connection strings</li><li><strong>Claude Code vs Claude Desktop</strong>: This guide is specifically for Claude Code. Claude Desktop uses different configuration</li><li><strong>Windows Specifics</strong>:</li></ul>
+   - Use backslashes or forward slashes in paths
+   - Database names are case-sensitive
+   - May need to run terminal as Administrator for some operations
+
+<ul><li><strong>Restart Required</strong>: Always restart Claude Code after configuration changes</li></ul>
+
+<h2>Verification Checklist</h2>
+
+<ul><li>[ ] Python 3.12+ installed</li><li>[ ] pipx installed and in PATH</li><li>[ ] postgres-mcp installed via pipx</li><li>[ ] Database connection string configured</li><li>[ ] <code>claude mcp list</code> shows "? Connected"</li><li>[ ] Claude Code restarted</li><li>[ ] MCP tools available in new conversation</li></ul>
+
+<h2>Support</h2>
+
+If you encounter issues:
+<ul><li>Check this guide's troubleshooting section</li><li>Verify all prerequisites are met</li><li>Ensure Claude Code is fully restarted</li><li>Try with a fresh conversation (not resumed)</li></ul>
+
+---
+
+<em>Last tested: January 2025 | Claude Code on Windows 11 | PostgreSQL 17 | postgres-mcp 0.3.0</em></p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

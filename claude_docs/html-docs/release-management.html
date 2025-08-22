@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>release-management - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Release Management Subagent</p><p><h2>Overview</h2>
+The Release Management subagent automates the entire software release lifecycle, from version planning to deployment and post-release monitoring. It handles semantic versioning, changelog generation, release notes, and deployment coordination across multiple environments.</p><p><h2>Core Responsibilities</h2></p><p><h3>1. Version Management</h3>
+<ul><li>Semantic versioning (SemVer) enforcement</li><li>Version bumping strategies (major, minor, patch)</li><li>Pre-release and beta version handling</li><li>Version validation and consistency checks</li></ul></p><p><h3>2. Changelog Generation</h3>
+<ul><li>Automated changelog creation from commit messages</li><li>Release notes generation from pull requests</li><li>Breaking changes identification and documentation</li><li>Migration guide creation for major versions</li></ul></p><p><h3>3. Release Orchestration</h3>
+<ul><li>Multi-repository release coordination</li><li>Environment-specific deployment sequences</li><li>Rollback procedures and contingency planning</li><li>Release approval workflows and gates</li></ul></p><p><h2>Optimal Prompt Template</h2></p><p><div class="code-block"><pre><code>
+You are the Release Management Specialist ??</p><p>TASK: Manage release cycle for [PROJECT/VERSION] with these specifications:</p><p>VERSIONING STRATEGY:
+<ul><li>Scheme: [Semantic Versioning, CalVer, Custom]</li><li>Current version: [x.y.z]</li><li>Release type: [major, minor, patch, prerelease]</li><li>Version validation: [automated checks, manual approval]</li></ul></p><p>CHANGELOG REQUIREMENTS:
+<ul><li>Format: [Keep a Changelog, Conventional Commits, Custom]</li><li>Sections: [Added, Changed, Deprecated, Removed, Fixed, Security]</li><li>Audience: [developers, end users, both]</li><li>Languages: [English, multiple languages]</li></ul></p><p>RELEASE PROCESS:
+<ul><li>Version Planning and Validation:</li></ul>
+   - Analyze changes since last release
+   - Determine appropriate version bump
+   - Validate breaking changes documentation
+   - Check dependency compatibility</p><p><ul><li>Pre-Release Activities:</li></ul>
+   - Generate changelog and release notes
+   - Create release branch if needed
+   - Run comprehensive test suites
+   - Security and compliance scans</p><p><ul><li>Release Execution:</li></ul>
+   - Tag version in repositories
+   - Build and package artifacts
+   - Deploy to staging environments
+   - Execute deployment to production</p><p><ul><li>Post-Release Activities:</li></ul>
+   - Monitor deployment health
+   - Update documentation
+   - Communicate release to stakeholders
+   - Plan next release cycle</p><p>DELIVERABLES:
+<ul><li>Version bump automation scripts</li><li>Changelog generation tooling</li><li>Release notes templates</li><li>Deployment coordination workflows</li><li>Rollback procedures documentation</li><li>Release metrics and monitoring</li><li>Stakeholder communication templates</li></ul></p><p>INTEGRATION POINTS:
+<ul><li>Version Control: [Git tags, branch strategies]</li><li>CI/CD Systems: [GitHub Actions, Jenkins, etc.]</li><li>Package Registries: [NPM, NuGet, Docker Hub]</li><li>Communication: [Slack, email, documentation]</li><li>Monitoring: [Application metrics, error tracking]</li></ul></p><p>QUALITY GATES:
+<ul><li>All tests must pass</li><li>Security scans must be clean</li><li>Performance benchmarks met</li><li>Documentation updated</li><li>Breaking changes documented</li></ul></p><p>ERROR HANDLING:
+<ul><li>Failed deployment rollback procedures</li><li>Version conflict resolution</li><li>Communication failure protocols</li><li>Emergency hotfix procedures</li></ul></p><p>OUTPUT FORMAT:
+Provide executable scripts, configuration files, and comprehensive runbooks for each release management component.
+</code></pre></div></p><p><h2>Advanced Features</h2></p><p><h3>Semantic Version Automation</h3>
+``<code>javascript
+// semver-manager.js
+class SemanticVersionManager {
+  constructor(config) {
+    this.config = config;
+    this.conventionalCommits = require('conventional-commits-parser');
+    this.semver = require('semver');
+  }</p><p>  async analyzeChanges(since = 'latest') {
+    const commits = await this.getCommitsSince(since);
+    const analysis = {
+      breaking: false,
+      features: 0,
+      fixes: 0,
+      chores: 0,
+      docs: 0
+    };</p><p>    for (const commit of commits) {
+      const parsed = this.conventionalCommits.sync(commit.message);
+      
+      if (parsed.notes.some(note => note.title === 'BREAKING CHANGE')) {
+        analysis.breaking = true;
+      }
+      
+      switch (parsed.type) {
+        case 'feat': analysis.features++; break;
+        case 'fix': analysis.fixes++; break;
+        case 'chore': analysis.chores++; break;
+        case 'docs': analysis.docs++; break;
+      }
+    }</p><p>    return analysis;
+  }</p><p>  async suggestVersion(currentVersion, analysis) {
+    if (analysis.breaking) {
+      return semver.inc(currentVersion, 'major');
+    } else if (analysis.features > 0) {
+      return semver.inc(currentVersion, 'minor');
+    } else if (analysis.fixes > 0) {
+      return semver.inc(currentVersion, 'patch');
+    } else {
+      return currentVersion; // No release needed
+    }
+  }</p><p>  async validateVersion(version, options = {}) {
+    const validations = [];</p><p>    // Semver format validation
+    if (!semver.valid(version)) {
+      validations.push({ type: 'error', message: 'Invalid semantic version format' });
+    }</p><p>    // Check if version already exists
+    const tags = await this.getExistingTags();
+    if (tags.includes(version)) {
+      validations.push({ type: 'error', message: 'Version already exists' });
+    }</p><p>    // Check version progression
+    const latestVersion = await this.getLatestVersion();
+    if (semver.lte(version, latestVersion)) {
+      validations.push({ 
+        type: 'error', 
+        message: </code>Version ${version} is not greater than latest ${latestVersion}<code> 
+      });
+    }</p><p>    return validations;
+  }
+}
+<div class="code-block"><pre><code></p><p><h3>Changelog Generation</h3>
+</code></pre></div>typescript
+// changelog-generator.ts
+interface ChangelogConfig {
+  format: 'keepachangelog' | 'conventional' | 'custom';
+  sections: string[];
+  includeCompare: boolean;
+  includeDate: boolean;
+  groupBy: 'type' | 'scope' | 'breaking';
+}</p><p>class ChangelogGenerator {
+  private config: ChangelogConfig;
+  
+  constructor(config: ChangelogConfig) {
+    this.config = config;
+  }</p><p>  async generateChangelog(from: string, to: string = 'HEAD'): Promise<string> {
+    const commits = await this.getCommitRange(from, to);
+    const grouped = this.groupCommits(commits);
+    const version = await this.getVersionFromTag(to);
+    
+    return this.formatChangelog(version, grouped);
+  }</p><p>  private groupCommits(commits: Commit[]): GroupedCommits {
+    const groups = new Map<string, Commit[]>();
+    
+    for (const commit of commits) {
+      const parsed = parseCommit(commit.message);
+      let groupKey = 'Other';
+      
+      switch (parsed.type) {
+        case 'feat':
+          groupKey = 'Features';
+          break;
+        case 'fix':
+          groupKey = 'Bug Fixes';
+          break;
+        case 'docs':
+          groupKey = 'Documentation';
+          break;
+        case 'style':
+          groupKey = 'Styles';
+          break;
+        case 'refactor':
+          groupKey = 'Code Refactoring';
+          break;
+        case 'perf':
+          groupKey = 'Performance Improvements';
+          break;
+        case 'test':
+          groupKey = 'Tests';
+          break;
+        case 'chore':
+          groupKey = 'Chores';
+          break;
+      }
+      
+      if (parsed.notes.some(note => note.title === 'BREAKING CHANGE')) {
+        groupKey = 'BREAKING CHANGES';
+      }
+      
+      if (!groups.has(groupKey)) {
+        groups.set(groupKey, []);
+      }
+      groups.get(groupKey)!.push(commit);
+    }
+    
+    return groups;
+  }</p><p>  private formatChangelog(version: string, groups: GroupedCommits): string {
+    const date = new Date().toISOString().split('T')[0];
+    let changelog = </code>## [${version}] - ${date}\n\n<code>;
+    
+    // Sort groups by priority
+    const groupOrder = [
+      'BREAKING CHANGES',
+      'Features',
+      'Bug Fixes',
+      'Performance Improvements',
+      'Code Refactoring',
+      'Documentation',
+      'Tests',
+      'Chores',
+      'Other'
+    ];
+    
+    for (const groupName of groupOrder) {
+      const commits = groups.get(groupName);
+      if (!commits || commits.length === 0) continue;
+      
+      changelog += </code>### ${groupName}\n\n<code>;
+      
+      for (const commit of commits) {
+        const parsed = parseCommit(commit.message);
+        const scope = parsed.scope ? </code><strong>${parsed.scope}</strong>: <code> : '';
+        const shortHash = commit.hash.substring(0, 7);
+        
+        changelog += </code>- ${scope}${parsed.description} (<a href="${commit.url}">${shortHash}</a>)\n<code>;
+        
+        // Add breaking change notes
+        for (const note of parsed.notes) {
+          if (note.title === 'BREAKING CHANGE') {
+            changelog += </code>  - <strong>BREAKING</strong>: ${note.text}\n<code>;
+          }
+        }
+      }
+      
+      changelog += '\n';
+    }
+    
+    return changelog;
+  }
+}
+<div class="code-block"><pre><code></p><p><h3>Release Orchestration</h3>
+</code></pre></div>yaml
+# release-orchestrator.yml
+release_pipeline:
+  stages:
+    - name: "preparation"
+      jobs:
+        - validate_version
+        - analyze_changes
+        - generate_changelog
+        - run_tests
+        - security_scan
+    
+    - name: "build"
+      jobs:
+        - build_artifacts
+        - package_distributions
+        - sign_packages
+        - upload_to_staging
+    
+    - name: "deploy"
+      environments:
+        - name: "staging"
+          approvals: []
+          tests:
+            - smoke_tests
+            - integration_tests
+        
+        - name: "production"
+          approvals: ["release-manager"]
+          tests:
+            - health_checks
+            - monitoring_validation
+    
+    - name: "post-release"
+      jobs:
+        - update_documentation
+        - notify_stakeholders
+        - create_next_milestone
+        - archive_artifacts</p><p>validation_rules:
+  - name: "version_format"
+    type: "regex"
+    pattern: "^\\d+\\.\\d+\\.\\d+$"
+  
+  - name: "changelog_exists"
+    type: "file"
+    path: "CHANGELOG.html"
+  
+  - name: "tests_passing"
+    type: "command"
+    command: "npm test"
+  
+  - name: "no_security_vulnerabilities"
+    type: "command"
+    command: "npm audit --audit-level high"</p><p>rollback_procedures:
+  - name: "database_rollback"
+    steps:
+      - restore_database_snapshot
+      - run_rollback_migrations
+  
+  - name: "application_rollback"
+    steps:
+      - revert_to_previous_version
+      - restart_services
+      - validate_health_checks
+  
+  - name: "infrastructure_rollback"
+    steps:
+      - revert_infrastructure_changes
+      - update_load_balancer_config
+<div class="code-block"><pre><code></p><p><h3>Multi-Repository Coordination</h3>
+</code></pre></div>typescript
+// multi-repo-release.ts
+interface RepoConfig {
+  name: string;
+  path: string;
+  dependencies: string[];
+  releaseStrategy: 'independent' | 'synchronized';
+  buildCommand: string;
+  testCommand: string;
+}</p><p>class MultiRepoReleaseManager {
+  private repos: RepoConfig[];
+  private releaseGraph: Map<string, string[]>;
+  
+  constructor(repos: RepoConfig[]) {
+    this.repos = repos;
+    this.releaseGraph = this.buildDependencyGraph();
+  }</p><p>  async coordinated_release(version: string): Promise<ReleaseResult> {
+    const releaseOrder = this.topologicalSort();
+    const results = new Map<string, ReleaseResult>();
+    
+    try {
+      // Phase 1: Preparation
+      for (const repoName of releaseOrder) {
+        await this.prepareRepository(repoName, version);
+      }
+      
+      // Phase 2: Building
+      for (const repoName of releaseOrder) {
+        const result = await this.buildRepository(repoName, version);
+        results.set(repoName, result);
+        
+        if (!result.success) {
+          await this.rollbackRelease(releaseOrder, repoName);
+          throw new Error(</code>Build failed for ${repoName}: ${result.error}<code>);
+        }
+      }
+      
+      // Phase 3: Testing
+      await this.runIntegrationTests(releaseOrder);
+      
+      // Phase 4: Deployment
+      for (const repoName of releaseOrder) {
+        await this.deployRepository(repoName, version);
+      }
+      
+      // Phase 5: Verification
+      await this.verifyDeployment(releaseOrder);
+      
+      return { success: true, results };
+      
+    } catch (error) {
+      await this.rollbackRelease(releaseOrder);
+      throw error;
+    }
+  }</p><p>  private buildDependencyGraph(): Map<string, string[]> {
+    const graph = new Map<string, string[]>();
+    
+    for (const repo of this.repos) {
+      graph.set(repo.name, repo.dependencies);
+    }
+    
+    return graph;
+  }</p><p>  private topologicalSort(): string[] {
+    const visited = new Set<string>();
+    const result: string[] = [];
+    
+    const visit = (node: string) => {
+      if (visited.has(node)) return;
+      visited.add(node);
+      
+      const dependencies = this.releaseGraph.get(node) || [];
+      for (const dep of dependencies) {
+        visit(dep);
+      }
+      
+      result.push(node);
+    };
+    
+    for (const repo of this.repos) {
+      visit(repo.name);
+    }
+    
+    return result;
+  }</p><p>  async createReleaseManifest(version: string): Promise<ReleaseManifest> {
+    const manifest: ReleaseManifest = {
+      version,
+      timestamp: new Date().toISOString(),
+      repositories: [],
+      dependencies: {},
+      checksums: {}
+    };
+    
+    for (const repo of this.repos) {
+      const repoInfo = {
+        name: repo.name,
+        version: await this.getRepoVersion(repo.name),
+        commit: await this.getRepoCommit(repo.name),
+        buildArtifacts: await this.getArtifactList(repo.name)
+      };
+      
+      manifest.repositories.push(repoInfo);
+    }
+    
+    return manifest;
+  }
+}
+<div class="code-block"><pre><code></p><p><h2>Release Automation Scripts</h2></p><p><h3>Version Bump Automation</h3>
+</code></pre></div>bash
+#!/bin/bash
+# bump-version.sh</p><p>set -e</p><p>CURRENT_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+RELEASE_TYPE=${1:-patch}</p><p>echo "Current version: $CURRENT_VERSION"</p><p># Validate release type
+case $RELEASE_TYPE in
+  major|minor|patch|premajor|preminor|prepatch|prerelease)
+    ;;
+  <em>)
+    echo "Invalid release type: $RELEASE_TYPE"
+    echo "Valid types: major, minor, patch, premajor, preminor, prepatch, prerelease"
+    exit 1
+    ;;
+esac</p><p># Calculate new version
+if command -v npm >/dev/null 2>&1; then
+    NEW_VERSION=$(npm version --no-git-tag-version $RELEASE_TYPE | sed 's/v//')
+elif command -v python3 >/dev/null 2>&1; then
+    NEW_VERSION=$(python3 -c "
+import semantic_version
+current = semantic_version.Version('$CURRENT_VERSION')
+if '$RELEASE_TYPE' == 'major':
+    new = current.next_major()
+elif '$RELEASE_TYPE' == 'minor':
+    new = current.next_minor()
+else:
+    new = current.next_patch()
+print(str(new))
+")
+else
+    echo "Error: npm or python3 required for version calculation"
+    exit 1
+fi</p><p>echo "New version: $NEW_VERSION"</p><p># Confirm release
+read -p "Proceed with release $NEW_VERSION? (y/N): " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Release cancelled"
+    exit 1
+fi</p><p># Generate changelog
+echo "Generating changelog..."
+if [ -f "CHANGELOG.html" ]; then
+    # Backup existing changelog
+    cp CHANGELOG.md CHANGELOG.md.bak
+    
+    # Generate new entry
+    cat > temp_changelog.md << EOF
+# Changelog</p><p><h2>[$NEW_VERSION] - $(date +%Y-%m-%d)</h2></p><p>$(git log --pretty=format:"- %s" ${CURRENT_VERSION}..HEAD)</p><p>EOF
+    
+    # Merge with existing changelog
+    tail -n +2 CHANGELOG.md.bak >> temp_changelog.md
+    mv temp_changelog.md CHANGELOG.md
+    rm CHANGELOG.md.bak
+else
+    # Create new changelog
+    cat > CHANGELOG.md << EOF
+# Changelog</p><p><h2>[$NEW_VERSION] - $(date +%Y-%m-%d)</h2></p><p>$(git log --pretty=format:"- %s" ${CURRENT_VERSION}..HEAD)
+EOF
+fi</p><p># Update version in project files
+echo "Updating version in project files..."</p><p># Package.json
+if [ -f "package.json" ]; then
+    sed -i.bak "s/\"version\": \".</em>\"/\"version\": \"$NEW_VERSION\"/" package.json
+    rm package.json.bak
+fi</p><p># .NET project files
+find . -name "<em>.csproj" -exec sed -i.bak "s/<Version>.</em><\/Version>/<Version>$NEW_VERSION<\/Version>/" {} \;
+find . -name "<em>.csproj.bak" -delete</p><p># Python setup.py
+if [ -f "setup.py" ]; then
+    sed -i.bak "s/version=['\"].</em>['\"]/version='$NEW_VERSION'/" setup.py
+    rm setup.py.bak
+fi</p><p># Commit changes
+git add .
+git commit -m "chore(release): bump version to $NEW_VERSION"</p><p># Create tag
+git tag -a "v$NEW_VERSION" -m "Release version $NEW_VERSION"</p><p>echo "? Version bumped to $NEW_VERSION"
+echo "?? Next steps:"
+echo "  1. Review changes: git show"
+echo "  2. Push changes: git push origin main && git push origin v$NEW_VERSION"
+echo "  3. Create GitHub release with the generated changelog"
+<div class="code-block"><pre><code></p><p><h3>Automated Release Workflow</h3>
+</code></pre></div>bash
+#!/bin/bash
+# release-workflow.sh</p><p>set -e</p><p>VERSION=$1
+ENVIRONMENT=${2:-production}</p><p>if [ -z "$VERSION" ]; then
+    echo "Usage: {{CONTENT}} <version> [environment]"
+    exit 1
+fi</p><p>echo "?? Starting release workflow for version $VERSION to $ENVIRONMENT"</p><p># Pre-release checks
+echo "?? Running pre-release checks..."</p><p># Check if working directory is clean
+if [ -n "$(git status --porcelain)" ]; then
+    echo "? Working directory is not clean"
+    git status --short
+    exit 1
+fi</p><p># Check if we're on the correct branch
+CURRENT_BRANCH=$(git branch --show-current)
+if [ "$ENVIRONMENT" = "production" ] && [ "$CURRENT_BRANCH" != "main" ]; then
+    echo "? Production releases must be made from main branch"
+    echo "Current branch: $CURRENT_BRANCH"
+    exit 1
+fi</p><p># Run tests
+echo "?? Running test suite..."
+if ! npm test; then
+    echo "? Tests failed"
+    exit 1
+fi</p><p># Run linting
+echo "?? Running code quality checks..."
+if ! npm run lint; then
+    echo "? Linting failed"
+    exit 1
+fi</p><p># Security audit
+echo "?? Running security audit..."
+if ! npm audit --audit-level high; then
+    echo "? Security vulnerabilities detected"
+    exit 1
+fi</p><p># Build application
+echo "?? Building application..."
+if ! npm run build; then
+    echo "? Build failed"
+    exit 1
+fi</p><p># Create release package
+echo "?? Creating release package..."
+tar -czf "release-$VERSION.tar.gz" dist/ package.json package-lock.json</p><p># Calculate checksums
+echo "?? Calculating checksums..."
+sha256sum "release-$VERSION.tar.gz" > "release-$VERSION.sha256"</p><p># Deploy to environment
+echo "?? Deploying to $ENVIRONMENT..."
+case $ENVIRONMENT in
+    staging)
+        # Deploy to staging
+        echo "Deploying to staging environment..."
+        # Add staging deployment commands here
+        ;;
+    production)
+        # Deploy to production
+        echo "Deploying to production environment..."
+        # Add production deployment commands here
+        
+        # Create GitHub release
+        if command -v gh >/dev/null 2>&1; then
+            echo "Creating GitHub release..."
+            gh release create "v$VERSION" \
+                "release-$VERSION.tar.gz" \
+                "release-$VERSION.sha256" \
+                --title "Release $VERSION" \
+                --notes-file CHANGELOG.md \
+                --latest
+        fi
+        ;;
+    *)
+        echo "? Unknown environment: $ENVIRONMENT"
+        exit 1
+        ;;
+esac</p><p># Post-deployment verification
+echo "? Running post-deployment verification..."</p><p># Health check
+if command -v curl >/dev/null 2>&1; then
+    HEALTH_URL="https://${ENVIRONMENT}.example.com/health"
+    if curl -f "$HEALTH_URL" >/dev/null 2>&1; then
+        echo "? Health check passed"
+    else
+        echo "? Health check failed"
+        exit 1
+    fi
+fi</p><p># Send notifications
+echo "?? Sending release notifications..."
+if [ -n "$SLACK_WEBHOOK_URL" ]; then
+    curl -X POST -H 'Content-type: application/json' \
+        --data "{\"text\":\"?? Release $VERSION deployed to $ENVIRONMENT successfully!\"}" \
+        "$SLACK_WEBHOOK_URL"
+fi</p><p>echo "? Release $VERSION completed successfully!"
+echo "?? Release URL: https://${ENVIRONMENT}.example.com"</p><p># Cleanup
+rm -f "release-$VERSION.tar.gz" "release-$VERSION.sha256"
+</code>``</p><p>This comprehensive Release Management system provides automated, reliable, and scalable release processes that ensure quality, security, and proper communication throughout the software delivery lifecycle.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

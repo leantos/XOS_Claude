@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>backend-testing-guide - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Backend Testing Guide - .NET Core with xUnit</p><p>A comprehensive guide for unit testing .NET Core applications using xUnit, following modern best practices and patterns.</p><p><h2>Table of Contents</h2>
+<ul><li><a href="#setup-and-configuration">Setup and Configuration</a></li><li><a href="#xunit-fundamentals">xUnit Fundamentals</a></li><li><a href="#writing-effective-tests">Writing Effective Tests</a></li><li><a href="#mocking-and-dependencies">Mocking and Dependencies</a></li><li><a href="#data-driven-testing">Data-Driven Testing</a></li><li><a href="#async-testing">Async Testing</a></li><li><a href="#integration-testing">Integration Testing</a></li><li><a href="#best-practices">Best Practices</a></li></ul></p><p><h2>Setup and Configuration</h2></p><p><h3>1. Project Setup</h3></p><p>Create a test project:
+<div class="code-block"><pre><code>bash
+dotnet new xunit -n CVS.Tests
+dotnet add reference ../CVS.WebApi/CVS.WebApi.csproj
+</code></pre></div></p><p><h3>2. Required NuGet Packages</h3></p><p><div class="code-block"><pre><code>xml
+<PackageReference Include="xunit" Version="2.6.0" />
+<PackageReference Include="xunit.runner.visualstudio" Version="2.5.0" />
+<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+<PackageReference Include="Moq" Version="4.20.0" />
+<PackageReference Include="FluentAssertions" Version="6.12.0" />
+<PackageReference Include="Bogus" Version="35.0.0" />
+<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+<PackageReference Include="coverlet.collector" Version="6.0.0" />
+</code></pre></div></p><p><h3>3. Test Project Structure</h3></p><p><div class="code-block"><pre><code>
+CVS.Tests/
++-- Unit/
+¦   +-- Controllers/
+¦   +-- Services/
+¦   +-- Repositories/
+¦   +-- Utilities/
++-- Integration/
+¦   +-- Api/
+¦   +-- Database/
++-- Fixtures/
++-- Builders/
++-- Extensions/
+</code></pre></div></p><p><h2>xUnit Fundamentals</h2></p><p><h3>Basic Test Structure</h3></p><p><div class="code-block"><pre><code>csharp
+public class UserServiceTests
+{
+    private readonly Mock<IUserRepository> _mockRepository;
+    private readonly Mock<ILogger<UserService>> _mockLogger;
+    private readonly UserService _sut; // System Under Test</p><p>    public UserServiceTests()
+    {
+        _mockRepository = new Mock<IUserRepository>();
+        _mockLogger = new Mock<ILogger<UserService>>();
+        _sut = new UserService(_mockRepository.Object, _mockLogger.Object);
+    }</p><p>    [Fact]
+    public async Task GetUserAsync_WhenUserExists_ReturnsUser()
+    {
+        // Arrange
+        var userId = 1;
+        var expectedUser = new User { Id = userId, Name = "Test User" };
+        _mockRepository.Setup(x => x.GetByIdAsync(userId))
+                      .ReturnsAsync(expectedUser);</p><p>        // Act
+        var result = await _sut.GetUserAsync(userId);</p><p>        // Assert
+        result.Should().NotBeNull();
+        result.Id.Should().Be(userId);
+        result.Name.Should().Be("Test User");
+    }</p><p>    [Fact]
+    public async Task GetUserAsync_WhenUserNotFound_ThrowsNotFoundException()
+    {
+        // Arrange
+        var userId = 999;
+        _mockRepository.Setup(x => x.GetByIdAsync(userId))
+                      .ReturnsAsync((User)null);</p><p>        // Act
+        Func<Task> act = async () => await _sut.GetUserAsync(userId);</p><p>        // Assert
+        await act.Should().ThrowAsync<NotFoundException>()
+                 .WithMessage($"User with ID {userId} not found");
+    }
+}
+</code></pre></div></p><p><h3>Test Lifecycle</h3></p><p><div class="code-block"><pre><code>csharp
+public class TestLifecycleExample : IDisposable, IAsyncLifetime
+{
+    public TestLifecycleExample()
+    {
+        // Constructor runs before each test
+    }</p><p>    public async Task InitializeAsync()
+    {
+        // Async initialization before each test
+        await Task.CompletedTask;
+    }</p><p>    public async Task DisposeAsync()
+    {
+        // Async cleanup after each test
+        await Task.CompletedTask;
+    }</p><p>    public void Dispose()
+    {
+        // Cleanup after each test
+    }
+}
+</code></pre></div></p><p><h2>Writing Effective Tests</h2></p><p><h3>AAA Pattern (Arrange-Act-Assert)</h3></p><p><div class="code-block"><pre><code>csharp
+[Fact]
+public void CalculateDiscount_StandardCustomer_Returns10Percent()
+{
+    // Arrange - Set up test data and dependencies
+    var customer = new Customer { Type = CustomerType.Standard };
+    var originalPrice = 100m;
+    var calculator = new DiscountCalculator();</p><p>    // Act - Execute the method being tested
+    var discount = calculator.CalculateDiscount(customer, originalPrice);</p><p>    // Assert - Verify the result
+    discount.Should().Be(10m);
+}
+</code></pre></div></p><p><h3>Testing Exceptions</h3></p><p><div class="code-block"><pre><code>csharp
+[Fact]
+public void Withdraw_InsufficientFunds_ThrowsException()
+{
+    // Using Assert.Throws
+    var account = new BankAccount(100);
+    
+    var exception = Assert.Throws<InsufficientFundsException>(
+        () => account.Withdraw(150)
+    );
+    
+    exception.Message.Should().Contain("Insufficient funds");
+}</p><p>[Fact]
+public async Task ProcessPayment_InvalidCard_ThrowsExceptionAsync()
+{
+    // Using FluentAssertions for async
+    var processor = new PaymentProcessor();
+    var invalidCard = new CreditCard { Number = "invalid" };</p><p>    await processor.Invoking(p => p.ProcessAsync(invalidCard))
+                  .Should().ThrowAsync<InvalidCardException>();
+}
+</code></pre></div></p><p><h2>Mocking and Dependencies</h2></p><p><h3>Using Moq</h3></p><p><div class="code-block"><pre><code>csharp
+public class OrderServiceTests
+{
+    private readonly Mock<IOrderRepository> _mockRepo;
+    private readonly Mock<IEmailService> _mockEmail;
+    private readonly OrderService _sut;</p><p>    public OrderServiceTests()
+    {
+        _mockRepo = new Mock<IOrderRepository>();
+        _mockEmail = new Mock<IEmailService>();
+        _sut = new OrderService(_mockRepo.Object, _mockEmail.Object);
+    }</p><p>    [Fact]
+    public async Task CreateOrder_ValidOrder_SendsConfirmationEmail()
+    {
+        // Arrange
+        var order = new Order { Id = 1, CustomerEmail = "test@example.com" };
+        _mockRepo.Setup(x => x.CreateAsync(It.IsAny<Order>()))
+                .ReturnsAsync(order);</p><p>        // Act
+        await _sut.CreateOrderAsync(order);</p><p>        // Assert - Verify email was sent
+        _mockEmail.Verify(
+            x => x.SendAsync(
+                order.CustomerEmail,
+                It.Is<string>(s => s.Contains("Order Confirmation")),
+                It.IsAny<string>()
+            ),
+            Times.Once
+        );
+    }</p><p>    [Fact]
+    public async Task GetOrders_WithFilters_CallsRepositoryWithCorrectParameters()
+    {
+        // Arrange
+        var filter = new OrderFilter { Status = OrderStatus.Pending };
+        var expectedOrders = new List<Order> { new Order(), new Order() };
+        
+        _mockRepo.Setup(x => x.GetFilteredAsync(
+                      It.Is<OrderFilter>(f => f.Status == OrderStatus.Pending)))
+                .ReturnsAsync(expectedOrders);</p><p>        // Act
+        var result = await _sut.GetOrdersAsync(filter);</p><p>        // Assert
+        result.Should().HaveCount(2);
+        _mockRepo.Verify(x => x.GetFilteredAsync(
+            It.Is<OrderFilter>(f => f.Status == OrderStatus.Pending)), 
+            Times.Once);
+    }
+}
+</code></pre></div></p><p><h3>Advanced Mocking Scenarios</h3></p><p><div class="code-block"><pre><code>csharp
+[Fact]
+public async Task ProcessBatch_MultipleItems_ProcessesInOrder()
+{
+    // Setup sequence of returns
+    var mockProcessor = new Mock<IProcessor>();
+    mockProcessor.SetupSequence(x => x.ProcessAsync(It.IsAny<Item>()))
+                 .ReturnsAsync(true)
+                 .ReturnsAsync(false)
+                 .ReturnsAsync(true);</p><p>    // Setup callback to capture arguments
+    var processedItems = new List<Item>();
+    mockProcessor.Setup(x => x.ProcessAsync(It.IsAny<Item>()))
+                 .Callback<Item>(item => processedItems.Add(item));</p><p>    // Test implementation
+}
+</code></pre></div></p><p><h2>Data-Driven Testing</h2></p><p><h3>Theory and InlineData</h3></p><p><div class="code-block"><pre><code>csharp
+public class CalculatorTests
+{
+    [Theory]
+    [InlineData(2, 3, 5)]
+    [InlineData(0, 0, 0)]
+    [InlineData(-1, 1, 0)]
+    [InlineData(int.MaxValue, 1, int.MinValue)] // Overflow case
+    public void Add_VariousInputs_ReturnsExpectedResult(int a, int b, int expected)
+    {
+        var calculator = new Calculator();
+        var result = calculator.Add(a, b);
+        result.Should().Be(expected);
+    }</p><p>    [Theory]
+    [InlineData("", false)]
+    [InlineData("test@example.com", true)]
+    [InlineData("invalid.email", false)]
+    [InlineData("user@domain.co.uk", true)]
+    public void IsValidEmail_VariousInputs_ReturnsExpectedResult(
+        string email, bool expected)
+    {
+        var validator = new EmailValidator();
+        var result = validator.IsValid(email);
+        result.Should().Be(expected);
+    }
+}
+</code></pre></div></p><p><h3>MemberData and ClassData</h3></p><p><div class="code-block"><pre><code>csharp
+public class ValidationTests
+{
+    [Theory]
+    [MemberData(nameof(GetTestCases))]
+    public void Validate_VariousInputs_ReturnsExpectedResult(
+        ValidationInput input, bool expectedValid, string expectedError)
+    {
+        var validator = new Validator();
+        var result = validator.Validate(input);
+        
+        result.IsValid.Should().Be(expectedValid);
+        if (!expectedValid)
+            result.Error.Should().Be(expectedError);
+    }</p><p>    public static IEnumerable<object[]> GetTestCases()
+    {
+        yield return new object[] 
+        { 
+            new ValidationInput { Value = "valid" }, 
+            true, 
+            null 
+        };
+        yield return new object[] 
+        { 
+            new ValidationInput { Value = "" }, 
+            false, 
+            "Value is required" 
+        };
+        yield return new object[] 
+        { 
+            new ValidationInput { Value = "x".PadRight(101, 'x') }, 
+            false, 
+            "Value exceeds maximum length" 
+        };
+    }
+}</p><p>public class PriceTestData : TheoryData<decimal, decimal, decimal>
+{
+    public PriceTestData()
+    {
+        Add(100m, 0.1m, 90m);    // 10% discount
+        Add(100m, 0.25m, 75m);   // 25% discount
+        Add(100m, 0m, 100m);     // No discount
+    }
+}</p><p>public class PriceCalculatorTests
+{
+    [Theory]
+    [ClassData(typeof(PriceTestData))]
+    public void CalculateFinalPrice_WithDiscount_ReturnsCorrectAmount(
+        decimal original, decimal discountRate, decimal expected)
+    {
+        var calculator = new PriceCalculator();
+        var result = calculator.CalculateFinalPrice(original, discountRate);
+        result.Should().Be(expected);
+    }
+}
+</code></pre></div></p><p><h2>Async Testing</h2></p><p><h3>Testing Async Methods</h3></p><p><div class="code-block"><pre><code>csharp
+public class AsyncServiceTests
+{
+    [Fact]
+    public async Task GetDataAsync_SuccessfulCall_ReturnsData()
+    {
+        // Arrange
+        var mockHttp = new Mock<IHttpService>();
+        mockHttp.Setup(x => x.GetAsync<UserData>("api/users/1"))
+                .ReturnsAsync(new UserData { Id = 1, Name = "Test" });
+        
+        var service = new UserApiService(mockHttp.Object);</p><p>        // Act
+        var result = await service.GetUserAsync(1);</p><p>        // Assert
+        result.Should().NotBeNull();
+        result.Name.Should().Be("Test");
+    }</p><p>    [Fact]
+    public async Task ProcessAsync_LongRunning_CompletesWithinTimeout()
+    {
+        var service = new DataProcessor();
+        
+        // Act & Assert with timeout
+        var task = service.ProcessLargeDataSetAsync();
+        var completedTask = await Task.WhenAny(
+            task, 
+            Task.Delay(TimeSpan.FromSeconds(5))
+        );</p><p>        completedTask.Should().Be(task, "operation should complete within 5 seconds");
+    }</p><p>    [Fact]
+    public async Task GetMultipleAsync_ParallelCalls_HandledCorrectly()
+    {
+        var service = new DataService();
+        
+        // Act - Parallel execution
+        var tasks = Enumerable.Range(1, 10)
+            .Select(i => service.GetItemAsync(i))
+            .ToList();
+        
+        var results = await Task.WhenAll(tasks);</p><p>        // Assert
+        results.Should().HaveCount(10);
+        results.Should().OnlyHaveUniqueItems();
+    }
+}
+</code></pre></div></p><p><h3>Testing Cancellation</h3></p><p><div class="code-block"><pre><code>csharp
+[Fact]
+public async Task LongOperation_Cancelled_ThrowsOperationCancelledException()
+{
+    // Arrange
+    var service = new LongRunningService();
+    using var cts = new CancellationTokenSource();
+    cts.CancelAfter(TimeSpan.FromMilliseconds(100));</p><p>    // Act & Assert
+    await service.Invoking(s => s.ProcessAsync(cts.Token))
+                 .Should().ThrowAsync<OperationCanceledException>();
+}
+</code></pre></div></p><p><h2>Integration Testing</h2></p><p><h3>WebApplicationFactory Setup</h3></p><p><div class="code-block"><pre><code>csharp
+public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+{
+    private readonly WebApplicationFactory<Program> _factory;
+    private readonly HttpClient _client;</p><p>    public ApiIntegrationTests(WebApplicationFactory<Program> factory)
+    {
+        _factory = factory.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureTestServices(services =>
+            {
+                // Remove real database
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+                if (descriptor != null)
+                    services.Remove(descriptor);</p><p>                // Add in-memory database
+                services.AddDbContext<AppDbContext>(options =>
+                {
+                    options.UseInMemoryDatabase("TestDb");
+                });</p><p>                // Replace external services with mocks
+                services.AddSingleton<IEmailService, MockEmailService>();
+            });
+        });</p><p>        _client = _factory.CreateClient();
+    }</p><p>    [Fact]
+    public async Task GetUsers_ReturnsSuccessStatusCode()
+    {
+        // Act
+        var response = await _client.GetAsync("/api/users");</p><p>        // Assert
+        response.EnsureSuccessStatusCode();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }</p><p>    [Fact]
+    public async Task CreateUser_ValidData_ReturnsCreatedUser()
+    {
+        // Arrange
+        var newUser = new CreateUserDto 
+        { 
+            Name = "Test User", 
+            Email = "test@example.com" 
+        };
+        var content = new StringContent(
+            JsonSerializer.Serialize(newUser),
+            Encoding.UTF8,
+            "application/json"
+        );</p><p>        // Act
+        var response = await _client.PostAsync("/api/users", content);</p><p>        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        var responseBody = await response.Content.ReadAsStringAsync();
+        var createdUser = JsonSerializer.Deserialize<UserDto>(responseBody);
+        createdUser.Name.Should().Be(newUser.Name);
+    }
+}
+</code></pre></div></p><p><h3>Database Integration Tests</h3></p><p><div class="code-block"><pre><code>csharp
+public class RepositoryIntegrationTests : IDisposable
+{
+    private readonly AppDbContext _context;
+    private readonly UserRepository _repository;</p><p>    public RepositoryIntegrationTests()
+    {
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;</p><p>        _context = new AppDbContext(options);
+        _repository = new UserRepository(_context);</p><p>        // Seed test data
+        SeedTestData();
+    }</p><p>    private void SeedTestData()
+    {
+        _context.Users.AddRange(
+            new User { Id = 1, Name = "User1", Email = "user1@test.com" },
+            new User { Id = 2, Name = "User2", Email = "user2@test.com" }
+        );
+        _context.SaveChanges();
+    }</p><p>    [Fact]
+    public async Task GetByEmail_ExistingUser_ReturnsUser()
+    {
+        // Act
+        var user = await _repository.GetByEmailAsync("user1@test.com");</p><p>        // Assert
+        user.Should().NotBeNull();
+        user.Name.Should().Be("User1");
+    }</p><p>    [Fact]
+    public async Task Create_NewUser_SavesSuccessfully()
+    {
+        // Arrange
+        var newUser = new User 
+        { 
+            Name = "New User", 
+            Email = "new@test.com" 
+        };</p><p>        // Act
+        var created = await _repository.CreateAsync(newUser);
+        var retrieved = await _repository.GetByIdAsync(created.Id);</p><p>        // Assert
+        retrieved.Should().NotBeNull();
+        retrieved.Email.Should().Be("new@test.com");
+    }</p><p>    public void Dispose()
+    {
+        _context?.Dispose();
+    }
+}
+</code></pre></div></p><p><h2>Best Practices</h2></p><p><h3>1. Test Organization</h3></p><p><div class="code-block"><pre><code>csharp
+public class WellOrganizedTests
+{
+    #region Setup
+    private readonly Mock<IDependency> _mockDependency;
+    private readonly SystemUnderTest _sut;</p><p>    public WellOrganizedTests()
+    {
+        _mockDependency = new Mock<IDependency>();
+        _sut = new SystemUnderTest(_mockDependency.Object);
+    }
+    #endregion</p><p>    #region Happy Path Tests
+    [Fact]
+    public void Method_ValidInput_ReturnsExpectedResult() { }
+    #endregion</p><p>    #region Edge Cases
+    [Fact]
+    public void Method_NullInput_ThrowsArgumentNullException() { }
+    
+    [Fact]
+    public void Method_EmptyCollection_ReturnsEmptyResult() { }
+    #endregion</p><p>    #region Error Scenarios
+    [Fact]
+    public void Method_NetworkError_RetriesAndFails() { }
+    #endregion
+}
+</code></pre></div></p><p><h3>2. Test Data Builders</h3></p><p><div class="code-block"><pre><code>csharp
+public class UserBuilder
+{
+    private User _user = new User();</p><p>    public UserBuilder WithId(int id)
+    {
+        _user.Id = id;
+        return this;
+    }</p><p>    public UserBuilder WithEmail(string email)
+    {
+        _user.Email = email;
+        return this;
+    }</p><p>    public UserBuilder WithDefaults()
+    {
+        _user.Id = 1;
+        _user.Name = "Test User";
+        _user.Email = "test@example.com";
+        _user.CreatedAt = DateTime.UtcNow;
+        return this;
+    }</p><p>    public UserBuilder AsAdmin()
+    {
+        _user.Role = UserRole.Admin;
+        _user.Permissions = new[] { "read", "write", "delete" };
+        return this;
+    }</p><p>    public User Build() => _user;</p><p>    public static implicit operator User(UserBuilder builder) => builder.Build();
+}</p><p>// Usage
+[Fact]
+public void TestWithBuilder()
+{
+    var adminUser = new UserBuilder()
+        .WithDefaults()
+        .AsAdmin()
+        .Build();</p><p>    // Use adminUser in test
+}
+</code></pre></div></p><p><h3>3. Using Bogus for Fake Data</h3></p><p><div class="code-block"><pre><code>csharp
+public class FakeDataTests
+{
+    private readonly Faker<User> _userFaker;</p><p>    public FakeDataTests()
+    {
+        _userFaker = new Faker<User>()
+            .RuleFor(u => u.Id, f => f.IndexFaker)
+            .RuleFor(u => u.Name, f => f.Name.FullName())
+            .RuleFor(u => u.Email, f => f.Internet.Email())
+            .RuleFor(u => u.Phone, f => f.Phone.PhoneNumber())
+            .RuleFor(u => u.DateOfBirth, f => f.Date.Past(50, DateTime.Now.AddYears(-18)))
+            .RuleFor(u => u.Address, f => f.Address.FullAddress());
+    }</p><p>    [Fact]
+    public void BulkCreate_100Users_SavesSuccessfully()
+    {
+        // Arrange
+        var users = _userFaker.Generate(100);
+        var service = new UserService();</p><p>        // Act
+        var results = service.BulkCreate(users);</p><p>        // Assert
+        results.Should().HaveCount(100);
+        results.Should().OnlyContain(r => r.Success);
+    }
+}
+</code></pre></div></p><p><h3>4. Custom Assertions</h3></p><p><div class="code-block"><pre><code>csharp
+public static class CustomAssertions
+{
+    public static void ShouldBeSuccessResponse(this HttpResponseMessage response)
+    {
+        response.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.Content.Should().NotBeNull();
+    }</p><p>    public static void ShouldContainValidationError(
+        this ValidationResult result, 
+        string field, 
+        string expectedMessage)
+    {
+        result.Errors.Should().Contain(e => 
+            e.PropertyName == field && 
+            e.ErrorMessage.Contains(expectedMessage));
+    }
+}</p><p>// Usage
+[Fact]
+public void ApiCall_ReturnsSuccess()
+{
+    var response = await _client.GetAsync("/api/resource");
+    response.ShouldBeSuccessResponse();
+}
+</code></pre></div></p><p><h3>5. Test Categories and Traits</h3></p><p><div class="code-block"><pre><code>csharp
+[Trait("Category", "Unit")]
+[Trait("Priority", "High")]
+public class CriticalBusinessLogicTests
+{
+    [Fact]
+    [Trait("Feature", "Payment")]
+    public void ProcessPayment_ValidCard_Succeeds() { }
+}</p><p>// Run specific category
+// dotnet test --filter "Category=Unit"
+// dotnet test --filter "Priority=High"
+</code></pre></div></p><p><h2>Common Patterns and Anti-Patterns</h2></p><p><h3>? Good Practices</h3></p><p><div class="code-block"><pre><code>csharp
+// Good: Clear test name and structure
+[Fact]
+public void CalculateShipping_OrderOver100_ReturnsFreeShipping()
+{
+    var order = new Order { Total = 150 };
+    var calculator = new ShippingCalculator();
+    
+    var shipping = calculator.Calculate(order);
+    
+    shipping.Should().Be(0);
+}</p><p>// Good: Testing behavior, not implementation
+[Fact]
+public void Login_ValidCredentials_ReturnsAuthToken()
+{
+    var service = new AuthService();
+    
+    var token = service.Login("user", "pass");
+    
+    token.Should().NotBeNullOrEmpty();
+    // Don't test HOW the token is generated
+}
+</code></pre></div></p><p><h3>? Anti-Patterns to Avoid</h3></p><p><div class="code-block"><pre><code>csharp
+// Bad: Multiple assertions testing different things
+[Fact]
+public void TestUserOperations() // Vague name
+{
+    var service = new UserService();
+    var user = service.Create("test");
+    Assert.NotNull(user);
+    
+    service.Update(user);
+    Assert.Equal("updated", user.Status);
+    
+    service.Delete(user.Id);
+    Assert.Null(service.Get(user.Id));
+    // Too many operations in one test
+}</p><p>// Bad: Testing private methods directly
+[Fact]
+public void TestPrivateMethod()
+{
+    var service = new Service();
+    var privateMethod = service.GetType()
+        .GetMethod("PrivateHelper", BindingFlags.NonPublic);
+    // Don't do this - test through public API
+}
+</code></pre></div></p><p><h2>Summary</h2></p><p>Key takeaways for effective backend testing:</p><p><ul><li><strong>Use xUnit's modern features</strong> - Theories, async support, and fixtures</li><li><strong>Follow AAA pattern</strong> - Keep tests readable and maintainable</li><li><strong>Mock external dependencies</strong> - But don't over-mock</li><li><strong>Test behavior, not implementation</strong> - Focus on outcomes</li><li><strong>Use meaningful test names</strong> - They serve as documentation</li><li><strong>Keep tests fast and isolated</strong> - Each test should run independently</li><li><strong>Aim for high coverage</strong> - But prioritize critical paths</li><li><strong>Refactor tests</strong> - Maintain them like production code</li></ul></p><p>Remember: Good tests enable confident refactoring and catch bugs early!</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Module Development Guide - XOS Framework</title>
+    <title>MODULE-DEVELOPMENT-GUIDE - XOS Framework</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="shortcut icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="favicon.png">
@@ -17,744 +17,343 @@
     <div class="container">
         <!-- Sidebar Navigation -->
         <nav class="sidebar">
-            
-            <h3><i class="bi bi-book"></i> Guide Navigation</h3>
-            <ul>
-                <li><a href="#overview"><i class="bi bi-info-circle"></i> Overview</a></li>
-                <li><a href="#prompt-templates"><i class="bi bi-chat-square-text"></i> Prompt Templates</a></li>
-                <li><a href="#frontend-development"><i class="bi bi-palette"></i> Frontend Modules</a></li>
-                <li><a href="#backend-development"><i class="bi bi-server"></i> Backend Modules</a></li>
-                <li><a href="#fullstack-development"><i class="bi bi-layers"></i> Full-Stack Modules</a></li>
-                <li><a href="#git-workflow"><i class="bi bi-git"></i> Git Workflow</a></li>
-                <li><a href="#testing"><i class="bi bi-check-circle"></i> Testing</a></li>
-                <li><a href="#troubleshooting"><i class="bi bi-exclamation-triangle"></i> Troubleshooting</a></li>
-                <li><a href="#complete-example"><i class="bi bi-diagram-3"></i> Complete Example</a></li>
-            </ul>
-            
             <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
             <ul>
-                <li><a href="../../index.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
                 <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
-                <li><a href="CLAUDE-PROMPT-QUICK-REFERENCE.html"><i class="bi bi-clipboard"></i> Quick Reference</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
                 <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
             </ul>
         </nav>
 
         <!-- Main Content -->
         <main class="main-content">
+            <p># ?? Complete Module Development Guide for XOS Framework
 
-            <h1><i class="bi bi-book"></i> Complete Module Development Guide for XOS Framework</h1>
+<h2>Table of Contents</h2>
+<ul><li><a href="#overview">Overview</a></li><li><a href="#what-to-tell-claude">What to Tell Claude - Prompt Templates</a></li><li><a href="#frontend-module-development">Frontend Module Development</a></li><li><a href="#backend-module-development">Backend Module Development</a></li><li><a href="#full-stack-module-development">Full-Stack Module Development</a></li><li><a href="#testing-your-module">Testing Your Module</a></li><li><a href="#common-issues--solutions">Common Issues & Solutions</a></li><li><a href="#complete-example">Complete Example: User Management Module</a></li></ul>
 
-            <!-- Table of Contents -->
-            <section class="toc">
-                <h2>Table of Contents</h2>
-                <ol>
-                    <li><a href="#overview">Overview</a></li>
-                    <li><a href="#prompt-templates">What to Tell Claude - Prompt Templates</a></li>
-                    <li><a href="#frontend-development">Frontend Module Development</a></li>
-                    <li><a href="#backend-development">Backend Module Development</a></li>
-                    <li><a href="#fullstack-development">Full-Stack Module Development</a></li>
-                    <li><a href="#git-workflow">Version Control & GitHub Integration</a></li>
-                    <li><a href="#testing">Testing Your Module</a></li>
-                    <li><a href="#troubleshooting">Common Issues & Solutions</a></li>
-                    <li><a href="#complete-example">Complete Example: User Management Module</a></li>
-                </ol>
-            </section>
+---
 
-            <div class="alert alert-critical">
-                <h3>ESSENTIAL READING</h3>
-                <p>Before starting any module development, ensure Claude reads <a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a> - this contains mandatory XOS patterns that differ from standard development.</p>
-            </div>
+<h2>Overview</h2>
 
-            <section id="overview">
-                <h2>Overview</h2>
-                <p>This guide shows you how to create modules in the XOS framework, with specific instructions on what to tell Claude for best results.</p>
-                
-                <div class="nav-grid">
-                    <div class="nav-card">
-                        <h4>Module Types</h4>
-                        <ul>
-                            <li><strong>Frontend Module</strong>: UI components with XOS MVVM pattern</li>
-                            <li><strong>Backend Module</strong>: API endpoints with XOS data patterns</li>
-                            <li><strong>Full-Stack Module</strong>: Complete feature with both frontend and backend</li>
-                        </ul>
-                    </div>
-                    <div class="nav-card">
-                        <h4>Prerequisites</h4>
-                        <ul>
-                            <li>Project set up with XOS framework</li>
-                            <li>Claude Code extension installed</li>
-                            <li>Access to <code>@claude_docs</code> folder</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
+This guide shows you how to create modules in the XOS framework, with specific instructions on what to tell Claude for best results.
 
-            <section id="prompt-templates">
-                <h2><i class="bi bi-chat-square-text"></i> What to Tell Claude - Prompt Templates</h2>
-                
-                <div class="alert alert-critical">
-                    <h3>CRITICAL: Always Start With This Context</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>Essential Context Prompt</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'essential-context')">Copy</button>
-                        </div>
-                        <pre id="essential-context">I'm working with the XOS framework which has custom patterns different from standard React/.NET. 
-Check @claude_docs for patterns before implementing.</pre>
-                    </div>
-                </div>
+<h3>Module Types</h3>
+<ul><li><strong>Frontend Module</strong>: UI components with XOS MVVM pattern</li><li><strong>Backend Module</strong>: API endpoints with XOS data patterns</li><li><strong>Full-Stack Module</strong>: Complete feature with both frontend and backend</li></ul>
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3><i class="bi bi-palette"></i> Frontend Module Prompts</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <h4>For Simple UI Component</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Simple Component Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'simple-component')">Copy</button>
-                            </div>
-                            <pre id="simple-component"><code class="language-text">Create a [ModuleName] frontend component using XOS framework patterns.
+<h3>Prerequisites</h3>
+<ul><li>Project set up with XOS framework</li><li>Claude Code extension installed</li><li>Access to <code>@claude_docs</code> folder</li></ul>
+
+---
+
+<h2>?? What to Tell Claude - Prompt Templates</h2>
+
+<h3>CRITICAL: Always Start With This Context</h3>
+
+<div class="code-block"><pre><code>
+"I'm working with the XOS framework which has custom patterns different from standard React/.NET. 
+Check @claude_docs for patterns before implementing."
+</code></pre></div>
+
+<h3>?? Frontend Module Prompts</h3>
+
+#### For Simple UI Component
+<div class="code-block"><pre><code>
+"Create a [ModuleName] frontend component using XOS framework patterns.
 Requirements:
-- [List your UI requirements]
-- [List fields needed]
+<ul><li>[List your UI requirements]</li><li>[List fields needed]</li></ul>
 
-Follow TDD-XOS-FRONTEND-WORKFLOW.html
-Use @claude_docs/frontend/ui-templates/XOSComponentTemplate as base.
-CRITICAL: Must use VMBase Data reference pattern from xos-input-handling-fix.html</code></pre>
-                        </div>
+Follow ../development-guide/TDD-XOS-FRONTEND-WORKFLOW.md
+Use ../frontend/ui-templates/XOSComponentTemplate as base.
+CRITICAL: Must use VMBase Data reference pattern from ../frontend/xos-input-handling-fix.html"
+</code></pre></div>
 
-                        <h4>For Complex UI with Wireframe</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Complex Component Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'complex-component')">Copy</button>
-                            </div>
-                            <pre id="complex-component"><code class="language-text">Implement [ModuleName] frontend module from MODULE_[ModuleName]_FRONTEND_WIREFRAME_[timestamp].md
-Follow TDD-XOS-FRONTEND-WORKFLOW.html
+#### For Complex UI with Wireframe
+<div class="code-block"><pre><code>
+"Implement [ModuleName] frontend module from MODULE_[ModuleName]_FRONTEND_WIREFRAME_[timestamp].md
+Follow ../development-guide/TDD-XOS-FRONTEND-WORKFLOW.md
 Use XOS MVVM pattern with VMBase.
 CRITICAL: All inputs must accept keyboard input - follow three-step event handler pattern.
-Target: 80% test coverage minimum.</code></pre>
-                        </div>
+Target: 80% test coverage minimum."
+</code></pre></div>
 
-                        <h4>For UI with Data Grid</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Data Grid Component Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'datagrid-component')">Copy</button>
-                            </div>
-                            <pre id="datagrid-component"><code class="language-text">Create [ModuleName] component with XOSGrid for data display.
+#### For UI with Data Grid
+<div class="code-block"><pre><code>
+"Create [ModuleName] component with XOSGrid for data display.
 Requirements:
-- Display [entity] list with columns: [list columns]
-- Add/Edit/Delete functionality
-- Search and pagination
+<ul><li>Display [entity] list with columns: [list columns]</li><li>Add/Edit/Delete functionality</li><li>Search and pagination</li></ul>
 
-Use @claude_docs/frontend/ui-templates/SearchListGridTemplate as reference.
-Follow XOS patterns from CRITICAL_PATTERNS.html</code></pre>
-                        </div>
-                    </div>
-                </div>
+Use ../frontend/ui-templates/SearchListGridTemplate as reference.
+Follow XOS patterns from ../CRITICAL_PATTERNS.html"
+</code></pre></div>
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3><i class="bi bi-server"></i> Backend Module Prompts</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="nav-grid">
-                            <div class="nav-card">
-                                <h4>For CRUD API</h4>
-                                <div class="code-block">
-                                    <div class="code-header">
-                                        <span>CRUD API Prompt</span>
-                                        <button class="copy-btn" onclick="copyCode(this, 'crud-api')">Copy</button>
-                                    </div>
-                                    <pre id="crud-api">Create [ModuleName] backend module with CRUD operations.
+<h3>?? Backend Module Prompts</h3>
+
+#### For CRUD API
+<div class="code-block"><pre><code>
+"Create [ModuleName] backend module with CRUD operations.
 Entity: [EntityName]
 Fields: [list fields with types]
 Database: PostgreSQL with raw SQL
 
-Follow TDD-MODULE-WORKFLOW.html for backend.
-Use XOS data patterns from backend-blueprint.html
+Follow ../development-guide/TDD-MODULE-WORKFLOW.md for backend.
+Use XOS data patterns from ../backend/backend-blueprint.md
 IMPORTANT: Use GetEntityDataListAsync pattern, NOT Entity Framework.
-All endpoints should be POST, return domain types directly.</pre>
-                                </div>
-                            </div>
+All endpoints should be POST, return domain types directly."
+</code></pre></div>
 
-                            <div class="nav-card">
-                                <h4>For Complex Business Logic</h4>
-                                <div class="code-block">
-                                    <div class="code-header">
-                                        <span>Business Logic Prompt</span>
-                                        <button class="copy-btn" onclick="copyCode(this, 'business-logic')">Copy</button>
-                                    </div>
-                                    <pre id="business-logic">Implement [ModuleName]Service with following operations:
-- [List operations with business rules]
+#### For Complex Business Logic
+<div class="code-block"><pre><code>
+"Implement [ModuleName]Service with following operations:
+<ul><li>[List operations with business rules]</li></ul>
 
-Use patterns from @claude_docs/backend/:
-- Domain-driven design with [Namespace].Domain
-- Service layer pattern
-- Raw SQL with PostgreSQL
-- Transaction support with SignalR notifications
+Use patterns from ../backend/:
+<ul><li>Domain-driven design with [Namespace].Domain</li><li>Service layer pattern</li><li>Raw SQL with PostgreSQL</li><li>Transaction support with SignalR notifications</li></ul>
 
-Include comprehensive unit tests with 80% coverage minimum.</pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+Include comprehensive unit tests with 80% coverage minimum."
+</code></pre></div>
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3><i class="bi bi-layers"></i> Full-Stack Module Prompts</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Complete Feature Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'full-stack')">Copy</button>
-                            </div>
-                            <pre id="full-stack">Create full-stack [ModuleName] module:
+<h3>?? Full-Stack Module Prompts</h3>
+
+#### Complete Feature Implementation
+<div class="code-block"><pre><code>
+"Create full-stack [ModuleName] module:
 
 BACKEND:
-- Entity: [EntityName] with fields [list fields]
-- CRUD operations + [custom operations]
-- PostgreSQL with raw SQL
-- Follow backend-blueprint.html
+<ul><li>Entity: [EntityName] with fields [list fields]</li><li>CRUD operations + [custom operations]</li><li>PostgreSQL with raw SQL</li><li>Follow ../backend/backend-blueprint.md</li></ul>
 
 FRONTEND:
-- List view with XOSGrid
-- Add/Edit form with validation
-- Delete with confirmation
-- Follow TDD-XOS-FRONTEND-WORKFLOW.html
+<ul><li>List view with XOSGrid</li><li>Add/Edit form with validation</li><li>Delete with confirmation</li><li>Follow ../development-guide/TDD-XOS-FRONTEND-WORKFLOW.md</li></ul>
 
 INTEGRATION:
-- Use Utils.ajax for API calls
-- Follow patterns from CRITICAL_PATTERNS.html
+<ul><li>Use Utils.ajax for API calls</li><li>Follow patterns from ../CRITICAL_PATTERNS.md</li></ul>
 
-Target: Working end-to-end feature with 80% test coverage.</pre>
-                        </div>
-                    </div>
-                </div>
+Target: Working end-to-end feature with 80% test coverage."
+</code></pre></div>
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3><i class="bi bi-tools"></i> Fix/Debug Prompts</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="nav-grid">
-                            <div class="nav-card">
-                                <h4>When Inputs Don't Work</h4>
-                                <div class="code-block">
-                                    <div class="code-header">
-                                        <span>Input Fix Prompt</span>
-                                        <button class="copy-btn" onclick="copyCode(this, 'input-fix')">Copy</button>
-                                    </div>
-                                    <pre id="input-fix">XOSTextbox inputs are not accepting keyboard input in [ComponentName].
-Fix using patterns from xos-input-handling-fix.html
-Ensure three-step event handler pattern and updateUI() calls.</pre>
-                                </div>
-                            </div>
+<h3>?? Fix/Debug Prompts</h3>
 
-                            <div class="nav-card">
-                                <h4>When Getting Data Errors</h4>
-                                <div class="code-block">
-                                    <div class="code-header">
-                                        <span>Data Error Fix Prompt</span>
-                                        <button class="copy-btn" onclick="copyCode(this, 'data-error-fix')">Copy</button>
-                                    </div>
-                                    <pre id="data-error-fix">Getting 'Cannot set property Data of #<VMBase>' error in [ComponentName].
-Fix using correct ViewModel initialization from CRITICAL_PATTERNS.html
-Use init() method with Data reference pattern.</pre>
-                                </div>
-                            </div>
+#### When Inputs Don't Work
+<div class="code-block"><pre><code>
+"XOSTextbox inputs are not accepting keyboard input in [ComponentName].
+Fix using patterns from ../frontend/xos-input-handling-fix.md
+Ensure three-step event handler pattern and updateUI() calls."
+</code></pre></div>
 
-                            <div class="nav-card">
-                                <h4>When API Calls Fail</h4>
-                                <div class="code-block">
-                                    <div class="code-header">
-                                        <span>API Fix Prompt</span>
-                                        <button class="copy-btn" onclick="copyCode(this, 'api-fix')">Copy</button>
-                                    </div>
-                                    <pre id="api-fix">API calls failing in [ModuleName]. Current code: [paste code]
+#### When Getting Data Errors
+<div class="code-block"><pre><code>
+"Getting 'Cannot set property Data of #<VMBase>' error in [ComponentName].
+Fix using correct ViewModel initialization from ../CRITICAL_PATTERNS.md
+Use init() method with Data reference pattern."
+</code></pre></div>
+
+#### When API Calls Fail
+<div class="code-block"><pre><code>
+"API calls failing in [ModuleName]. Current code: [paste code]
 Fix using XOS patterns:
-- Utils.ajax from utils-api.html
-- POST-only endpoints from api-routes.html</pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+<ul><li>Utils.ajax from ../frontend/utils-api.md</li><li>POST-only endpoints from ../backend/api-routes.html"</li></ul>
+</code></pre></div>
 
-            <section id="frontend-development">
-                <h2><i class="bi bi-palette"></i> Frontend Module Development</h2>
-                
-                <div class="nav-grid">
-                    <div class="nav-card">
-                        <h4>Step 1: Define Requirements</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Requirements Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'requirements')">Copy</button>
-                            </div>
-                            <pre id="requirements">I need a [ModuleName] component that:
-1. [Requirement 1]
-2. [Requirement 2]
-3. [etc.]
+---
 
-Use XOS framework with MVVM pattern.</pre>
-                        </div>
-                    </div>
+<h2>?? Frontend Module Development</h2>
 
-                    <div class="nav-card">
-                        <h4>Step 2: Create Component Structure</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Structure Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'structure')">Copy</button>
-                            </div>
-                            <pre id="structure">Create the folder structure for [ModuleName] component:
+<h3>Step 1: Define Requirements</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"I need a [ModuleName] component that:
+<ul><li>[Requirement 1]</li><li>[Requirement 2]</li><li>[etc.]</li></ul>
+
+Use XOS framework with MVVM pattern."
+</code></pre></div>
+
+<h3>Step 2: Create Component Structure</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"Create the folder structure for [ModuleName] component:
 src/components/[ModuleName]/
-- index.jsx (component)
-- [ModuleName]VM.jsx (ViewModel)
-- __tests__/ (test files)
+<ul><li>index.jsx (component)</li><li>[ModuleName]VM.jsx (ViewModel)</li><li>__tests__/ (test files)</li></ul>
 
-Follow structure from @claude_docs/frontend/ui-templates/XOSComponentTemplate</pre>
-                        </div>
-                    </div>
+Follow structure from ../frontend/ui-templates/XOSComponentTemplate"
+</code></pre></div>
 
-                    <div class="nav-card">
-                        <h4>Step 3: Implement ViewModel</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>ViewModel Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'viewmodel')">Copy</button>
-                            </div>
-                            <pre id="viewmodel">Implement [ModuleName]VM extending VMBase with:
-- Properties: [list properties]
-- Methods: [list methods]
-- Validation: [validation rules]
+<h3>Step 3: Implement ViewModel</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"Implement [ModuleName]VM extending VMBase with:
+<ul><li>Properties: [list properties]</li><li>Methods: [list methods]</li><li>Validation: [validation rules]</li></ul>
 
 CRITICAL: Use init() method with Data reference pattern.
-Never set this.Data = {}</pre>
-                        </div>
-                    </div>
+Never set this.Data = {}"
+</code></pre></div>
 
-                    <div class="nav-card">
-                        <h4>Step 4: Implement Component View</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Component View Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'component-view')">Copy</button>
-                            </div>
-                            <pre id="component-view">Implement [ModuleName] component view with:
-- XOSTextbox for text inputs
-- XOSCombobox for dropdowns
-- Bootstrap styling
-- Three-step event handler pattern
+<h3>Step 4: Implement Component View</h3>
 
-All inputs must have 'name' prop and use updateUI()</pre>
-                        </div>
-                    </div>
+Tell Claude:
+<div class="code-block"><pre><code>
+"Implement [ModuleName] component view with:
+<ul><li>XOSTextbox for text inputs</li><li>XOSCombobox for dropdowns</li><li>Bootstrap styling</li><li>Three-step event handler pattern</li></ul>
 
-                    <div class="nav-card">
-                        <h4>Step 5: Add Tests</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Testing Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'frontend-tests')">Copy</button>
-                            </div>
-                            <pre id="frontend-tests">Create comprehensive tests for [ModuleName]:
-- ViewModel initialization tests
-- Component rendering tests
-- Input handling tests
-- Validation tests
-- Integration tests
+All inputs must have 'name' prop and use updateUI()"
+</code></pre></div>
 
-Target 80% coverage. Verify inputs accept keyboard input.</pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
+<h3>Step 5: Add Tests</h3>
 
-            <section id="backend-development">
-                <h2><i class="bi bi-server"></i> Backend Module Development</h2>
-                
-                <div class="nav-grid">
-                    <div class="nav-card">
-                        <h4>Step 1: Define Domain Model</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Domain Model Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'domain-model')">Copy</button>
-                            </div>
-                            <pre id="domain-model">Create domain model for [EntityName]:
+Tell Claude:
+<div class="code-block"><pre><code>
+"Create comprehensive tests for [ModuleName]:
+<ul><li>ViewModel initialization tests</li><li>Component rendering tests</li><li>Input handling tests</li><li>Validation tests</li><li>Integration tests</li></ul>
+
+Target 80% coverage. Verify inputs accept keyboard input."
+</code></pre></div>
+
+---
+
+<h2>?? Backend Module Development</h2>
+
+<h3>Step 1: Define Domain Model</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"Create domain model for [EntityName]:
 Location: [Namespace].Domain/[EntityName].cs
 Properties:
-- [Property1]: [Type]
-- [Property2]: [Type]
+<ul><li>[Property1]: [Type]</li><li>[Property2]: [Type]</li></ul>
 
-Include data annotations for validation.</pre>
-                        </div>
-                    </div>
+Include data annotations for validation."
+</code></pre></div>
 
-                    <div class="nav-card">
-                        <h4>Step 2: Create Database Schema</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Database Schema Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'database-schema')">Copy</button>
-                            </div>
-                            <pre id="database-schema">Create PostgreSQL table for [EntityName]:
+<h3>Step 2: Create Database Schema</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"Create PostgreSQL table for [EntityName]:
 Table: [table_name]
 Columns: [list columns with types]
 Constraints: [primary key, foreign keys, unique, etc.]
 
-Generate CREATE TABLE script and migration.</pre>
-                        </div>
-                    </div>
+Generate CREATE TABLE script and migration."
+</code></pre></div>
 
-                    <div class="nav-card">
-                        <h4>Step 3: Implement Service Layer</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Service Layer Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'service-layer')">Copy</button>
-                            </div>
-                            <pre id="service-layer">Create [EntityName]Service with:
-- Interface: I[EntityName]Service
-- Implementation with dependency injection
-- CRUD methods using GetEntityDataListAsync
-- Transaction support
-- Error handling
+<h3>Step 3: Implement Service Layer</h3>
 
-Follow patterns from services-core.html</pre>
-                        </div>
-                    </div>
+Tell Claude:
+<div class="code-block"><pre><code>
+"Create [EntityName]Service with:
+<ul><li>Interface: I[EntityName]Service</li><li>Implementation with dependency injection</li><li>CRUD methods using GetEntityDataListAsync</li><li>Transaction support</li><li>Error handling</li></ul>
 
-                    <div class="nav-card">
-                        <h4>Step 4: Create API Controller</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>API Controller Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'api-controller')">Copy</button>
-                            </div>
-                            <pre id="api-controller">Create [EntityName]Controller with:
-- POST endpoints only
-- Return domain types directly (not IActionResult)
-- Route: /api/[EntityName]/[Action]
-- Authorization attributes
+Follow patterns from ../backend/services-core.html"
+</code></pre></div>
 
-Follow api-routes.html patterns</pre>
-                        </div>
-                    </div>
+<h3>Step 4: Create API Controller</h3>
 
-                    <div class="nav-card">
-                        <h4>Step 5: Write Backend Tests</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Backend Testing Prompt</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'backend-tests')">Copy</button>
-                            </div>
-                            <pre id="backend-tests">Create unit tests for [EntityName]:
-- Service layer tests with mocked dependencies
-- Controller tests
-- Validation tests
-- 80% minimum coverage
+Tell Claude:
+<div class="code-block"><pre><code>
+"Create [EntityName]Controller with:
+<ul><li>POST endpoints only</li><li>Return domain types directly (not IActionResult)</li><li>Route: /api/[EntityName]/[Action]</li><li>Authorization attributes</li></ul>
 
-Use xUnit, Moq, and FluentAssertions.</pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
+Follow ../backend/api-routes.md patterns"
+</code></pre></div>
 
-            <section id="testing">
-                <h2><i class="bi bi-check2-square"></i> Testing Your Module</h2>
-                
-                <div class="nav-grid">
-                    <div class="nav-card">
-                        <h4>Frontend Testing</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Frontend Test Command</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'frontend-test-command')">Copy</button>
-                            </div>
-                            <pre id="frontend-test-command">Run frontend tests for [ModuleName]:
-npm test [ModuleName]
+<h3>Step 5: Write Backend Tests</h3>
 
-Fix any failures, especially:
-- Keyboard input acceptance
-- Data property errors
-- Event handler issues</pre>
-                        </div>
-                    </div>
+Tell Claude:
+<div class="code-block"><pre><code>
+"Create unit tests for [EntityName]:
+<ul><li>Service layer tests with mocked dependencies</li><li>Controller tests</li><li>Validation tests</li><li>80% minimum coverage</li></ul>
 
-                    <div class="nav-card">
-                        <h4>Backend Testing</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Backend Test Command</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'backend-test-command')">Copy</button>
-                            </div>
-                            <pre id="backend-test-command">Run backend tests for [ModuleName]:
-dotnet test --filter FullyQualifiedName~[ModuleName]
+Use xUnit, Moq, and FluentAssertions."
+</code></pre></div>
 
-Ensure 80% coverage minimum.</pre>
-                        </div>
-                    </div>
+---
 
-                    <div class="nav-card">
-                        <h4>Integration Testing</h4>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Integration Test Steps</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'integration-test')">Copy</button>
-                            </div>
-                            <pre id="integration-test">Test [ModuleName] end-to-end:
-1. Start backend: dotnet run
-2. Start frontend: npm start
-3. Test all CRUD operations
-4. Verify data persistence
-5. Check error handling</pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
+<h2>?? Full-Stack Module Development</h2>
 
-            <section id="common-issues">
-                <h2><i class="bi bi-bug"></i> Common Issues & Solutions</h2>
-                
-                <div class="alert alert-warning">
-                    <h3>When Things Go Wrong</h3>
-                    <p>If Claude's implementation has issues:</p>
-                    <ol>
-                        <li><strong>Be Specific</strong>: "The userName input in UserForm component won't accept typing"</li>
-                        <li><strong>Reference Docs</strong>: "Fix using xos-input-handling-fix.html"</li>
-                        <li><strong>Show Error</strong>: "Getting error: [paste exact error]"</li>
-                        <li><strong>Request Pattern</strong>: "Use the three-step event handler pattern"</li>
-                    </ol>
-                </div>
+<h3>Step 1: Start with Backend</h3>
 
-                <div class="nav-grid">
-                    <div class="nav-card">
-                        <h4>Frontend Issues</h4>
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Issue</th>
-                                        <th>What to Tell Claude</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>"Cannot set property Data" error</td>
-                                        <td>Fix using Data reference pattern from xos-input-handling-fix.html</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Inputs not accepting typing</td>
-                                        <td>Add updateUI() calls and ensure three-step event handler pattern</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Component not re-rendering</td>
-                                        <td>Check that updateUI() is called after state changes</td>
-                                    </tr>
-                                    <tr>
-                                        <td>XOSTextbox not working</td>
-                                        <td>Verify 'name' prop exists and onChange uses e.value not e.target.value</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="nav-card">
-                        <h4>Backend Issues</h4>
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Issue</th>
-                                        <th>What to Tell Claude</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Database connection fails</td>
-                                        <td>Check connection string in appsettings.json, verify PostgreSQL is running</td>
-                                    </tr>
-                                    <tr>
-                                        <td>API returns 404</td>
-                                        <td>Verify route is POST and follows /api/[Controller]/[Action] pattern</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Transaction fails</td>
-                                        <td>Ensure commit before SignalR calls, follow pattern from @claude_docs/backend/</td>
-                                    </tr>
-                                    <tr>
-                                        <td>GetValue returns null</td>
-                                        <td>Check column name case sensitivity, use exact PostgreSQL column names</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="fullstack-development">
-                <h2><i class="bi bi-layers"></i> Full-Stack Module Development</h2>
-
-                <div class="workflow-steps">
-                    <div class="workflow-step">
-                        <h3>Step 1: Start with Backend</h3>
-                        <p>Tell Claude:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Backend First</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'backend-first')">Copy</button>
-                            </div>
-                            <pre id="backend-first"><code class="language-text">Start full-stack [ModuleName] module:
+Tell Claude:
+<div class="code-block"><pre><code>
+"Start full-stack [ModuleName] module:
 First, create backend with:
-- Domain model
-- Database schema
-- Service layer
-- API endpoints
-- Tests
+<ul><li>Domain model</li><li>Database schema</li><li>Service layer</li><li>API endpoints</li><li>Tests</li></ul>
 
-Follow backend patterns from @claude_docs/backend/</code></pre>
-                        </div>
-                    </div>
+Follow backend patterns from ../backend/"
+</code></pre></div>
 
-                    <div class="workflow-step">
-                        <h3>Step 2: Create Frontend</h3>
-                        <p>Tell Claude:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Frontend Second</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'frontend-second')">Copy</button>
-                            </div>
-                            <pre id="frontend-second"><code class="language-text">Now create frontend for [ModuleName]:
-- List view with XOSGrid
-- Add/Edit form
-- Delete functionality
-- Connect to backend APIs using Utils.ajax
+<h3>Step 2: Create Frontend</h3>
 
-Follow TDD-XOS-FRONTEND-WORKFLOW.html</code></pre>
-                        </div>
-                    </div>
+Tell Claude:
+<div class="code-block"><pre><code>
+"Now create frontend for [ModuleName]:
+<ul><li>List view with XOSGrid</li><li>Add/Edit form</li><li>Delete functionality</li><li>Connect to backend APIs using Utils.ajax</li></ul>
 
-                    <div class="workflow-step">
-                        <h3>Step 3: Integration</h3>
-                        <p>Tell Claude:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Integration</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'integration')">Copy</button>
-                            </div>
-                            <pre id="integration"><code class="language-text">Integrate [ModuleName] frontend with backend:
-- Configure API calls
-- Handle loading states
-- Error handling with showMessageBox
-- Success notifications
+Follow ../development-guide/TDD-XOS-FRONTEND-WORKFLOW.html"
+</code></pre></div>
 
-Test end-to-end functionality.</code></pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
+<h3>Step 3: Integration</h3>
 
-            <section id="git-workflow">
-                <h2><i class="bi bi-git"></i> Version Control & GitHub Integration</h2>
+Tell Claude:
+<div class="code-block"><pre><code>
+"Integrate [ModuleName] frontend with backend:
+<ul><li>Configure API calls</li><li>Handle loading states</li><li>Error handling with showMessageBox</li><li>Success notifications</li></ul>
 
-                <div class="workflow-steps">
-                    <div class="workflow-step">
-                        <h3>Step 1: Initialize Git Workflow</h3>
-                        <p>Tell Claude:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Git Workflow Init</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'git-init')">Copy</button>
-                            </div>
-                            <pre id="git-init"><code class="language-text">Initialize Git workflow for [ModuleName] module:
-- Create feature branch: feature/[ModuleName]-implementation
-- Set up commit message template for XOS patterns
-- Follow conventional commits with XOS-specific scope
+Test end-to-end functionality."
+</code></pre></div>
 
-Use Git Workflow Manager patterns from @claude_docs/git-github/</code></pre>
-                        </div>
-                    </div>
+---
 
-                    <div class="workflow-step">
-                        <h3>Step 2: Development Commits</h3>
-                        <p>Tell Claude:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Development Commits</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'dev-commits')">Copy</button>
-                            </div>
-                            <pre id="dev-commits"><code class="language-text">Commit [ModuleName] development progress:
-- Initial scaffold: 'feat(xos-[module]): create MVVM structure'
-- ViewModel complete: 'feat(xos-[module]): implement ViewModel with Data pattern'
-- Component view: 'feat(xos-[module]): add component with three-step handlers'
-- Tests added: 'test(xos-[module]): add comprehensive test suite'
-- Final fixes: 'fix(xos-[module]): resolve input handling and Data errors'
+<h2>?? Version Control & GitHub Integration</h2>
 
-Include test coverage and XOS compliance in commit messages.</code></pre>
-                        </div>
-                    </div>
+<h3>Step 1: Initialize Git Workflow</h3>
 
-                    <div class="workflow-step">
-                        <h3>Step 3: Create Pull Request</h3>
-                        <p>Tell Claude:</p>
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>PR Creation</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'pr-creation')">Copy</button>
-                            </div>
-                            <pre id="pr-creation"><code class="language-text">Create PR for [ModuleName] module with XOS checklist:
+Tell Claude:
+<div class="code-block"><pre><code>
+"Initialize Git workflow for [ModuleName] module:
+<ul><li>Create feature branch: feature/[ModuleName]-implementation</li><li>Set up commit message template for XOS patterns</li><li>Follow conventional commits with XOS-specific scope</li></ul>
+
+Use Git Workflow Manager patterns from ../git-github/"
+</code></pre></div>
+
+<h3>Step 2: Development Commits</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"Commit [ModuleName] development progress:
+<ul><li>Initial scaffold: 'feat(xos-[module]): create MVVM structure'</li><li>ViewModel complete: 'feat(xos-[module]): implement ViewModel with Data pattern'</li><li>Component view: 'feat(xos-[module]): add component with three-step handlers'</li><li>Tests added: 'test(xos-[module]): add comprehensive test suite'</li><li>Final fixes: 'fix(xos-[module]): resolve input handling and Data errors'</li></ul>
+
+Include test coverage and XOS compliance in commit messages."
+</code></pre></div>
+
+<h3>Step 3: Create Pull Request</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"Create PR for [ModuleName] module with XOS checklist:
 
 TITLE: feat(xos-[module]): implement [ModuleName] with MVVM pattern
 
 DESCRIPTION:
-## XOS Module Implementation
-- [x] Follows VMBase Data reference pattern
-- [x] Implements three-step event handlers
-- [x] All inputs accept keyboard input
-- [x] No 'Cannot set property Data' errors
-- [x] 80%+ test coverage achieved
-- [x] XOSTextbox components work correctly
+<h2>XOS Module Implementation</h2>
+<ul><li>[x] Follows VMBase Data reference pattern</li><li>[x] Implements three-step event handlers  </li><li>[x] All inputs accept keyboard input</li><li>[x] No 'Cannot set property Data' errors</li><li>[x] 80%+ test coverage achieved</li><li>[x] XOSTextbox components work correctly</li></ul>
 
-## Backend (if applicable)
-- [x] Uses raw SQL (not Entity Framework)
-- [x] POST-only API endpoints
-- [x] Proper error handling
+<h2>Backend (if applicable)</h2>
+<ul><li>[x] Uses raw SQL (not Entity Framework)</li><li>[x] POST-only API endpoints</li><li>[x] Proper error handling</li></ul>
 
-## Testing Results
-- Unit tests: [X/Y] passing
-- Integration tests: [X/Y] passing
-- Manual testing: ✅ keyboard input works
+<h2>Testing Results</h2>
+<ul><li>Unit tests: [X/Y] passing</li><li>Integration tests: [X/Y] passing</li><li>Manual testing: ? keyboard input works</li></ul>
 
-Closes #[issue-number]</code></pre>
-                        </div>
-                    </div>
-                </div>
+Closes #[issue-number]"
+</code></pre></div>
 
-                <div class="collapsible">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>GitHub Workflow Integration</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <h4>Branch Naming Convention</h4>
-                        <div class="code-block">
-                            <pre><code class="language-bash"># Frontend modules
+<h3>GitHub Workflow Integration</h3>
+
+#### Branch Naming Convention
+<div class="code-block"><pre><code>bash
+# Frontend modules
 feature/xos-[module]-frontend
 bugfix/xos-[module]-input-fix
 refactor/xos-[module]-vm-cleanup
@@ -764,12 +363,12 @@ feature/api-[module]-crud
 feature/service-[module]-business-logic
 
 # Full-stack modules
-feature/[module]-full-stack</code></pre>
-                        </div>
+feature/[module]-full-stack
+</code></pre></div>
 
-                        <h4>Commit Message Templates</h4>
-                        <div class="code-block">
-                            <pre><code class="language-bash"># Frontend commits
+#### Commit Message Templates
+<div class="code-block"><pre><code>bash
+# Frontend commits
 feat(xos-[module]): implement [component] with VMBase pattern
 fix(xos-[module]): resolve keyboard input handling
 test(xos-[module]): add comprehensive test coverage
@@ -778,224 +377,195 @@ docs(xos-[module]): add component usage documentation
 # Backend commits  
 feat(api-[module]): implement CRUD endpoints with raw SQL
 feat(service-[module]): add business logic with transactions
-test(api-[module]): add controller and service tests</code></pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
+test(api-[module]): add controller and service tests
+</code></pre></div>
 
-            <section id="complete-example">
-                <h2><i class="bi bi-diagram-3"></i> Complete Example: User Management Module</h2>
+<h3>Step 4: Code Review Checklist</h3>
 
-                <div class="alert alert-success">
-                    <h3>What to Tell Claude - Full Example</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>Complete User Management Module</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'user-management-example')">Copy</button>
-                        </div>
-                        <pre id="user-management-example"><code class="language-text">Create a complete User Management module:
+Tell Claude:
+<div class="code-block"><pre><code>
+"Review [ModuleName] PR for XOS compliance:
+
+FRONTEND CHECKLIST:
+<ul><li>[ ] No 'Cannot set property Data' errors in console</li><li>[ ] All XOSTextbox inputs accept keyboard typing</li><li>[ ] updateUI() called after every state change</li><li>[ ] ViewModel extends VMBase correctly  </li><li>[ ] Three-step event handler pattern used</li><li>[ ] Test coverage > 80%</li><li>[ ] Component extends XOSComponent (not wrapped in XOSContainer)</li></ul>
+
+BACKEND CHECKLIST (if applicable):
+<ul><li>[ ] Uses GetEntityDataListAsync pattern</li><li>[ ] All endpoints are POST</li><li>[ ] Returns domain types directly</li><li>[ ] Raw SQL queries (no Entity Framework)</li><li>[ ] Transaction handling implemented</li><li>[ ] Proper error handling</li></ul>
+
+INTEGRATION CHECKLIST:
+<ul><li>[ ] API calls use Utils.ajax</li><li>[ ] Loading states implemented</li><li>[ ] Error handling with showMessageBox</li><li>[ ] Success notifications work"</li></ul>
+</code></pre></div>
+
+<h3>Step 5: Merge & Deploy</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"Complete [ModuleName] module deployment:
+<ul><li>Squash merge to main/develop branch</li><li>Delete feature branch after merge</li><li>Tag release if module is complete: v[module]-1.0.0</li><li>Update module documentation</li><li>Notify team of new module availability</li></ul>
+
+Ensure CI/CD pipeline runs successfully."
+</code></pre></div>
+
+---
+
+<h2>?? Testing Your Module</h2>
+
+<h3>Frontend Testing Command</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"Run frontend tests for [ModuleName]:
+npm test [ModuleName]
+
+Fix any failures, especially:
+<ul><li>Keyboard input acceptance</li><li>Data property errors</li><li>Event handler issues"</li></ul>
+</code></pre></div>
+
+<h3>Backend Testing Command</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"Run backend tests for [ModuleName]:
+dotnet test --filter FullyQualifiedName~[ModuleName]
+
+Ensure 80% coverage minimum."
+</code></pre></div>
+
+<h3>Integration Testing</h3>
+
+Tell Claude:
+<div class="code-block"><pre><code>
+"Test [ModuleName] end-to-end:
+<ul><li>Start backend: dotnet run</li><li>Start frontend: npm start</li><li>Test all CRUD operations</li><li>Verify data persistence</li><li>Check error handling"</li></ul>
+</code></pre></div>
+
+---
+
+<h2>?? Common Issues & Solutions</h2>
+
+<h3>Frontend Issues</h3>
+
+| Issue | What to Tell Claude |
+|-------|-------------------|
+| "Cannot set property Data" error | "Fix using Data reference pattern from ../frontend/xos-input-handling-fix.html" |
+| Inputs not accepting typing | "Add updateUI() calls and ensure three-step event handler pattern" |
+| Component not re-rendering | "Check that updateUI() is called after state changes" |
+| XOSTextbox not working | "Verify 'name' prop exists and onChange uses e.value not e.target.value" |
+
+<h3>Backend Issues</h3>
+
+| Issue | What to Tell Claude |
+|-------|-------------------|
+| Database connection fails | "Check connection string in appsettings.json, verify PostgreSQL is running" |
+| API returns 404 | "Verify route is POST and follows /api/[Controller]/[Action] pattern" |
+| Transaction fails | "Ensure commit before SignalR calls, follow pattern from ../backend/" |
+| GetValue returns null | "Check column name case sensitivity, use exact PostgreSQL column names" |
+
+---
+
+<h2>?? Complete Example: User Management Module</h2>
+
+<h3>What to Tell Claude - Full Example</h3>
+
+<div class="code-block"><pre><code>
+"Create a complete User Management module:
 
 REQUIREMENTS:
-- Users can be created, viewed, edited, deleted
-- Fields: Username, Email, FirstName, LastName, Role, IsActive
-- Email validation required
-- Role dropdown from database
-- Grid view with search
-- Modal forms for add/edit
+<ul><li>Users can be created, viewed, edited, deleted</li><li>Fields: Username, Email, FirstName, LastName, Role, IsActive</li><li>Email validation required</li><li>Role dropdown from database</li><li>Grid view with search</li><li>Modal forms for add/edit</li></ul>
 
 BACKEND:
-1. Create User domain model in CVS.Domain
-2. PostgreSQL table 'users' with appropriate columns
-3. UserService with CRUD operations
-4. UserController with POST endpoints
-5. Unit tests with 80% coverage
+<ul><li>Create User domain model in CVS.Domain</li><li>PostgreSQL table 'users' with appropriate columns</li><li>UserService with CRUD operations</li><li>UserController with POST endpoints</li><li>Unit tests with 80% coverage</li></ul>
 
 FRONTEND:
-1. UserList component with XOSGrid
-2. UserForm component for add/edit
-3. Delete confirmation dialog
-4. Connect to backend APIs
-5. Tests for all components
+<ul><li>UserList component with XOSGrid</li><li>UserForm component for add/edit</li><li>Delete confirmation dialog</li><li>Connect to backend APIs</li><li>Tests for all components</li></ul>
 
 Follow all XOS patterns from @claude_docs
 Ensure inputs work and no Data property errors
-Target: Fully working module with tests</code></pre>
-                    </div>
-                </div>
+Target: Fully working module with tests"
+</code></pre></div>
 
-                <div class="collapsible">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>Expected Deliverables</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <p>Claude should create:</p>
-                        <div class="code-block">
-                            <pre><code class="language-text">Backend:
-├── CVS.Domain/User.cs
-├── CVS.Infrastructure/Services/UserService.cs
-├── CVS.WebApi/Controllers/UserController.cs
-├── CVS.Tests/Services/UserServiceTests.cs
-└── Database/Migrations/001_CreateUsersTable.sql
+<h3>Expected Deliverables</h3>
+
+Claude should create:
+
+<div class="code-block"><pre><code>
+Backend:
++-- CVS.Domain/User.cs
++-- CVS.Infrastructure/Services/UserService.cs
++-- CVS.WebApi/Controllers/UserController.cs
++-- CVS.Tests/Services/UserServiceTests.cs
++-- Database/Migrations/001_CreateUsersTable.sql
 
 Frontend:
-├── src/components/UserManagement/
-│   ├── UserList/
-│   │   ├── index.jsx
-│   │   ├── UserListVM.jsx
-│   │   └── __tests__/
-│   ├── UserForm/
-│   │   ├── index.jsx
-│   │   ├── UserFormVM.jsx
-│   │   └── __tests__/
-│   └── index.jsx (main component)</code></pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
++-- src/components/UserManagement/
+�   +-- UserList/
+�   �   +-- index.jsx
+�   �   +-- UserListVM.jsx
+�   �   +-- __tests__/
+�   +-- UserForm/
+�   �   +-- index.jsx
+�   �   +-- UserFormVM.jsx
+�   �   +-- __tests__/
+�   +-- index.jsx (main component)
+</code></pre></div>
 
-            <section id="quick-start">
-                <h2><i class="bi bi-rocket"></i> Quick Start Checklist</h2>
-                
-                <p>When starting a new module, tell Claude:</p>
-                <div class="checklist">
-                    <label><input type="checkbox"> "I'm using XOS framework, check @claude_docs for patterns"</label>
-                    <label><input type="checkbox"> "Module name is [Name]"</label>
-                    <label><input type="checkbox"> "Requirements are: [list requirements]"</label>
-                    <label><input type="checkbox"> "Follow TDD workflow with 80% test coverage"</label>
-                    <label><input type="checkbox"> "Frontend must use VMBase Data reference pattern"</label>
-                    <label><input type="checkbox"> "Backend must use raw SQL, not Entity Framework"</label>
-                    <label><input type="checkbox"> "All API endpoints should be POST"</label>
-                    <label><input type="checkbox"> "Ensure all inputs accept keyboard input"</label>
-                </div>
-            </section>
+---
 
-            <section id="completion-checklist">
-                <h2><i class="bi bi-check-circle"></i> Module Completion Checklist</h2>
-                
-                <div class="nav-grid">
-                    <div class="nav-card">
-                        <h4>Frontend</h4>
-                        <ul>
-                            <li>☐ All inputs accept keyboard input</li>
-                            <li>☐ No "Cannot set property Data" errors</li>
-                            <li>☐ Form validation works</li>
-                            <li>☐ API integration tested</li>
-                            <li>☐ 80% test coverage</li>
-                        </ul>
-                    </div>
+<h2>?? Quick Start Checklist</h2>
 
-                    <div class="nav-card">
-                        <h4>Backend</h4>
-                        <ul>
-                            <li>☐ All CRUD operations work</li>
-                            <li>☐ Validation implemented</li>
-                            <li>☐ Error handling complete</li>
-                            <li>☐ Transaction support added</li>
-                            <li>☐ 80% test coverage</li>
-                        </ul>
-                    </div>
+When starting a new module, tell Claude:
 
-                    <div class="nav-card">
-                        <h4>Integration</h4>
-                        <ul>
-                            <li>☐ End-to-end flow tested</li>
-                            <li>☐ Error scenarios handled</li>
-                            <li>☐ Loading states work</li>
-                            <li>☐ Success messages show</li>
-                            <li>☐ Data persists correctly</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
+<ul><li>[ ] "I'm using XOS framework, check @claude_docs for patterns"</li><li>[ ] "Module name is [Name]"</li><li>[ ] "Requirements are: [list requirements]"</li><li>[ ] "Follow TDD workflow with 80% test coverage"</li><li>[ ] "Frontend must use VMBase Data reference pattern"</li><li>[ ] "Backend must use raw SQL, not Entity Framework"</li><li>[ ] "All API endpoints should be POST"</li><li>[ ] "Ensure all inputs accept keyboard input"</li></ul>
 
-            <section id="help">
-                <h2><i class="bi bi-question-circle"></i> When Things Go Wrong</h2>
-                
-                <p>If Claude's implementation has issues:</p>
-                <ol>
-                    <li><strong>Be Specific</strong>: "The userName input in UserForm component won't accept typing"</li>
-                    <li><strong>Reference Docs</strong>: "Fix using xos-input-handling-fix.html"</li>
-                    <li><strong>Show Error</strong>: "Getting error: [paste exact error]"</li>
-                    <li><strong>Request Pattern</strong>: "Use the three-step event handler pattern"</li>
-                </ol>
-            </section>
+---
 
-            <section id="essential-reading">
-                <h2><i class="bi bi-book"></i> Essential Reading</h2>
-                
-                <p>Before starting any module, ensure Claude reads:</p>
-                <ol>
-                    <li><code>CRITICAL_PATTERNS.html</code> - Core XOS patterns</li>
-                    <li><code>xos-input-handling-fix.html</code> - Frontend input handling</li>
-                    <li><code>backend-blueprint.html</code> - Backend architecture</li>
-                    <li><code>TDD-MODULE-WORKFLOW.html</code> - TDD process</li>
-                    <li><code>TDD-XOS-FRONTEND-WORKFLOW.html</code> - Frontend specifics</li>
-                </ol>
+<h2>?? Module Completion Checklist</h2>
 
-                <h3>Quick Access Resources</h3>
-                <div class="nav-grid">
-                    <div class="nav-card">
-                        <h4>For Quick Reference</h4>
-                        <ul>
-                            <li><code>CLAUDE-PROMPT-QUICK-REFERENCE.html</code> - Copy-paste prompts</li>
-                            <li><code>COMMON-MODULE-EXAMPLES.html</code> - Ready-to-use module templates</li>
-                            <li><code>@claude_docs/development-guide/XOS-COMPONENT-CHECKLIST.md</code> - Component validation</li>
-                        </ul>
-                    </div>
+Before considering your module complete:
 
-                    <div class="nav-card">
-                        <h4>For Troubleshooting</h4>
-                        <ul>
-                            <li><code>@claude_docs/frontend/xos-common-issues.md</code> - Frontend issues</li>
-                            <li><code>@claude_docs/troubleshooting/backend-issues.md</code> - Backend issues</li>
-                            <li><code>@claude_docs/development-guide/USERLOGIN-WORKFLOW-VALIDATION.md</code> - Example walkthrough</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
+<h3>Frontend</h3>
+<ul><li>[ ] All inputs accept keyboard input</li><li>[ ] No "Cannot set property Data" errors</li><li>[ ] Form validation works</li><li>[ ] API integration tested</li><li>[ ] 80% test coverage</li></ul>
 
-            <section id="quick-navigation">
-                <h2><i class="bi bi-compass"></i> Quick Navigation</h2>
-                <div class="nav-grid">
-                    <div class="nav-card">
-                        <h4><i class="bi bi-arrow-left"></i> Back to</h4>
-                        <ul>
-                            <li><a href="../../index.html">claude_docs Hub</a> - Main documentation hub</li>
-                            <li><a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a> - <strong>Read this first</strong></li>
-                        </ul>
-                    </div>
+<h3>Backend</h3>
+<ul><li>[ ] All CRUD operations work</li><li>[ ] Validation implemented</li><li>[ ] Error handling complete</li><li>[ ] Transaction support added</li><li>[ ] 80% test coverage</li></ul>
 
-                    <div class="nav-card">
-                        <h4><i class="bi bi-lightning"></i> Quick Reference</h4>
-                        <ul>
-                            <li><a href="CLAUDE-PROMPT-QUICK-REFERENCE.html">Quick Reference Prompts</a> - Copy-paste prompts</li>
-                            <li><a href="#complete-example">Common Module Examples</a> - Ready-made templates</li>
-                        </ul>
-                    </div>
+<h3>Integration</h3>
+<ul><li>[ ] End-to-end flow tested</li><li>[ ] Error scenarios handled</li><li>[ ] Loading states work</li><li>[ ] Success messages show</li><li>[ ] Data persists correctly</li></ul>
 
-                    <div class="nav-card">
-                        <h4><i class="bi bi-tools"></i> Troubleshooting</h4>
-                        <ul>
-                            <li><a href="xos-input-handling-fix.html">XOS Input Fix</a> - Fix typing issues</li>
-                            <li><a href="#backend-development">Backend Blueprint</a> - API patterns</li>
-                            <li><a href="SETUP.html">Setup Guide</a> - Environment setup</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
+---
 
-            <div class="alert alert-info">
-                <p><strong>Remember:</strong> The XOS framework has unique patterns. Always tell Claude to check @claude_docs before implementing!</p>
-            </div>
+<h2>?? When Things Go Wrong</h2>
 
+If Claude's implementation has issues:
+
+<ul><li><strong>Be Specific</strong>: "The userName input in UserForm component won't accept typing"</li><li><strong>Reference Docs</strong>: "Fix using ../frontend/xos-input-handling-fix.html"</li><li><strong>Show Error</strong>: "Getting error: [paste exact error]"</li><li><strong>Request Pattern</strong>: "Use the three-step event handler pattern"</li></ul>
+
+---
+
+<h2>?? Essential Reading</h2>
+
+Before starting any module, ensure Claude reads:
+
+<ul><li><code>../CRITICAL_PATTERNS.md</code> - Core XOS patterns</li><li><code>../frontend/xos-input-handling-fix.md</code> - Frontend input handling</li><li><code>../backend/backend-blueprint.md</code> - Backend architecture</li><li><code>../development-guide/TDD-MODULE-WORKFLOW.md</code> - TDD process</li><li><code>../development-guide/TDD-XOS-FRONTEND-WORKFLOW.md</code> - Frontend specifics</li></ul>
+
+<h2>?? Quick Access Resources</h2>
+
+<h3>For Quick Reference</h3>
+<ul><li><code>../CLAUDE-PROMPT-QUICK-REFERENCE.md</code> - Copy-paste prompts</li><li><code>../COMMON-MODULE-EXAMPLES.md</code> - Ready-to-use module templates</li><li><code>../development-guide/XOS-COMPONENT-CHECKLIST.md</code> - Component validation</li></ul>
+
+<h3>For Troubleshooting</h3>
+<ul><li><code>../frontend/xos-common-issues.md</code> - Frontend issues</li><li><code>../troubleshooting/backend-issues.md</code> - Backend issues</li><li><code>../development-guide/USERLOGIN-WORKFLOW-VALIDATION.md</code> - Example walkthrough</li></ul>
+
+---
+
+<h2>?? Quick Navigation</h2>
+<ul><li><a href="./README.html">? Back to claude_docs</a> - Main documentation hub  </li><li><a href="./CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.md</a> - <strong>Read this first</strong></li><li><a href="./CLAUDE-PROMPT-QUICK-REFERENCE.html">Quick Reference Prompts</a> - Copy-paste prompts</li><li><a href="./COMMON-MODULE-EXAMPLES.html">Common Module Examples</a> - Ready-made templates</li><li><a href="./frontend/xos-input-handling-fix.html">XOS Input Fix</a> - Fix typing issues</li><li><a href="./backend/backend-blueprint.html">Backend Blueprint</a> - API patterns</li><li><a href="./SETUP.html">Setup Guide</a> - Environment setup</li></ul>
+
+<em>Remember: The XOS framework has unique patterns. Always tell Claude to check @claude_docs before implementing!</em></p>
+            
             <div class="footer">
-                <p><em>Documentation Version: 2.1.0</em><br>
-                <em>Last Updated: August 21, 2025</em><br>
-                <em>Maintainer: Development Team</em></p>
-                
-                <p><strong>Need Help?</strong> Use the search above or start with <a href="CLAUDE-PROMPT-QUICK-REFERENCE.html">Quick Reference</a> for copy-paste prompts</p>
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
             </div>
         </main>
     </div>
@@ -1022,72 +592,6 @@ Frontend:
         function toggleCollapsible(header) {
             const collapsible = header.parentElement;
             collapsible.classList.toggle('expanded');
-        }
-
-            if (!searchTerm) return text;
-        }
-
-            });
-            
-            }
-        });
-
-        // Mobile sidebar toggle
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('open');
-        }
-
-        // Add mobile menu button for smaller screens
-        if (window.innerWidth <= 768) {
-            const menuButton = document.createElement('button');
-            menuButton.innerHTML = '☰ Menu';
-            menuButton.style.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
-            menuButton.onclick = toggleSidebar;
-            document.body.appendChild(menuButton);
-        }
-
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Add active state to TOC links based on scroll position
-        window.addEventListener('scroll', function() {
-            const sections = document.querySelectorAll('section[id]');
-            const scrollPos = window.scrollY + 100;
-
-            sections.forEach(section => {
-                const top = section.offsetTop;
-                const bottom = top + section.offsetHeight;
-                const id = section.getAttribute('id');
-                const navLink = document.querySelector(`a[href="#${id}"]`);
-
-                if (scrollPos >= top && scrollPos < bottom) {
-                    // Remove active from all nav links
-                    document.querySelectorAll('.sidebar a').forEach(link => {
-                        link.classList.remove('active');
-                    });
-                    // Add active to current nav link
-                    if (navLink) {
-                        navLink.classList.add('active');
-                    }
-                }
-            });
-        });
-
-        // Initialize Prism.js for syntax highlighting
-        if (typeof Prism !== 'undefined') {
-            Prism.highlightAll();
         }
     </script>
 </body>

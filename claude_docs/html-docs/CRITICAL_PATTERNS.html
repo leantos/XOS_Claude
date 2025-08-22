@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚨 CRITICAL PATTERNS - MUST READ FIRST</title>
+    <title>CRITICAL_PATTERNS - XOS Framework</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="shortcut icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="favicon.png">
@@ -17,292 +17,133 @@
     <div class="container">
         <!-- Sidebar Navigation -->
         <nav class="sidebar">
-            
-            <h3><i class="bi bi-exclamation-triangle"></i> Critical Patterns</h3>
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
             <ul>
-                <li><a href="#xos-framework-warning"><i class="bi bi-exclamation-triangle-fill"></i> Framework Warning</a></li>
-                <li><a href="#xos-component-checklist"><i class="bi bi-check-square"></i> Component Checklist</a></li>
-                <li><a href="#database-patterns"><i class="bi bi-database"></i> Database Patterns</a></li>
-                <li><a href="#state-updates"><i class="bi bi-arrow-repeat"></i> State Updates</a></li>
-                <li><a href="#api-patterns"><i class="bi bi-cloud"></i> API Patterns</a></li>
-            </ul>
-            
-            <h3><i class="bi bi-tools"></i> Implementation</h3>
-            <ul>
-                <li><a href="#jquery-dependency"><i class="bi bi-code-square"></i> jQuery Dependency</a></li>
-                <li><a href="#transaction-patterns"><i class="bi bi-arrow-left-right"></i> Transactions</a></li>
-                <li><a href="#api-calls"><i class="bi bi-telephone"></i> API Calls</a></li>
-                <li><a href="#multi-tenant"><i class="bi bi-building"></i> Multi-Tenant</a></li>
-                <li><a href="#bootstrap-hybrid"><i class="bi bi-palette"></i> Bootstrap Hybrid</a></li>
-            </ul>
-            
-            <h3><i class="bi bi-check-circle"></i> Validation</h3>
-            <ul>
-                <li><a href="#validation-checklist"><i class="bi bi-clipboard-check"></i> Quick Checklist</a></li>
-                <li><a href="#reading-order"><i class="bi bi-book"></i> Reading Order</a></li>
-                <li><a href="#common-pitfalls"><i class="bi bi-exclamation-octagon"></i> Common Pitfalls</a></li>
-                <li><a href="#quick-navigation"><i class="bi bi-compass"></i> Navigation</a></li>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
             </ul>
         </nav>
 
         <!-- Main Content -->
         <main class="main-content">
+            <p># ?? CRITICAL PATTERNS - MUST READ FIRST
 
-            <h1><i class="bi bi-exclamation-triangle-fill"></i> 🚨 CRITICAL PATTERNS - MUST READ FIRST</h1>
+<h2>?? This is NOT a Standard ASP.NET Core + React Application</h2>
 
-            <div class="alert alert-critical" id="xos-framework-warning">
-                <h2>⚠️ This is NOT a Standard ASP.NET Core + React Application</h2>
-                <p><strong>Applications built with the custom XOS enterprise framework significantly modify standard patterns.</strong> Following standard React or ASP.NET Core patterns will cause errors.</p>
-            </div>
+Applications built with the <strong>custom XOS enterprise framework</strong> significantly modify standard patterns. Following standard React or ASP.NET Core patterns will cause errors.
 
-            <section id="xos-component-checklist">
-                <h2>🔴 XOS Component Implementation Checklist (100% ACCURACY)</h2>
-                
-                <div class="alert alert-success">
-                    <h3>✅ MUST DO - Complete this checklist for EVERY XOS component:</h3>
-                </div>
+<h2>?? XOS Component Implementation Checklist (100% ACCURACY)</h2>
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>1. Install Dependencies & Setup (ONE TIME)</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>Bash Commands</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'install-deps')">Copy</button>
-                            </div>
-                            <pre><code class="language-bash" id="install-deps"># 1. Install Dependencies (ONE TIME)
+<h3>? MUST DO - Complete this checklist for EVERY XOS component:</h3>
+
+<div class="code-block"><pre><code>bash
+# 1. Install Dependencies (ONE TIME)
 cd CVS_Claude.WebApi/UIPages
 npm install react-color fast-sort --save
 
 # 2. Copy Theme CSS (ONE TIME)
-cp D:\Projects\CVS_Claude\assets\css\theme.css D:\Projects\CVS_Claude\CVS_Claude.WebApi\UIPages\src\theme.css</code></pre>
-                        </div>
-                    </div>
-                </div>
+cp D:\Projects\CVS_Claude\assets\css\theme.css D:\Projects\CVS_Claude\CVS_Claude.WebApi\UIPages\src\theme.css
+</code></pre></div>
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>2. Import Pattern (EVERY COMPONENT)</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript - Correct Import</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'correct-import')">Copy</button>
-                            </div>
-                            <pre><code class="language-javascript" id="correct-import">// ✅ CORRECT
-import * as cntrl from '../../xos-components';
+<div class="code-block"><pre><code>javascript
+// 3. Import Pattern (EVERY COMPONENT)
+import <em> as cntrl from '../../xos-components';  // ? CORRECT
+// NOT: import { XOSComponent } from '../../xos-components/XOSComponent.js';  ?
 
-// ❌ WRONG - Don't use this!
-// import { XOSComponent } from '../../xos-components/XOSComponent.js';</code></pre>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>3. Component Class Pattern</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript - Component Class</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'component-class')">Copy</button>
-                            </div>
-                            <pre><code class="language-javascript" id="component-class">// ✅ CORRECT Component Pattern
-export class MyComponent extends cntrl.XOSComponent {
+// 4. Component Class (EVERY COMPONENT)
+export class MyComponent extends cntrl.XOSComponent {  // ? CORRECT
     constructor(props) {
         super(props, new MyComponentVM(props));  // Pass VM to super
     }
-}</code></pre>
-                        </div>
-                    </div>
-                </div>
+}
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>4. ViewModel State Initialization (CRITICAL!)</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript - ViewModel Pattern</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'viewmodel-init')">Copy</button>
-                            </div>
-                            <pre><code class="language-javascript" id="viewmodel-init">export default class MyComponentVM extends VMBase {
+// 5. ViewModel State Initialization (CRITICAL!)
+export default class MyComponentVM extends VMBase {
     constructor(props) {
         super(props);
         this.init();
     }
     
     init() {
-        // ⚠️ CRITICAL: Get reference to Data, then set properties!
+        // ?? CRITICAL: Get reference to Data, then set properties!
         const model = this.Data;     // Get reference to _____state
-        model.userName = '';         // ✅ CORRECT - Set on reference
-        
-        // ❌ ERROR: Cannot set Data directly!
-        // this.Data = { userName: '' };
+        model.userName = '';         // ? CORRECT - Set on reference
+        // this.Data = { userName: '' };  // ? ERROR: Cannot set Data
     }
-}</code></pre>
-                        </div>
-                    </div>
-                </div>
+}
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>5. Event Handlers (MEMORIZE THIS PATTERN!)</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript - Event Handler Pattern</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'event-handler')">Copy</button>
-                            </div>
-                            <pre><code class="language-javascript" id="event-handler">// 📝 MEMORIZE: 3-Step Event Handler Pattern for XOS
+// 6. Event Handlers (EVERY XOS INPUT) - MEMORIZE THIS PATTERN!
 handleInputChange = (e) => {
     if (this.VM) {
         const model = this.VM.Data;  // Step 1: Get reference to _____state
         model[e.name] = e.value;     // Step 2: Modify property (e.value NOT e.target.value!)
-        this.VM.updateUI();          // Step 3: Trigger re-render (NEVER FORGET THIS!)
+        this.VM.updateUI();           // Step 3: Trigger re-render (NEVER FORGET THIS!)
     }
-}</code></pre>
-                        </div>
-                    </div>
-                </div>
+}
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>6. XOSTextbox Usage Pattern</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JSX - XOSTextbox Pattern</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'xos-textbox')">Copy</button>
-                            </div>
-                            <pre><code class="language-jsx" id="xos-textbox">&lt;cntrl.XOSTextbox
-    name="userName"  // ⚠️ CRITICAL: name prop for e.name in handler!
+// 7. XOSTextbox Usage (EVERY TEXT INPUT)
+<cntrl.XOSTextbox
+    name="userName"  // ?? CRITICAL: name prop for e.name in handler!
     value={this.VM.Data.userName || ''}
     onChange={this.handleInputChange}
     inputType={cntrl.XOSTextboxTypes.textbox}  // or .password
     mandatory={true}
-/&gt;</code></pre>
-                        </div>
-                    </div>
-                </div>
+/>
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>7. Button Implementation</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JSX - Button Pattern</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'button-pattern')">Copy</button>
-                            </div>
-                            <pre><code class="language-jsx" id="button-pattern">&lt;button className="btn btn-primary"&gt;  {/* ✅ HTML button with Bootstrap */}
-    &lt;i className="fa fa-save"&gt;&lt;/i&gt; Save  {/* ✅ fa NOT fas */}
-&lt;/button&gt;</code></pre>
-                        </div>
-                    </div>
-                </div>
+// 8. Buttons (EVERY BUTTON)
+<button className="btn btn-primary">  // ? HTML button with Bootstrap
+    <i className="fa fa-save"></i> Save  // ? fa NOT fas
+</button>
 
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>8. Theme Import (App.js ONLY)</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript - Theme Import</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'theme-import')">Copy</button>
-                            </div>
-                            <pre><code class="language-javascript" id="theme-import">// ✅ In App.js after copying to src/
-import './theme.css';</code></pre>
-                        </div>
-                    </div>
-                </div>
+// 8. Theme Import (App.js ONLY)
+import './theme.css';  // ? In App.js after copying to src/
+</code></pre></div>
 
-                <div class="alert alert-danger">
-                    <h3>❌ NEVER DO - These will break XOS components:</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>JavaScript - WRONG Patterns</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'wrong-patterns')">Copy</button>
-                        </div>
-                        <pre><code class="language-javascript" id="wrong-patterns">// ❌ WRONG imports
+<h3>? NEVER DO - These will break XOS components:</h3>
+
+<div class="code-block"><pre><code>javascript
+// ? WRONG imports
 import { XOSComponent } from '../../xos-components/XOSComponent.js';
 import '../../../assets/css/theme.css';  // Can't import outside src/
 
-// ❌ WRONG event handling
+// ? WRONG event handling
 handleChange(event) {
     this.VM.setValue(event.target.value);  // Won't work with XOSTextbox
 }
 
-// ❌ WRONG icon classes
-&lt;i className="fas fa-user"&gt;&lt;/i&gt;  // Use 'fa' not 'fas'
+// ? WRONG icon classes
+<i className="fas fa-user"></i>  // Use 'fa' not 'fas'
 
-// ❌ WRONG - Looking for XOSButton
-&lt;cntrl.XOSButton&gt;  // Doesn't exist for UI</code></pre>
-                    </div>
-                </div>
-            </section>
+// ? WRONG - Looking for XOSButton
+<cntrl.XOSButton>  // Doesn't exist for UI
+</code></pre></div>
 
-            <section id="database-patterns">
-                <h2>🔴 Database Access Pattern (CRITICAL)</h2>
-                
-                <div class="alert alert-success">
-                    <h3>✅ CORRECT Pattern - MUST USE</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>C# - Database Access Pattern</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'correct-db')">Copy</button>
-                        </div>
-                        <pre><code class="language-csharp" id="correct-db">await db.GetEntityDataListAsync&lt;T&gt;(query, params, (row) => {
+<h2>?? Database Access Pattern (CRITICAL)</h2>
+
+<h3>? CORRECT Pattern - MUST USE</h3>
+<div class="code-block"><pre><code>csharp
+await db.GetEntityDataListAsync<T>(query, params, (row) => {
     return new T {
-        ID = row.GetValue&lt;int&gt;("id"),
-        Name = row.GetValue&lt;string&gt;("name", "default")
+        ID = row.GetValue<int>("id"),
+        Name = row.GetValue<string>("name", "default")
     };
-});</code></pre>
-                    </div>
-                </div>
+});
+</code></pre></div>
 
-                <div class="alert alert-danger">
-                    <h3>❌ WRONG Pattern - Will Cause Runtime Errors</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>C# - WRONG Database Patterns</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'wrong-db')">Copy</button>
-                        </div>
-                        <pre><code class="language-csharp" id="wrong-db">// DO NOT USE standard ADO.NET patterns
-row["id"]           // ❌ WRONG
-row.GetInt32(0)     // ❌ WRONG</code></pre>
-                    </div>
-                </div>
-            </section>
+<h3>? WRONG Pattern - Will Cause Runtime Errors</h3>
+<div class="code-block"><pre><code>csharp
+// DO NOT USE standard ADO.NET patterns
+row["id"]  // WRONG
+row.GetInt32(0)  // WRONG
+</code></pre></div>
 
-            <section id="state-updates">
-                <h2>🔴 Frontend State Updates (CRITICAL)</h2>
-                
-                <div class="alert alert-success">
-                    <h3>✅ CORRECT Pattern - Manual Updates Required</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>JavaScript - State Update Pattern</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'correct-state')">Copy</button>
-                        </div>
-                        <pre><code class="language-javascript" id="correct-state">// In ViewModel
+<h2>?? Frontend State Updates (CRITICAL)</h2>
+
+<h3>? CORRECT Pattern - Manual Updates Required</h3>
+<div class="code-block"><pre><code>javascript
+// In ViewModel
 onChange = (prop, val) => {
     this.Data.Input[prop] = val;  // Direct mutation
     this.updateUI();  // MANDATORY - UI won't update without this
@@ -312,103 +153,61 @@ onChange = (prop, val) => {
 handleChange = () => {
     this.VM.Data.value = newValue;
     this.VM.updateUI();  // REQUIRED for UI to reflect changes
-}</code></pre>
-                    </div>
-                </div>
+}
+</code></pre></div>
 
-                <div class="alert alert-danger">
-                    <h3>❌ WRONG Pattern - UI Won't Update</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>JavaScript - WRONG State Patterns</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'wrong-state')">Copy</button>
-                        </div>
-                        <pre><code class="language-javascript" id="wrong-state">// These patterns will NOT work
+<h3>? WRONG Pattern - UI Won't Update</h3>
+<div class="code-block"><pre><code>javascript
+// These patterns will NOT work
 this.setState({ value: newValue });  // NO - XOS doesn't use setState for data
 const [value, setValue] = useState();  // NO - No hooks in XOS components
-this.Data.property = value;  // NO - Missing updateUI() call</code></pre>
-                    </div>
-                </div>
-            </section>
+this.Data.property = value;  // NO - Missing updateUI() call
+</code></pre></div>
 
-            <section id="api-patterns">
-                <h2>🔴 API Pattern - 95% POST Only</h2>
-                
-                <div class="alert alert-success">
-                    <h3>✅ CORRECT Pattern</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>C# - API Controller Pattern</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'correct-api')">Copy</button>
-                        </div>
-                        <pre><code class="language-csharp" id="correct-api">[HttpPost("Save")]  // Always POST, even for reads
-public async Task&lt;DomainType&gt; SaveAsync([FromBody] Input input)
+<h2>?? API Pattern - 95% POST Only</h2>
+
+<h3>? CORRECT Pattern</h3>
+<div class="code-block"><pre><code>csharp
+[HttpPost("Save")]  // Always POST, even for reads
+public async Task<DomainType> SaveAsync([FromBody] Input input)
 {
     // Return domain type directly, not IActionResult
     return domainObject;
 }
 
 [HttpPost("GetList")]  // POST for getting data
-public async Task&lt;List&lt;Item&gt;&gt; GetListAsync([FromBody] SearchParams params)
+public async Task<List<Item>> GetListAsync([FromBody] SearchParams params)
 {
     return items;
-}</code></pre>
-                    </div>
-                </div>
+}
+</code></pre></div>
 
-                <div class="alert alert-danger">
-                    <h3>❌ WRONG Pattern</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>C# - WRONG API Patterns</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'wrong-api')">Copy</button>
-                        </div>
-                        <pre><code class="language-csharp" id="wrong-api">[HttpGet]     // ❌ NO - Use POST
-[HttpPut]     // ❌ NO - Use POST  
-[HttpDelete]  // ❌ NO - Use POST
-public IActionResult Get()  // ❌ NO - Return domain types directly</code></pre>
-                    </div>
-                </div>
-            </section>
+<h3>? WRONG Pattern</h3>
+<div class="code-block"><pre><code>csharp
+[HttpGet]  // NO - Use POST
+[HttpPut]  // NO - Use POST
+[HttpDelete]  // NO - Use POST
+public IActionResult Get()  // NO - Return domain types directly
+</code></pre></div>
 
-            <section id="jquery-dependency">
-                <h2>🔴 jQuery Dependency (REQUIRED)</h2>
-                
-                <div class="alert alert-success">
-                    <h3>✅ jQuery is MANDATORY</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>JavaScript - jQuery Usage</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'jquery-usage')">Copy</button>
-                        </div>
-                        <pre><code class="language-javascript" id="jquery-usage">// XOS requires jQuery throughout
+<h2>?? jQuery Dependency (REQUIRED)</h2>
+
+<h3>? jQuery is MANDATORY</h3>
+<div class="code-block"><pre><code>javascript
+// XOS requires jQuery throughout
 $('body').addClass('overflow-hidden');
 $('.modal').modal('show');
-$(this.getRef('input')).val(value);</code></pre>
-                    </div>
-                </div>
+$(this.getRef('input')).val(value);
+</code></pre></div>
 
-                <div class="alert alert-danger">
-                    <h3>❌ Cannot Remove jQuery</h3>
-                    <ul>
-                        <li>XOS framework depends on jQuery</li>
-                        <li>Bootstrap components require jQuery</li>
-                        <li>Many XOS utilities use jQuery internally</li>
-                    </ul>
-                </div>
-            </section>
+<h3>? Cannot Remove jQuery</h3>
+<ul><li>XOS framework depends on jQuery</li><li>Bootstrap components require jQuery</li><li>Many XOS utilities use jQuery internally</li></ul>
 
-            <section id="transaction-patterns">
-                <h2>🟠 Transaction Pattern with SignalR</h2>
-                
-                <div class="alert alert-info">
-                    <h3>✅ CORRECT Complex Transaction Pattern</h3>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span>C# - Transaction with SignalR</span>
-                            <button class="copy-btn" onclick="copyCode(this, 'transaction-signalr')">Copy</button>
-                        </div>
-                        <pre><code class="language-csharp" id="transaction-signalr">using (var dbService = this.GetDBService("CrystalDB", transOwner))
+<h2>?? Transaction Pattern with SignalR</h2>
+
+<h3>? CORRECT Complex Transaction Pattern</h3>
+<div class="code-block"><pre><code>csharp
+using (var dbService = this.GetDBService("CrystalDB", transOwner))
 using (var tran = dbService.BeginTransaction())
 {
     try
@@ -427,72 +226,36 @@ using (var tran = dbService.BeginTransaction())
         tran.Rollback();
         throw;
     }
-}</code></pre>
-                    </div>
-                </div>
-            </section>
+}
+</code></pre></div>
 
-            <section id="api-calls">
-                <h2>🟠 Mixed API Call Patterns</h2>
-                
-                <div class="collapsible expanded">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>Primary Pattern - Utils.ajax</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript - Utils.ajax Pattern</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'utils-ajax')">Copy</button>
-                            </div>
-                            <pre><code class="language-javascript" id="utils-ajax">// Most common pattern in codebase
+<h2>?? Mixed API Call Patterns</h2>
+
+<h3>Primary Pattern - Utils.ajax</h3>
+<div class="code-block"><pre><code>javascript
+// Most common pattern in codebase
 Utils.ajax({ 
     url: 'Site/Save',  // Relative URL
     data: this.Data.Input 
 }, (resp) => {
     // Handle response
-});</code></pre>
-                        </div>
-                    </div>
-                </div>
+});
+</code></pre></div>
 
-                <div class="collapsible">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>Secondary Pattern - ApiManager</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JavaScript - ApiManager Pattern</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'api-manager')">Copy</button>
-                            </div>
-                            <pre><code class="language-javascript" id="api-manager">// Used in some components
+<h3>Secondary Pattern - ApiManager</h3>
+<div class="code-block"><pre><code>javascript
+// Used in some components
 ApiManager.post('/api/Site/Save', this.Data.Input)
     .then(resp => {
         // Handle response
-    });</code></pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
+    });
+</code></pre></div>
 
-            <section id="multi-tenant">
-                <h2>🟠 Multi-Tenant Database Configuration</h2>
-                
-                <div class="collapsible">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>Connection String Pattern</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JSON - Connection Configuration</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'connection-config')">Copy</button>
-                            </div>
-                            <pre><code class="language-json" id="connection-config">{
+<h2>?? Multi-Tenant Database Configuration</h2>
+
+<h3>Connection String Pattern</h3>
+<div class="code-block"><pre><code>json
+{
   "CrystalDB": {
     "ConnectionString": "Host=localhost;Database=crystaldb;",
     "Keys": ["1", "MG"]  // Client routing keys
@@ -501,144 +264,60 @@ ApiManager.post('/api/Site/Save', this.Data.Input)
     "ConnectionString": "Host=localhost;Database=crystaldb2;",
     "Keys": ["2", "WB"]  // Different client keys
   }
-}</code></pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
+}
+</code></pre></div>
 
-            <section id="bootstrap-hybrid">
-                <h2>🟡 Bootstrap + XOS Hybrid</h2>
-                
-                <div class="collapsible">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>Mixed Component Usage</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>JSX - Bootstrap + XOS Components</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'bootstrap-xos')">Copy</button>
-                            </div>
-                            <pre><code class="language-jsx" id="bootstrap-xos">// XOS components
-&lt;XOSButton /&gt;
-&lt;XOSGrid /&gt;
+<h2>?? Bootstrap + XOS Hybrid</h2>
+
+<h3>Mixed Component Usage</h3>
+<div class="code-block"><pre><code>jsx
+// XOS components
+<XOSButton />
+<XOSGrid />
 
 // Bootstrap classes (required)
-&lt;div className="modal-dialog modal-xl"&gt;
-&lt;button className="btn btn-primary"&gt;
-&lt;div className="col-md-6"&gt;</code></pre>
-                        </div>
-                    </div>
-                </div>
+<div className="modal-dialog modal-xl">
+<button className="btn btn-primary">
+<div className="col-md-6">
+</code></pre></div>
 
-                <div class="collapsible">
-                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3>File Upload Pattern</h3>
-                        <span class="collapsible-toggle">▼</span>
-                    </div>
-                    <div class="collapsible-content">
-                        <div class="code-block">
-                            <div class="code-header">
-                                <span>C# - Mixed JSON + Files</span>
-                                <button class="copy-btn" onclick="copyCode(this, 'file-upload')">Copy</button>
-                            </div>
-                            <pre><code class="language-csharp" id="file-upload">[HttpPost("Upload")]
-public async Task&lt;Result&gt; UploadAsync(
+<h2>?? File Upload Pattern</h2>
+
+<h3>Mixed JSON + Files</h3>
+<div class="code-block"><pre><code>csharp
+[HttpPost("Upload")]
+public async Task<Result> UploadAsync(
     [FromBody] JsonData data,  // JSON from body
-    List&lt;IFormFile&gt; files)     // Files from form
+    List<IFormFile> files)      // Files from form
 {
     // Handle both JSON and files
-}</code></pre>
-                        </div>
-                    </div>
-                </div>
-            </section>
+}
+</code></pre></div>
 
-            <section id="validation-checklist">
-                <h2>✅ Quick Validation Checklist</h2>
-                
-                <div class="alert alert-info">
-                    <h3>Before running your code, verify:</h3>
-                    <ol>
-                        <li>✅ Database reads use <code>row.GetValue&lt;T&gt;("column")</code></li>
-                        <li>✅ All state changes call <code>updateUI()</code></li>
-                        <li>✅ API endpoints use POST</li>
-                        <li>✅ Controllers return domain types directly</li>
-                        <li>✅ jQuery is included and available</li>
-                        <li>✅ Transactions commit before SignalR calls</li>
-                        <li>✅ Frontend uses Utils.ajax for API calls</li>
-                        <li>✅ Bootstrap classes are used for layout</li>
-                    </ol>
-                </div>
-            </section>
+<h2>? Quick Validation Checklist</h2>
 
-            <section id="reading-order">
-                <h2>📚 Essential Reading Order</h2>
-                
-                <div class="nav-grid">
-                    <div class="nav-card">
-                        <h4>Required Reading Sequence</h4>
-                        <ol>
-                            <li><strong>This Document</strong> (CRITICAL_PATTERNS.md)</li>
-                            <li><strong>XOS Framework Guide</strong> (xos-framework-complete-guide.html)</li>
-                            <li><strong>Backend Blueprint</strong> (backend-blueprint.html)</li>
-                            <li><strong>Database Schema</strong> (database-troubleshooting.html)</li>
-                        </ol>
-                    </div>
-                </div>
-            </section>
+Before running your code, verify:
 
-            <section id="common-pitfalls">
-                <h2>⚠️ Common Pitfalls to Avoid</h2>
-                
-                <div class="alert alert-warning">
-                    <ol>
-                        <li><strong>Don't use React hooks</strong> - XOS components don't support them</li>
-                        <li><strong>Don't use Entity Framework</strong> - Use XOS data framework</li>
-                        <li><strong>Don't create RESTful APIs</strong> - Use POST pattern</li>
-                        <li><strong>Don't expect automatic UI updates</strong> - Call updateUI()</li>
-                        <li><strong>Don't remove jQuery</strong> - It's required everywhere</li>
-                        <li><strong>Don't use IActionResult</strong> - Return domain types</li>
-                        <li><strong>Don't use standard React state</strong> - Use VM.Data pattern</li>
-                    </ol>
-                </div>
-            </section>
+<ul><li>? Database reads use <code>row.GetValue<T>("column")</code></li><li>? All state changes call <code>updateUI()</code></li><li>? API endpoints use POST</li><li>? Controllers return domain types directly</li><li>? jQuery is included and available</li><li>? Transactions commit before SignalR calls</li><li>? Frontend uses Utils.ajax for API calls</li><li>? Bootstrap classes are used for layout</li></ul>
 
-            <section id="quick-navigation">
-                <h2>🧭 Quick Navigation</h2>
-                
-                <div class="nav-grid">
-                    <div class="nav-card">
-                        <h4>Essential Documentation</h4>
-                        <ul>
-                            <li><a href="../../index.html">← Back to claude_docs</a> - Main documentation hub</li>
-                            <li><a href="MODULE-DEVELOPMENT-GUIDE.html">Module Development Guide</a> - Complete workflows</li>
-                            <li><a href="CLAUDE-PROMPT-QUICK-REFERENCE.html">Quick Reference Prompts</a> - Copy-paste prompts</li>
-                        </ul>
-                    </div>
-                    <div class="nav-card">
-                        <h4>Frontend Resources</h4>
-                        <ul>
-                            <li><a href="xos-input-handling-fix.html">XOS Input Fix</a> - Fix typing issues</li>
-                            <li><a href="#bootstrap-hybrid">Backend Blueprint</a> - API patterns</li>
-                            <li><a href="SETUP.html">Setup Guide</a> - Environment setup</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="alert alert-success">
-                    <p><em><strong>This document contains the most critical patterns that differ from standard development. Master these before proceeding with any implementation.</strong></em></p>
-                </div>
-            </section>
+<h2>?? Essential Reading Order</h2>
 
+<ul><li><strong>This Document</strong> (CRITICAL_PATTERNS.html)</li><li><strong>XOS Framework Guide</strong> (frontend/xos-framework.html)</li><li><strong>Backend Blueprint</strong> (backend/backend-blueprint.html)</li><li><strong>Database Schema</strong> (database/database-schema.html)</li></ul>
+
+<h2>?? Common Pitfalls to Avoid</h2>
+
+<ul><li><strong>Don't use React hooks</strong> - XOS components don't support them</li><li><strong>Don't use Entity Framework</strong> - Use XOS data framework</li><li><strong>Don't create RESTful APIs</strong> - Use POST pattern</li><li><strong>Don't expect automatic UI updates</strong> - Call updateUI()</li><li><strong>Don't remove jQuery</strong> - It's required everywhere</li><li><strong>Don't use IActionResult</strong> - Return domain types</li><li><strong>Don't use standard React state</strong> - Use VM.Data pattern</li></ul>
+
+---
+
+<h2>?? Quick Navigation</h2>
+<ul><li><a href="./README.html">? Back to claude_docs</a> - Main documentation hub</li><li><a href="./MODULE-DEVELOPMENT-GUIDE.html">Module Development Guide</a> - Complete workflows</li><li><a href="./CLAUDE-PROMPT-QUICK-REFERENCE.html">Quick Reference Prompts</a> - Copy-paste prompts</li><li><a href="./frontend/xos-input-handling-fix.html">XOS Input Fix</a> - Fix typing issues</li><li><a href="./backend/backend-blueprint.html">Backend Blueprint</a> - API patterns</li><li><a href="./SETUP.html">Setup Guide</a> - Environment setup</li></ul>
+
+</em>This document contains the most critical patterns that differ from standard development. Master these before proceeding with any implementation.*</p>
+            
             <div class="footer">
-                <p><em>Documentation Version: 2.1.0</em><br>
-                <em>Last Updated: August 21, 2025</em><br>
-                <em>Maintainer: Development Team</em></p>
-                
-                <p><strong>🚨 CRITICAL:</strong> These patterns are mandatory for XOS framework compatibility. Standard React/ASP.NET patterns will cause runtime errors.</p>
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
             </div>
         </main>
     </div>
@@ -666,22 +345,6 @@ public async Task&lt;Result&gt; UploadAsync(
             const collapsible = header.parentElement;
             collapsible.classList.toggle('expanded');
         }
-
-
-        // Mobile sidebar toggle
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('open');
-        }
-
-        // Add mobile menu button for smaller screens
-        if (window.innerWidth <= 768) {
-            const menuButton = document.createElement('button');
-            menuButton.innerHTML = '☰ Menu';
-            menuButton.style.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
-            menuButton.onclick = toggleSidebar;
-            document.body.appendChild(menuButton);
-        }
-
     </script>
 </body>
 </html>

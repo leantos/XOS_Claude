@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>frontend-to-backend - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># XOS Frontend-to-Backend Integration Complete Patterns</p><p>Comprehensive guide for seamless frontend-backend integration in XOS applications.</p><p><h2>Table of Contents</h2>
+<ul><li><a href="#basic-integration-patterns">Basic Integration Patterns</a></li><li><a href="#advanced-communication-patterns">Advanced Communication Patterns</a></li><li><a href="#authentication--authorization">Authentication & Authorization</a></li><li><a href="#error-handling--recovery">Error Handling & Recovery</a></li><li><a href="#real-time-communication">Real-time Communication</a></li><li><a href="#file-upload--download">File Upload & Download</a></li><li><a href="#state-management">State Management</a></li><li><a href="#performance-optimization">Performance Optimization</a></li><li><a href="#testing-patterns">Testing Patterns</a></li><li><a href="#complete-examples">Complete Examples</a></li></ul></p><p><h2>Basic Integration Patterns</h2></p><p><h3>? CORRECT: Standard AJAX Pattern with Utils.ajax</h3></p><p>``<code>javascript
+// Frontend - Using Utils.ajax for API calls
+class UserService {
+    static async getUsers() {
+        try {
+            const response = await Utils.ajax({
+                url: '/api/users',
+                type: 'GET',
+                dataType: 'json'
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+            throw error;
+        }
+    }</p><p>    static async createUser(userData) {
+        return await Utils.ajax({
+            url: '/api/users',
+            type: 'POST',
+            data: JSON.stringify(userData),
+            contentType: 'application/json',
+            dataType: 'json'
+        });
+    }</p><p>    static async updateUser(id, userData) {
+        return await Utils.ajax({
+            url: </code>/api/users/${id}<code>,
+            type: 'PUT',
+            data: JSON.stringify(userData),
+            contentType: 'application/json',
+            dataType: 'json'
+        });
+    }</p><p>    static async deleteUser(id) {
+        return await Utils.ajax({
+            url: </code>/api/users/${id}<code>,
+            type: 'DELETE',
+            dataType: 'json'
+        });
+    }
+}
+<div class="code-block"><pre><code></p><p></code></pre></div>csharp
+// Backend - XOS Controller Pattern
+[ApiController]
+[Route("api/[controller]")]
+public class UsersController : XOSControllerBase
+{
+    [HttpGet]
+    public async Task<ActionResult<List<UserDto>>> GetUsers()
+    {
+        try
+        {
+            var users = await DBService.GetListAsync<User>(
+                "SELECT <em> FROM users WHERE client_id = @client_id ORDER BY name",
+                new { client_id = ClientId }
+            );</p><p>            var userDtos = users.Select(u => new UserDto
+            {
+                Id = u.Id,
+                Name = u.Name,
+                Email = u.Email,
+                CreatedAt = u.CreatedAt
+            }).ToList();</p><p>            return Ok(userDtos);
+        }
+        catch (Exception ex)
+        {
+            LogError(ex, "Failed to retrieve users");
+            return StatusCode(500, new { error = "Failed to retrieve users" });
+        }
+    }</p><p>    [HttpPost]
+    public async Task<ActionResult<UserDto>> CreateUser([FromBody] CreateUserRequest request)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }</p><p>            var userId = await DBService.GetValueAsync<int>(
+                "INSERT INTO users (name, email, client_id, created_at) VALUES (@name, @email, @client_id, CURRENT_TIMESTAMP) RETURNING id",
+                new { name = request.Name, email = request.Email, client_id = ClientId }
+            );</p><p>            var user = await DBService.GetAsync<User>(
+                "SELECT </em> FROM users WHERE id = @id AND client_id = @client_id",
+                new { id = userId, client_id = ClientId }
+            );</p><p>            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                CreatedAt = user.CreatedAt
+            };</p><p>            return CreatedAtAction(nameof(GetUser), new { id = userId }, userDto);
+        }
+        catch (Exception ex)
+        {
+            LogError(ex, "Failed to create user", request);
+            return StatusCode(500, new { error = "Failed to create user" });
+        }
+    }
+}
+<div class="code-block"><pre><code></p><p><h3>? WRONG: Direct fetch() without error handling</h3></p><p></code></pre></div>javascript
+// DON'T DO THIS - No error handling, no tenant context
+async function getUsers() {
+    const response = await fetch('/api/users');
+    return response.json(); // Will fail silently on errors
+}
+<div class="code-block"><pre><code></p><p><h2>Advanced Communication Patterns</h2></p><p><h3>? CORRECT: Request/Response with Validation</h3></p><p></code></pre></div>javascript
+// Frontend - Form with validation and error handling
+class UserForm {
+    constructor(formElement) {
+        this.form = formElement;
+        this.validator = new FormValidator();
+        this.setupEventHandlers();
+    }</p><p>    setupEventHandlers() {
+        this.form.addEventListener('submit', this.handleSubmit.bind(this));
+        
+        // Real-time validation
+        this.form.querySelectorAll('input').forEach(input => {
+            input.addEventListener('blur', this.validateField.bind(this));
+        });
+    }</p><p>    async handleSubmit(event) {
+        event.preventDefault();
+        
+        const formData = new FormData(this.form);
+        const userData = Object.fromEntries(formData);</p><p>        // Client-side validation
+        const validation = this.validator.validate(userData);
+        if (!validation.isValid) {
+            this.displayValidationErrors(validation.errors);
+            return;
+        }</p><p>        try {
+            // Show loading state
+            this.setLoadingState(true);
+            
+            const result = await UserService.createUser(userData);
+            
+            // Handle success
+            this.handleSuccess(result);
+            this.form.reset();
+            
+        } catch (error) {
+            this.handleError(error);
+        } finally {
+            this.setLoadingState(false);
+        }
+    }</p><p>    validateField(event) {
+        const field = event.target;
+        const validation = this.validator.validateField(field.name, field.value);
+        
+        if (!validation.isValid) {
+            this.showFieldError(field, validation.error);
+        } else {
+            this.clearFieldError(field);
+        }
+    }</p><p>    handleSuccess(result) {
+        // Show success message
+        NotificationService.showSuccess('User created successfully');
+        
+        // Update UI
+        if (window.userTable) {
+            window.userTable.addRow(result.data);
+        }
+        
+        // Trigger custom event
+        document.dispatchEvent(new CustomEvent('userCreated', {
+            detail: { user: result.data }
+        }));
+    }</p><p>    handleError(error) {
+        if (error.status === 400 && error.response?.validationErrors) {
+            // Server validation errors
+            this.displayValidationErrors(error.response.validationErrors);
+        } else if (error.status === 409) {
+            // Conflict (e.g., email already exists)
+            NotificationService.showError('Email address already in use');
+        } else {
+            // Generic error
+            NotificationService.showError('Failed to create user. Please try again.');
+        }
+    }</p><p>    setLoadingState(loading) {
+        const submitBtn = this.form.querySelector('button[type="submit"]');
+        submitBtn.disabled = loading;
+        submitBtn.textContent = loading ? 'Creating...' : 'Create User';
+    }
+}
+<div class="code-block"><pre><code></p><p></code></pre></div>csharp
+// Backend - Enhanced validation and error handling
+[HttpPost]
+public async Task<ActionResult<ApiResponse<UserDto>>> CreateUser([FromBody] CreateUserRequest request)
+{
+    try
+    {
+        // Model validation
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState
+                .Where(x => x.Value.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+                
+            return BadRequest(new ApiResponse<UserDto>
+            {
+                Success = false,
+                Message = "Validation failed",
+                ValidationErrors = errors
+            });
+        }</p><p>        // Business validation
+        var existingUser = await DBService.GetAsync<User>(
+            "SELECT id FROM users WHERE email = @email AND client_id = @client_id",
+            new { email = request.Email, client_id = ClientId }
+        );</p><p>        if (existingUser != null)
+        {
+            return Conflict(new ApiResponse<UserDto>
+            {
+                Success = false,
+                Message = "Email address already in use"
+            });
+        }</p><p>        // Create user
+        var userId = await DBService.GetValueAsync<int>(
+            "INSERT INTO users (name, email, client_id, created_at) VALUES (@name, @email, @client_id, CURRENT_TIMESTAMP) RETURNING id",
+            new { name = request.Name, email = request.Email, client_id = ClientId }
+        );</p><p>        var user = await DBService.GetAsync<User>(
+            "SELECT <em> FROM users WHERE id = @id AND client_id = @client_id",
+            new { id = userId, client_id = ClientId }
+        );</p><p>        var userDto = new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            CreatedAt = user.CreatedAt
+        };</p><p>        return Ok(new ApiResponse<UserDto>
+        {
+            Success = true,
+            Data = userDto,
+            Message = "User created successfully"
+        });
+    }
+    catch (Exception ex)
+    {
+        LogError(ex, "Failed to create user", request);
+        return StatusCode(500, new ApiResponse<UserDto>
+        {
+            Success = false,
+            Message = "An error occurred while creating the user"
+        });
+    }
+}
+<div class="code-block"><pre><code></p><p><h3>? CORRECT: Pagination and Filtering</h3></p><p></code></pre></div>javascript
+// Frontend - Advanced table with pagination and filtering
+class UserTable {
+    constructor(container) {
+        this.container = container;
+        this.currentPage = 1;
+        this.pageSize = 10;
+        this.filters = {};
+        this.sortBy = 'name';
+        this.sortDirection = 'asc';
+        
+        this.init();
+    }</p><p>    async init() {
+        this.createTableStructure();
+        this.setupEventHandlers();
+        await this.loadData();
+    }</p><p>    async loadData(showLoading = true) {
+        try {
+            if (showLoading) {
+                this.showLoadingState();
+            }</p><p>            const params = {
+                page: this.currentPage,
+                pageSize: this.pageSize,
+                sortBy: this.sortBy,
+                sortDirection: this.sortDirection,
+                ...this.filters
+            };</p><p>            const response = await Utils.ajax({
+                url: '/api/users/paged',
+                type: 'GET',
+                data: params,
+                dataType: 'json'
+            });</p><p>            this.renderTable(response.data.items);
+            this.renderPagination(response.data.pagination);
+            
+        } catch (error) {
+            this.showError('Failed to load users');
+            console.error('Load data error:', error);
+        } finally {
+            this.hideLoadingState();
+        }
+    }</p><p>    setupEventHandlers() {
+        // Search input
+        const searchInput = this.container.querySelector('#userSearch');
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                this.filters.search = e.target.value;
+                this.currentPage = 1;
+                this.loadData();
+            }, 300);
+        });</p><p>        // Sort headers
+        this.container.querySelectorAll('[data-sort]').forEach(header => {
+            header.addEventListener('click', () => {
+                const sortBy = header.dataset.sort;
+                
+                if (this.sortBy === sortBy) {
+                    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    this.sortBy = sortBy;
+                    this.sortDirection = 'asc';
+                }
+                
+                this.updateSortIndicators();
+                this.loadData();
+            });
+        });</p><p>        // Pagination
+        this.container.addEventListener('click', (e) => {
+            if (e.target.classList.contains('page-link')) {
+                e.preventDefault();
+                const page = parseInt(e.target.dataset.page);
+                if (page && page !== this.currentPage) {
+                    this.currentPage = page;
+                    this.loadData();
+                }
+            }
+        });
+    }</p><p>    renderTable(users) {
+        const tbody = this.container.querySelector('tbody');
+        tbody.innerHTML = '';</p><p>        users.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = </code>
+                <td>${this.escapeHtml(user.name)}</td>
+                <td>${this.escapeHtml(user.email)}</td>
+                <td>${this.formatDate(user.createdAt)}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary edit-btn" data-id="${user.id}">
+                        Edit
+                    </button>
+                    <button class="btn btn-sm btn-danger delete-btn" data-id="${user.id}">
+                        Delete
+                    </button>
+                </td>
+            <code>;
+            tbody.appendChild(row);
+        });</p><p>        // Add event listeners for action buttons
+        this.setupRowActions();
+    }</p><p>    renderPagination(pagination) {
+        const paginationContainer = this.container.querySelector('.pagination-container');
+        const { currentPage, totalPages, hasNext, hasPrevious } = pagination;</p><p>        let paginationHtml = '<ul class="pagination">';
+        
+        // Previous button
+        paginationHtml += </code>
+            <li class="page-item ${!hasPrevious ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
+            </li>
+        <code>;</p><p>        // Page numbers
+        const startPage = Math.max(1, currentPage - 2);
+        const endPage = Math.min(totalPages, currentPage + 2);</p><p>        for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += </code>
+                <li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <a class="page-link" href="#" data-page="${i}">${i}</a>
+                </li>
+            <code>;
+        }</p><p>        // Next button
+        paginationHtml += </code>
+            <li class="page-item ${!hasNext ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
+            </li>
+        <code>;</p><p>        paginationHtml += '</ul>';
+        paginationContainer.innerHTML = paginationHtml;
+    }
+}
+<div class="code-block"><pre><code></p><p></code></pre></div>csharp
+// Backend - Pagination and filtering support
+[HttpGet("paged")]
+public async Task<ActionResult<ApiResponse<PagedResult<UserDto>>>> GetPagedUsers(
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 10,
+    [FromQuery] string search = "",
+    [FromQuery] string sortBy = "name",
+    [FromQuery] string sortDirection = "asc")
+{
+    try
+    {
+        // Validate parameters
+        page = Math.Max(1, page);
+        pageSize = Math.Min(100, Math.Max(1, pageSize));
+        sortDirection = sortDirection.ToLower() == "desc" ? "DESC" : "ASC";
+        
+        var allowedSortFields = new[] { "name", "email", "created_at" };
+        if (!allowedSortFields.Contains(sortBy.ToLower()))
+        {
+            sortBy = "name";
+        }</p><p>        // Build query
+        var whereClause = "WHERE client_id = @client_id";
+        var parameters = new { client_id = ClientId, search = $"%{search}%" };</p><p>        if (!string.IsNullOrEmpty(search))
+        {
+            whereClause += " AND (name ILIKE @search OR email ILIKE @search)";
+        }</p><p>        // Get total count
+        var totalCount = await DBService.GetValueAsync<int>(
+            $"SELECT COUNT(</em>) FROM users {whereClause}",
+            parameters
+        );</p><p>        // Get paged data
+        var users = await DBService.GetListAsync<User>($@"
+            SELECT <em> FROM users {whereClause}
+            ORDER BY {sortBy} {sortDirection}
+            LIMIT @page_size OFFSET @offset",
+            new { 
+                client_id = ClientId, 
+                search = $"%{search}%",
+                page_size = pageSize,
+                offset = (page - 1) </em> pageSize
+            }
+        );</p><p>        var userDtos = users.Select(u => new UserDto
+        {
+            Id = u.Id,
+            Name = u.Name,
+            Email = u.Email,
+            CreatedAt = u.CreatedAt
+        }).ToList();</p><p>        var pagination = new PaginationInfo
+        {
+            CurrentPage = page,
+            PageSize = pageSize,
+            TotalCount = totalCount,
+            TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+            HasNext = page <em> pageSize < totalCount,
+            HasPrevious = page > 1
+        };</p><p>        var result = new PagedResult<UserDto>
+        {
+            Items = userDtos,
+            Pagination = pagination
+        };</p><p>        return Ok(new ApiResponse<PagedResult<UserDto>>
+        {
+            Success = true,
+            Data = result
+        });
+    }
+    catch (Exception ex)
+    {
+        LogError(ex, "Failed to retrieve paged users", new { page, pageSize, search, sortBy, sortDirection });
+        return StatusCode(500, new ApiResponse<PagedResult<UserDto>>
+        {
+            Success = false,
+            Message = "Failed to retrieve users"
+        });
+    }
+}
+<div class="code-block"><pre><code></p><p><h2>Authentication & Authorization</h2></p><p><h3>? CORRECT: Token-based authentication</h3></p><p></code></pre></div>javascript
+// Frontend - Auth service with token management
+class AuthService {
+    static getToken() {
+        return localStorage.getItem('auth_token');
+    }</p><p>    static setToken(token) {
+        localStorage.setItem('auth_token', token);
+    }</p><p>    static removeToken() {
+        localStorage.removeItem('auth_token');
+    }</p><p>    static async login(credentials) {
+        try {
+            const response = await Utils.ajax({
+                url: '/api/auth/login',
+                type: 'POST',
+                data: JSON.stringify(credentials),
+                contentType: 'application/json',
+                dataType: 'json'
+            });</p><p>            if (response.success && response.data.token) {
+                this.setToken(response.data.token);
+                this.setupTokenRefresh(response.data.expiresIn);
+                return response.data;
+            }</p><p>            throw new Error(response.message || 'Login failed');
+        } catch (error) {
+            console.error('Login error:', error);
+            throw error;
+        }
+    }</p><p>    static async logout() {
+        try {
+            await Utils.ajax({
+                url: '/api/auth/logout',
+                type: 'POST',
+                headers: {
+                    'Authorization': </code>Bearer ${this.getToken()}<code>
+                }
+            });
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            this.removeToken();
+            window.location.href = '/login';
+        }
+    }</p><p>    static setupTokenRefresh(expiresIn) {
+        // Refresh token 5 minutes before expiry
+        const refreshTime = (expiresIn - 300) </em> 1000;
+        
+        setTimeout(async () => {
+            try {
+                await this.refreshToken();
+            } catch (error) {
+                console.error('Token refresh failed:', error);
+                this.logout();
+            }
+        }, refreshTime);
+    }</p><p>    static async refreshToken() {
+        const response = await Utils.ajax({
+            url: '/api/auth/refresh',
+            type: 'POST',
+            headers: {
+                'Authorization': </code>Bearer ${this.getToken()}<code>
+            },
+            dataType: 'json'
+        });</p><p>        if (response.success && response.data.token) {
+            this.setToken(response.data.token);
+            this.setupTokenRefresh(response.data.expiresIn);
+            return response.data;
+        }</p><p>        throw new Error('Token refresh failed');
+    }
+}</p><p>// Configure Utils.ajax to include auth token
+Utils.ajax.defaults.beforeSend = function(xhr) {
+    const token = AuthService.getToken();
+    if (token) {
+        xhr.setRequestHeader('Authorization', </code>Bearer ${token}<code>);
+    }
+};</p><p>// Handle 401 responses globally
+Utils.ajax.defaults.error = function(xhr) {
+    if (xhr.status === 401) {
+        AuthService.logout();
+    }
+};
+<div class="code-block"><pre><code></p><p></code></pre></div>csharp
+// Backend - JWT authentication
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
+{
+    private readonly IConfiguration _config;
+    private readonly ILogger<AuthController> _logger;</p><p>    public AuthController(IConfiguration config, ILogger<AuthController> logger)
+    {
+        _config = config;
+        _logger = logger;
+    }</p><p>    [HttpPost("login")]
+    public async Task<ActionResult<ApiResponse<LoginResult>>> Login([FromBody] LoginRequest request)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ApiResponse<LoginResult>
+                {
+                    Success = false,
+                    Message = "Invalid request"
+                });
+            }</p><p>            // Validate credentials
+            var user = await ValidateCredentials(request.Email, request.Password);
+            if (user == null)
+            {
+                await LogFailedLogin(request.Email);
+                return Unauthorized(new ApiResponse<LoginResult>
+                {
+                    Success = false,
+                    Message = "Invalid credentials"
+                });
+            }</p><p>            // Check if user is active
+            if (!user.IsActive)
+            {
+                return Unauthorized(new ApiResponse<LoginResult>
+                {
+                    Success = false,
+                    Message = "Account is deactivated"
+                });
+            }</p><p>            // Generate JWT token
+            var token = GenerateJwtToken(user);
+            var expiresIn = int.Parse(_config["Jwt:ExpirationMinutes"]) <em> 60;</p><p>            // Log successful login
+            await LogSuccessfulLogin(user);</p><p>            var result = new LoginResult
+            {
+                Token = token,
+                ExpiresIn = expiresIn,
+                User = new UserDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    ClientId = user.ClientId
+                }
+            };</p><p>            return Ok(new ApiResponse<LoginResult>
+            {
+                Success = true,
+                Data = result
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Login failed for email: {Email}", request.Email);
+            return StatusCode(500, new ApiResponse<LoginResult>
+            {
+                Success = false,
+                Message = "An error occurred during login"
+            });
+        }
+    }</p><p>    [HttpPost("refresh")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<RefreshResult>>> RefreshToken()
+    {
+        try
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var clientId = int.Parse(User.FindFirst("client_id")?.Value ?? "0");</p><p>            var user = await GetUserById(userId, clientId);
+            if (user == null || !user.IsActive)
+            {
+                return Unauthorized(new ApiResponse<RefreshResult>
+                {
+                    Success = false,
+                    Message = "Invalid user"
+                });
+            }</p><p>            var token = GenerateJwtToken(user);
+            var expiresIn = int.Parse(_config["Jwt:ExpirationMinutes"]) </em> 60;</p><p>            var result = new RefreshResult
+            {
+                Token = token,
+                ExpiresIn = expiresIn
+            };</p><p>            return Ok(new ApiResponse<RefreshResult>
+            {
+                Success = true,
+                Data = result
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Token refresh failed");
+            return StatusCode(500, new ApiResponse<RefreshResult>
+            {
+                Success = false,
+                Message = "Token refresh failed"
+            });
+        }
+    }</p><p>    private string GenerateJwtToken(User user)
+    {
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:SecretKey"]));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);</p><p>        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.Name),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim("client_id", user.ClientId.ToString()),
+            new Claim("is_admin", user.IsAdmin.ToString())
+        };</p><p>        var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:ExpirationMinutes"])),
+            signingCredentials: credentials
+        );</p><p>        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+}
+<div class="code-block"><pre><code></p><p><h2>Error Handling & Recovery</h2></p><p><h3>? CORRECT: Comprehensive error handling</h3></p><p></code></pre></div>javascript
+// Frontend - Error handling service
+class ErrorHandler {
+    static handle(error, context = {}) {
+        console.error('Error occurred:', error, 'Context:', context);</p><p>        // Log error to backend
+        this.logError(error, context);</p><p>        // Determine error type and show appropriate message
+        if (error.status === 400) {
+            this.handleValidationError(error);
+        } else if (error.status === 401) {
+            this.handleAuthError(error);
+        } else if (error.status === 403) {
+            this.handlePermissionError(error);
+        } else if (error.status === 404) {
+            this.handleNotFoundError(error);
+        } else if (error.status >= 500) {
+            this.handleServerError(error);
+        } else if (error.name === 'NetworkError' || !navigator.onLine) {
+            this.handleNetworkError(error);
+        } else {
+            this.handleGenericError(error);
+        }
+    }</p><p>    static handleValidationError(error) {
+        if (error.response?.validationErrors) {
+            // Show field-specific validation errors
+            Object.keys(error.response.validationErrors).forEach(field => {
+                const input = document.querySelector(</code>[name="${field}"]<code>);
+                if (input) {
+                    this.showFieldError(input, error.response.validationErrors[field][0]);
+                }
+            });
+        } else {
+            NotificationService.showError(error.response?.message || 'Please check your input and try again');
+        }
+    }</p><p>    static handleAuthError(error) {
+        NotificationService.showError('Your session has expired. Please log in again.');
+        AuthService.logout();
+    }</p><p>    static handlePermissionError(error) {
+        NotificationService.showError('You do not have permission to perform this action');
+    }</p><p>    static handleNotFoundError(error) {
+        NotificationService.showError('The requested resource was not found');
+    }</p><p>    static handleServerError(error) {
+        NotificationService.showError('A server error occurred. Please try again later.');
+        
+        // Show retry option for non-critical operations
+        if (error.retryable) {
+            this.showRetryOption(error.originalRequest);
+        }
+    }</p><p>    static handleNetworkError(error) {
+        NotificationService.showError('Network connection lost. Please check your internet connection.');
+        
+        // Set up automatic retry when connection is restored
+        this.setupConnectionMonitoring(error.originalRequest);
+    }</p><p>    static handleGenericError(error) {
+        NotificationService.showError('An unexpected error occurred. Please try again.');
+    }</p><p>    static async logError(error, context) {
+        try {
+            await Utils.ajax({
+                url: '/api/errors/log',
+                type: 'POST',
+                data: JSON.stringify({
+                    message: error.message,
+                    stack: error.stack,
+                    status: error.status,
+                    url: error.config?.url,
+                    context: context,
+                    userAgent: navigator.userAgent,
+                    timestamp: new Date().toISOString()
+                }),
+                contentType: 'application/json'
+            });
+        } catch (logError) {
+            console.error('Failed to log error:', logError);
+        }
+    }</p><p>    static showRetryOption(originalRequest) {
+        const retryModal = new bootstrap.Modal(document.getElementById('retryModal'));
+        
+        document.getElementById('retryButton').onclick = async () => {
+            try {
+                await Utils.ajax(originalRequest);
+                retryModal.hide();
+                NotificationService.showSuccess('Operation completed successfully');
+            } catch (retryError) {
+                this.handle(retryError);
+            }
+        };
+        
+        retryModal.show();
+    }</p><p>    static setupConnectionMonitoring(originalRequest) {
+        const checkConnection = async () => {
+            if (navigator.onLine) {
+                try {
+                    // Try a simple ping request
+                    await Utils.ajax({ url: '/api/ping', type: 'GET' });
+                    
+                    // Connection restored, retry original request
+                    await Utils.ajax(originalRequest);
+                    NotificationService.showSuccess('Connection restored and operation completed');
+                } catch (error) {
+                    // Still having issues, continue monitoring
+                    setTimeout(checkConnection, 5000);
+                }
+            } else {
+                setTimeout(checkConnection, 2000);
+            }
+        };
+        
+        setTimeout(checkConnection, 2000);
+    }
+}</p><p>// Configure global error handling for Utils.ajax
+Utils.ajax.defaults.error = function(xhr, textStatus, errorThrown) {
+    const error = {
+        status: xhr.status,
+        message: errorThrown || textStatus,
+        response: xhr.responseJSON,
+        config: this,
+        originalRequest: this
+    };
+    
+    ErrorHandler.handle(error);
+};
+<div class="code-block"><pre><code></p><p><h2>Real-time Communication</h2></p><p><h3>? CORRECT: SignalR integration</h3></p><p></code></pre></div>javascript
+// Frontend - SignalR connection management
+class SignalRService {
+    constructor() {
+        this.connection = null;
+        this.reconnectAttempts = 0;
+        this.maxReconnectAttempts = 5;
+        this.reconnectInterval = 1000;
+        this.handlers = new Map();
+    }</p><p>    async connect() {
+        try {
+            this.connection = new signalR.HubConnectionBuilder()
+                .withUrl('/hubs/notifications', {
+                    accessTokenFactory: () => AuthService.getToken()
+                })
+                .withAutomaticReconnect({
+                    nextRetryDelayInMilliseconds: retryContext => {
+                        if (retryContext.previousRetryCount === 0) {
+                            return 0;
+                        }
+                        return Math.min(1000 <em> Math.pow(2, retryContext.previousRetryCount), 30000);
+                    }
+                })
+                .configureLogging(signalR.LogLevel.Information)
+                .build();</p><p>            this.setupEventHandlers();
+            
+            await this.connection.start();
+            console.log('SignalR connection established');
+            
+            // Join tenant group
+            await this.joinTenantGroup();
+            
+            this.reconnectAttempts = 0;
+            
+        } catch (error) {
+            console.error('SignalR connection failed:', error);
+            this.scheduleReconnect();
+        }
+    }</p><p>    setupEventHandlers() {
+        this.connection.onreconnecting(error => {
+            console.log('SignalR reconnecting...', error);
+            NotificationService.showInfo('Connection lost, reconnecting...');
+        });</p><p>        this.connection.onreconnected(connectionId => {
+            console.log('SignalR reconnected:', connectionId);
+            NotificationService.showSuccess('Connection restored');
+            this.joinTenantGroup();
+        });</p><p>        this.connection.onclose(error => {
+            console.error('SignalR connection closed:', error);
+            this.scheduleReconnect();
+        });</p><p>        // Set up message handlers
+        this.connection.on('UserCreated', (user) => {
+            this.handleUserCreated(user);
+        });</p><p>        this.connection.on('UserUpdated', (user) => {
+            this.handleUserUpdated(user);
+        });</p><p>        this.connection.on('UserDeleted', (userId) => {
+            this.handleUserDeleted(userId);
+        });</p><p>        this.connection.on('SystemNotification', (notification) => {
+            this.handleSystemNotification(notification);
+        });
+    }</p><p>    async joinTenantGroup() {
+        if (this.connection.state === signalR.HubConnectionState.Connected) {
+            await this.connection.invoke('JoinTenantGroup');
+        }
+    }</p><p>    scheduleReconnect() {
+        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+            this.reconnectAttempts++;
+            const delay = this.reconnectInterval </em> Math.pow(2, this.reconnectAttempts - 1);
+            
+            setTimeout(() => {
+                this.connect();
+            }, delay);
+        } else {
+            NotificationService.showError('Unable to establish real-time connection');
+        }
+    }</p><p>    handleUserCreated(user) {
+        // Update UI
+        if (window.userTable) {
+            window.userTable.addRow(user);
+        }
+        
+        NotificationService.showInfo(</code>New user ${user.name} was created<code>);
+    }</p><p>    handleUserUpdated(user) {
+        // Update UI
+        if (window.userTable) {
+            window.userTable.updateRow(user);
+        }
+        
+        NotificationService.showInfo(</code>User ${user.name} was updated<code>);
+    }</p><p>    handleUserDeleted(userId) {
+        // Update UI
+        if (window.userTable) {
+            window.userTable.removeRow(userId);
+        }
+        
+        NotificationService.showInfo('User was deleted');
+    }</p><p>    handleSystemNotification(notification) {
+        switch (notification.type) {
+            case 'info':
+                NotificationService.showInfo(notification.message);
+                break;
+            case 'warning':
+                NotificationService.showWarning(notification.message);
+                break;
+            case 'error':
+                NotificationService.showError(notification.message);
+                break;
+            default:
+                NotificationService.showInfo(notification.message);
+        }
+    }</p><p>    async sendMessage(method, ...args) {
+        if (this.connection.state === signalR.HubConnectionState.Connected) {
+            return await this.connection.invoke(method, ...args);
+        } else {
+            throw new Error('SignalR connection not established');
+        }
+    }</p><p>    disconnect() {
+        if (this.connection) {
+            this.connection.stop();
+        }
+    }
+}</p><p>// Initialize SignalR service
+const signalRService = new SignalRService();</p><p>// Connect when authenticated
+document.addEventListener('DOMContentLoaded', () => {
+    if (AuthService.getToken()) {
+        signalRService.connect();
+    }
+});</p><p>// Reconnect after login
+document.addEventListener('userLoggedIn', () => {
+    signalRService.connect();
+});</p><p>// Disconnect on logout
+document.addEventListener('userLoggedOut', () => {
+    signalRService.disconnect();
+});
+<div class="code-block"><pre><code></p><p><h2>Complete Examples</h2></p><p><h3>? COMPLETE EXAMPLE: Full CRUD with real-time updates</h3></p><p></code></pre></div>javascript
+// Frontend - Complete user management system
+class UserManagementSystem {
+    constructor() {
+        this.userTable = null;
+        this.userForm = null;
+        this.currentUser = null;
+        this.init();
+    }</p><p>    async init() {
+        this.setupComponents();
+        this.setupEventHandlers();
+        await this.loadInitialData();
+    }</p><p>    setupComponents() {
+        // Initialize table
+        this.userTable = new UserTable(document.getElementById('userTableContainer'));
+        
+        // Initialize form
+        this.userForm = new UserForm(document.getElementById('userForm'));
+        
+        // Initialize modals
+        this.editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+        this.deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+    }</p><p>    setupEventHandlers() {
+        // Create user button
+        document.getElementById('createUserBtn').addEventListener('click', () => {
+            this.openCreateForm();
+        });</p><p>        // Table events
+        document.addEventListener('userTableRowClick', (e) => {
+            if (e.detail.action === 'edit') {
+                this.openEditForm(e.detail.user);
+            } else if (e.detail.action === 'delete') {
+                this.openDeleteConfirmation(e.detail.user);
+            }
+        });</p><p>        // Form events
+        document.addEventListener('userFormSubmit', async (e) => {
+            await this.handleFormSubmit(e.detail);
+        });</p><p>        // SignalR events
+        document.addEventListener('signalRUserCreated', (e) => {
+            this.handleRemoteUserCreated(e.detail.user);
+        });</p><p>        document.addEventListener('signalRUserUpdated', (e) => {
+            this.handleRemoteUserUpdated(e.detail.user);
+        });</p><p>        document.addEventListener('signalRUserDeleted', (e) => {
+            this.handleRemoteUserDeleted(e.detail.userId);
+        });
+    }</p><p>    async loadInitialData() {
+        try {
+            await this.userTable.loadData();
+        } catch (error) {
+            ErrorHandler.handle(error, { context: 'initial_load' });
+        }
+    }</p><p>    openCreateForm() {
+        this.currentUser = null;
+        this.userForm.reset();
+        this.userForm.setMode('create');
+        this.editModal.show();
+    }</p><p>    openEditForm(user) {
+        this.currentUser = user;
+        this.userForm.populate(user);
+        this.userForm.setMode('edit');
+        this.editModal.show();
+    }</p><p>    openDeleteConfirmation(user) {
+        this.currentUser = user;
+        document.getElementById('deleteUserName').textContent = user.name;
+        this.deleteModal.show();
+    }</p><p>    async handleFormSubmit(formData) {
+        try {
+            let result;
+            
+            if (this.currentUser) {
+                // Update existing user
+                result = await UserService.updateUser(this.currentUser.id, formData);
+                NotificationService.showSuccess('User updated successfully');
+            } else {
+                // Create new user
+                result = await UserService.createUser(formData);
+                NotificationService.showSuccess('User created successfully');
+            }</p><p>            this.editModal.hide();
+            await this.userTable.loadData(false); // Refresh without loading indicator
+            
+        } catch (error) {
+            ErrorHandler.handle(error, { context: 'form_submit', formData });
+        }
+    }</p><p>    async confirmDelete() {
+        if (!this.currentUser) return;</p><p>        try {
+            await UserService.deleteUser(this.currentUser.id);
+            NotificationService.showSuccess('User deleted successfully');
+            this.deleteModal.hide();
+            await this.userTable.loadData(false);
+            
+        } catch (error) {
+            ErrorHandler.handle(error, { context: 'delete_user', userId: this.currentUser.id });
+        }
+    }</p><p>    // Handle real-time updates from other users
+    handleRemoteUserCreated(user) {
+        this.userTable.addRow(user);
+        NotificationService.showInfo(</code>${user.name} was created by another user<code>);
+    }</p><p>    handleRemoteUserUpdated(user) {
+        this.userTable.updateRow(user);
+        NotificationService.showInfo(</code>${user.name} was updated by another user<code>);
+    }</p><p>    handleRemoteUserDeleted(userId) {
+        this.userTable.removeRow(userId);
+        NotificationService.showInfo('A user was deleted by another user');
+    }
+}</p><p>// Initialize the system
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('userManagementPage')) {
+        new UserManagementSystem();
+    }
+});
+<div class="code-block"><pre><code></p><p></code></pre></div>csharp
+// Backend - Complete user controller with SignalR
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class UsersController : XOSControllerBase
+{
+    private readonly IHubContext<NotificationHub> _hubContext;</p><p>    public UsersController(IHubContext<NotificationHub> hubContext)
+    {
+        _hubContext = hubContext;
+    }</p><p>    [HttpGet]
+    public async Task<ActionResult<ApiResponse<List<UserDto>>>> GetUsers()
+    {
+        try
+        {
+            var users = await DBService.GetListAsync<User>(
+                "SELECT <em> FROM users WHERE client_id = @client_id AND is_active = true ORDER BY name",
+                new { client_id = ClientId }
+            );</p><p>            var userDtos = users.Select(MapToDto).ToList();</p><p>            return Ok(new ApiResponse<List<UserDto>>
+            {
+                Success = true,
+                Data = userDtos
+            });
+        }
+        catch (Exception ex)
+        {
+            LogError(ex, "Failed to retrieve users");
+            return StatusCode(500, new ApiResponse<List<UserDto>>
+            {
+                Success = false,
+                Message = "Failed to retrieve users"
+            });
+        }
+    }</p><p>    [HttpPost]
+    public async Task<ActionResult<ApiResponse<UserDto>>> CreateUser([FromBody] CreateUserRequest request)
+    {
+        using var transaction = await DBService.BeginTransactionAsync();
+        
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                    );
+                    
+                return BadRequest(new ApiResponse<UserDto>
+                {
+                    Success = false,
+                    Message = "Validation failed",
+                    ValidationErrors = errors
+                });
+            }</p><p>            // Check for duplicate email
+            var existingUser = await DBService.GetAsync<User>(
+                "SELECT id FROM users WHERE email = @email AND client_id = @client_id",
+                new { email = request.Email, client_id = ClientId },
+                transaction: transaction
+            );</p><p>            if (existingUser != null)
+            {
+                await transaction.RollbackAsync();
+                return Conflict(new ApiResponse<UserDto>
+                {
+                    Success = false,
+                    Message = "Email address already in use"
+                });
+            }</p><p>            // Create user
+            var userId = await DBService.GetValueAsync<int>(@"
+                INSERT INTO users (name, email, password_hash, client_id, created_at, created_by, is_active)
+                VALUES (@name, @email, @password_hash, @client_id, CURRENT_TIMESTAMP, @created_by, true)
+                RETURNING id",
+                new { 
+                    name = request.Name, 
+                    email = request.Email, 
+                    password_hash = HashPassword(request.Password),
+                    client_id = ClientId,
+                    created_by = UserId
+                },
+                transaction: transaction
+            );</p><p>            // Get created user
+            var user = await DBService.GetAsync<User>(
+                "SELECT </em> FROM users WHERE id = @id AND client_id = @client_id",
+                new { id = userId, client_id = ClientId },
+                transaction: transaction
+            );</p><p>            // Log the creation
+            await LogUserActivity("user_created", userId, new { user.Name, user.Email }, transaction);</p><p>            await transaction.CommitAsync();</p><p>            var userDto = MapToDto(user);</p><p>            // Notify other clients via SignalR
+            await _hubContext.Clients.Group($"tenant_{ClientId}").SendAsync("UserCreated", userDto);</p><p>            return CreatedAtAction(nameof(GetUser), new { id = userId }, new ApiResponse<UserDto>
+            {
+                Success = true,
+                Data = userDto,
+                Message = "User created successfully"
+            });
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            LogError(ex, "Failed to create user", request);
+            return StatusCode(500, new ApiResponse<UserDto>
+            {
+                Success = false,
+                Message = "Failed to create user"
+            });
+        }
+    }</p><p>    [HttpPut("{id}")]
+    public async Task<ActionResult<ApiResponse<UserDto>>> UpdateUser(int id, [FromBody] UpdateUserRequest request)
+    {
+        using var transaction = await DBService.BeginTransactionAsync();
+        
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                    );
+                    
+                return BadRequest(new ApiResponse<UserDto>
+                {
+                    Success = false,
+                    Message = "Validation failed",
+                    ValidationErrors = errors
+                });
+            }</p><p>            // Verify user exists and belongs to tenant
+            var existingUser = await DBService.GetAsync<User>(
+                "SELECT <em> FROM users WHERE id = @id AND client_id = @client_id",
+                new { id = id, client_id = ClientId },
+                transaction: transaction
+            );</p><p>            if (existingUser == null)
+            {
+                await transaction.RollbackAsync();
+                return NotFound(new ApiResponse<UserDto>
+                {
+                    Success = false,
+                    Message = "User not found"
+                });
+            }</p><p>            // Check for email conflicts (excluding current user)
+            var emailConflict = await DBService.GetAsync<User>(
+                "SELECT id FROM users WHERE email = @email AND client_id = @client_id AND id != @id",
+                new { email = request.Email, client_id = ClientId, id = id },
+                transaction: transaction
+            );</p><p>            if (emailConflict != null)
+            {
+                await transaction.RollbackAsync();
+                return Conflict(new ApiResponse<UserDto>
+                {
+                    Success = false,
+                    Message = "Email address already in use"
+                });
+            }</p><p>            // Update user
+            await DBService.ExecuteAsync(@"
+                UPDATE users 
+                SET name = @name, email = @email, updated_at = CURRENT_TIMESTAMP, updated_by = @updated_by
+                WHERE id = @id AND client_id = @client_id",
+                new { 
+                    name = request.Name, 
+                    email = request.Email, 
+                    updated_by = UserId,
+                    id = id, 
+                    client_id = ClientId 
+                },
+                transaction: transaction
+            );</p><p>            // Get updated user
+            var updatedUser = await DBService.GetAsync<User>(
+                "SELECT </em> FROM users WHERE id = @id AND client_id = @client_id",
+                new { id = id, client_id = ClientId },
+                transaction: transaction
+            );</p><p>            // Log the update
+            await LogUserActivity("user_updated", id, new { 
+                OldName = existingUser.Name, 
+                NewName = updatedUser.Name,
+                OldEmail = existingUser.Email,
+                NewEmail = updatedUser.Email
+            }, transaction);</p><p>            await transaction.CommitAsync();</p><p>            var userDto = MapToDto(updatedUser);</p><p>            // Notify other clients via SignalR
+            await _hubContext.Clients.Group($"tenant_{ClientId}").SendAsync("UserUpdated", userDto);</p><p>            return Ok(new ApiResponse<UserDto>
+            {
+                Success = true,
+                Data = userDto,
+                Message = "User updated successfully"
+            });
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            LogError(ex, "Failed to update user", new { UserId = id, Request = request });
+            return StatusCode(500, new ApiResponse<UserDto>
+            {
+                Success = false,
+                Message = "Failed to update user"
+            });
+        }
+    }</p><p>    [HttpDelete("{id}")]
+    public async Task<ActionResult<ApiResponse<object>>> DeleteUser(int id)
+    {
+        using var transaction = await DBService.BeginTransactionAsync();
+        
+        try
+        {
+            // Verify user exists and belongs to tenant
+            var user = await DBService.GetAsync<User>(
+                "SELECT <em> FROM users WHERE id = @id AND client_id = @client_id",
+                new { id = id, client_id = ClientId },
+                transaction: transaction
+            );</p><p>            if (user == null)
+            {
+                await transaction.RollbackAsync();
+                return NotFound(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "User not found"
+                });
+            }</p><p>            // Prevent deletion of the last admin user
+            if (user.IsAdmin)
+            {
+                var adminCount = await DBService.GetValueAsync<int>(
+                    "SELECT COUNT(</em>) FROM users WHERE client_id = @client_id AND is_admin = true AND is_active = true",
+                    new { client_id = ClientId },
+                    transaction: transaction
+                );</p><p>                if (adminCount <= 1)
+                {
+                    await transaction.RollbackAsync();
+                    return BadRequest(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Message = "Cannot delete the last admin user"
+                    });
+                }
+            }</p><p>            // Soft delete user
+            await DBService.ExecuteAsync(@"
+                UPDATE users 
+                SET is_active = false, deleted_at = CURRENT_TIMESTAMP, deleted_by = @deleted_by
+                WHERE id = @id AND client_id = @client_id",
+                new { deleted_by = UserId, id = id, client_id = ClientId },
+                transaction: transaction
+            );</p><p>            // Log the deletion
+            await LogUserActivity("user_deleted", id, new { user.Name, user.Email }, transaction);</p><p>            await transaction.CommitAsync();</p><p>            // Notify other clients via SignalR
+            await _hubContext.Clients.Group($"tenant_{ClientId}").SendAsync("UserDeleted", id);</p><p>            return Ok(new ApiResponse<object>
+            {
+                Success = true,
+                Message = "User deleted successfully"
+            });
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            LogError(ex, "Failed to delete user", new { UserId = id });
+            return StatusCode(500, new ApiResponse<object>
+            {
+                Success = false,
+                Message = "Failed to delete user"
+            });
+        }
+    }</p><p>    private UserDto MapToDto(User user)
+    {
+        return new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            IsAdmin = user.IsAdmin,
+            CreatedAt = user.CreatedAt,
+            UpdatedAt = user.UpdatedAt
+        };
+    }</p><p>    private async Task LogUserActivity(string action, int userId, object data, IDbTransaction transaction)
+    {
+        await DBService.ExecuteAsync(@"
+            INSERT INTO user_activity_log (user_id, action, data, performed_by, client_id, created_at)
+            VALUES (@user_id, @action, @data, @performed_by, @client_id, CURRENT_TIMESTAMP)",
+            new {
+                user_id = userId,
+                action = action,
+                data = JsonSerializer.Serialize(data),
+                performed_by = UserId,
+                client_id = ClientId
+            },
+            transaction: transaction
+        );
+    }
+}
+</code>``</p><p>This documentation provides comprehensive patterns for frontend-to-backend integration in XOS applications, covering all major scenarios from basic CRUD operations to advanced real-time communication and error handling patterns.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

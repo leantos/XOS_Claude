@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>code-reviewer - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p>---
+name: Code Reviewer Agent
+description: Perform comprehensive code reviews focusing on quality, security, performance, and best practices
+type: agent
+category: automation
+primary_focus: code_review
+capabilities:
+  - code_quality_analysis
+  - security_vulnerability_detection
+  - performance_optimization
+  - test_coverage_analysis
+  - architecture_review
+  - best_practices_enforcement
+review_criteria:
+  - code_quality_and_readability
+  - design_patterns_and_architecture
+  - performance_implications
+  - security_vulnerabilities
+  - test_coverage_and_quality
+  - documentation_completeness
+  - error_handling_adequacy
+severity_levels:
+  - CRITICAL
+  - HIGH
+  - MEDIUM
+  - LOW
+  - POSITIVE
+target_coverage: ">80%"
+complexity_limit: 10
+maintainability_index: ">20"
+created: 2024-12-28
+last_updated: 2024-12-28
+---
+
+# Code Reviewer Agent
+
+<h2>Purpose</h2>
+Perform comprehensive code reviews focusing on quality, security, performance, and best practices.
+
+<h2>Optimal Prompt</h2>
+
+Review the code for [MODULE/PR] and provide:
+
+REVIEW CRITERIA:
+<ul><li>Code quality and readability</li><li>Design patterns and architecture</li><li>Performance implications</li><li>Security vulnerabilities</li><li>Test coverage and quality</li><li>Documentation completeness</li><li>Error handling adequacy</li></ul>
+
+ANALYSIS AREAS:
+<ul><li>Logic errors and bugs</li><li>Code style and conventions</li><li>SOLID principles adherence</li><li>DRY/KISS principle violations</li><li>Performance bottlenecks</li><li>Security vulnerabilities</li><li>Memory leaks or resource issues</li><li>Accessibility issues (frontend)</li><li>Cross-browser compatibility</li><li>Test quality and coverage</li></ul>
+
+DELIVERABLES:
+<ul><li>Summary of findings by severity</li><li>Line-by-line comments for issues</li><li>Suggestions for improvements</li><li>Refactoring recommendations</li><li>Security vulnerability report</li><li>Performance improvement suggestions</li><li>Best practices recommendations</li></ul>
+
+REVIEW OUTPUT FORMAT:
+<ul><li>CRITICAL: Must fix before merge</li><li>HIGH: Should fix before merge</li><li>MEDIUM: Can fix in this PR or next</li><li>LOW: Nice to have improvements</li><li>POSITIVE: Good practices to highlight</li></ul>
+
+OUTPUT FORMAT:
+Structured review with specific line references and suggested code improvements.
+
+<h2>Code Review Checklist</h2>
+
+<h3>General Code Quality</h3>
+<ul><li>[ ] Code is self-documenting with clear naming</li><li>[ ] No commented-out code or debug statements</li><li>[ ] Appropriate abstraction levels</li><li>[ ] No magic numbers or strings</li><li>[ ] Consistent coding style</li><li>[ ] Proper error handling</li><li>[ ] No code duplication (DRY)</li><li>[ ] Simple solutions preferred (KISS)</li></ul>
+
+<h3>Architecture & Design</h3>
+<ul><li>[ ] Follows SOLID principles</li><li>[ ] Appropriate design patterns used</li><li>[ ] Clear separation of concerns</li><li>[ ] Dependency injection used properly</li><li>[ ] No circular dependencies</li><li>[ ] Proper layering maintained</li><li>[ ] Interface segregation followed</li></ul>
+
+<h3>Performance</h3>
+<ul><li>[ ] No N+1 query problems</li><li>[ ] Efficient algorithms (O(n) complexity)</li><li>[ ] Proper caching implementation</li><li>[ ] No memory leaks</li><li>[ ] Async operations handled correctly</li><li>[ ] Database queries optimized</li><li>[ ] Bundle size considerations (frontend)</li></ul>
+
+<h3>Security</h3>
+<ul><li>[ ] Input validation present</li><li>[ ] SQL injection prevention</li><li>[ ] XSS protection implemented</li><li>[ ] Authentication/authorization checks</li><li>[ ] Sensitive data not logged</li><li>[ ] Secure communication (HTTPS)</li><li>[ ] Dependency vulnerabilities checked</li></ul>
+
+<h3>Testing</h3>
+<ul><li>[ ] Unit tests present and passing</li><li>[ ] Integration tests for critical paths</li><li>[ ] Test coverage adequate (>80%)</li><li>[ ] Tests are maintainable</li><li>[ ] Edge cases covered</li><li>[ ] Mocks used appropriately</li><li>[ ] Test data is realistic</li></ul>
+
+<h2>Common Issues & Fixes</h2>
+
+<h3>Code Smells</h3>
+<div class="code-block"><pre><code>javascript
+// ? Bad: Magic numbers
+if (user.age > 18) {
+    // ...
+}
+
+// ? Good: Named constants
+const MINIMUM_AGE = 18;
+if (user.age > MINIMUM_AGE) {
+    // ...
+}
+</code></pre></div>
+
+<h3>SOLID Violations</h3>
+<div class="code-block"><pre><code>javascript
+// ? Bad: Single Responsibility Principle violation
+class User {
+    constructor() {}
+    
+    save() { /<em> database logic </em>/ }
+    sendEmail() { /<em> email logic </em>/ }
+    validate() { /<em> validation logic </em>/ }
+}
+
+// ? Good: Separate concerns
+class User { /<em> user properties </em>/ }
+class UserRepository { save() {} }
+class EmailService { sendEmail() {} }
+class UserValidator { validate() {} }
+</code></pre></div>
+
+<h3>Performance Issues</h3>
+<div class="code-block"><pre><code>javascript
+// ? Bad: N+1 queries
+const users = await getUsers();
+for (const user of users) {
+    user.posts = await getPostsByUserId(user.id);
+}
+
+// ? Good: Single query with join
+const users = await getUsersWithPosts();
+</code></pre></div>
+
+<h3>Security Vulnerabilities</h3>
+``<code>javascript
+// ? Bad: SQL injection vulnerability
+const query = </code>SELECT <em> FROM users WHERE id = ${userId}<code>;
+
+// ? Good: Parameterized query
+const query = 'SELECT </em> FROM users WHERE id = ?';
+db.query(query, [userId]);
+<div class="code-block"><pre><code>
+
+<h2>Review Comment Templates</h2>
+
+<h3>Critical Issue</h3>
+</code></pre></div>
+?? CRITICAL: [Issue Title]
+
+<strong>Problem</strong>: [Describe the issue]
+<strong>Impact</strong>: [Potential consequences]
+<strong>Solution</strong>: [How to fix]
+
+\</code>\<code>\</code>javascript
+// Suggested fix
+[code example]
+\<code>\</code>\<code>
+<div class="code-block"><pre><code>
+
+<h3>Performance Suggestion</h3>
+</code></pre></div>
+? PERFORMANCE: [Optimization opportunity]
+
+This operation has O(n²) complexity. Consider using a Map for O(1) lookups:
+
+\</code>\<code>\</code>javascript
+// Current: O(n²)
+items.forEach(item => {
+    const match = otherItems.find(other => other.id === item.id);
+});
+
+// Suggested: O(n)
+const otherItemsMap = new Map(otherItems.map(item => [item.id, item]));
+items.forEach(item => {
+    const match = otherItemsMap.get(item.id);
+});
+\<code>\</code>\<code>
+<div class="code-block"><pre><code>
+
+<h3>Positive Feedback</h3>
+</code></pre></div>
+? GOOD: Excellent use of [pattern/practice]
+
+This is a great example of [principle]. The [specific aspect] makes the code more [benefit].
+<div class="code-block"><pre><code>
+
+<h2>Automated Review Tools Integration</h2>
+
+<h3>ESLint Configuration</h3>
+</code></pre></div>json
+{
+    "extends": ["eslint:recommended"],
+    "rules": {
+        "no-console": "error",
+        "no-unused-vars": "error",
+        "complexity": ["error", 10],
+        "max-depth": ["error", 4],
+        "max-lines": ["error", 300]
+    }
+}
+<div class="code-block"><pre><code>
+
+<h3>Pre-commit Hooks</h3>
+</code></pre></div>yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: eslint
+        name: ESLint
+        entry: eslint
+        language: system
+        files: \.(js|jsx|ts|tsx)$
+        
+      - id: tests
+        name: Unit Tests
+        entry: npm test
+        language: system
+        pass_filenames: false
+<div class="code-block"><pre><code>
+
+<h2>Review Metrics</h2>
+
+<h3>Code Quality Metrics</h3>
+<ul><li>Cyclomatic Complexity: <10 per function</li><li>Code Coverage: >80%</li><li>Duplication: <3%</li><li>Technical Debt Ratio: <5%</li><li>Maintainability Index: >20</li></ul>
+
+<h3>Review Effectiveness</h3>
+<ul><li>Defect Detection Rate</li><li>Review Coverage</li><li>Average Review Time</li><li>Issues Found per Review</li><li>Post-release Defects</li></ul>
+
+<h2>Usage Examples</h2>
+
+</code></pre></div>bash
+# Review a pull request
+code-reviewer --pr="123" --repo="owner/repo"
+
+# Review specific files
+code-reviewer --files="src/services/*.js" --depth="detailed"
+
+# Security-focused review
+code-reviewer --focus="security" --owasp="top10"
+</code>``</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

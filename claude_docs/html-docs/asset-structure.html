@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>asset-structure - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># Asset Structure Documentation</p><p><h2>?? Project Asset Organization</h2></p><p>This document details where all frontend assets (XOS components, themes, fonts, styles) are stored in the project structure. For the complete project structure, see <a href="./PROJECT_STRUCTURE.html">PROJECT_STRUCTURE.md</a>.</p><p><h2>?? XOS Components Location</h2></p><p><h3>Primary Location</h3>
+<div class="code-block"><pre><code>
+{ProjectName}.WebApi/UIPages/src/xos-components/
+</code></pre></div></p><p><h3>XOS Component Library Structure</h3>
+<div class="code-block"><pre><code>
+xos-components/
++-- Core/                      # Core Framework Files
+¦   +-- ApiManager.js         # API communication layer
+¦   +-- SessionManager.js     # Session handling
+¦   +-- SignalRManager.js     # Real-time communication
+¦   +-- WebStorageStateStore.js # State persistence
++-- Utils/                     # Utility Functions
+¦   +-- Utils.js              # General utilities
+¦   +-- DOMUtil.js           # DOM manipulation
+¦   +-- xos.linq.js          # LINQ-like array operations
+¦   +-- xos.domext.js        # DOM extensions
++-- XOSComponent.js           # Base component class
++-- VMBase.js                 # ViewModel base class
++-- XOSStateManager.js        # State management
++-- [Individual Components]/  # Component folders
+    +-- XOSGrid/
+    +-- XOSTextbox/
+    +-- XOSSelect/
+    +-- XOSDatepicker/
+    +-- XOSCalendar/
+    +-- XOSControl/
+    +-- XOSTab/
+    +-- XOSTreeview/
+    +-- XOSEditor/
+    +-- XOSOverlay/
+    +-- XOSToaster/
+    +-- XOSAlert/
+    +-- ... (25+ components)
+</code></pre></div></p><p><h3>Component File Pattern</h3>
+Each XOS component typically contains:
+<div class="code-block"><pre><code>
+XOS{ComponentName}/
++-- index.js          # Main component logic
++-- index.css         # Component-specific styles
++-- images/           # Component assets (if needed)
+</code></pre></div></p><p><h2>?? Themes & Styles Location</h2></p><p><h3>SCSS Source Files</h3>
+<div class="code-block"><pre><code>
+{ProjectName}.WebApi/UIPages/src/scss/
++-- theme.scss                 # Main theme file
++-- mixins/
+¦   +-- _theme.scss           # Theme mixins
++-- _animate.scss             # Animation definitions
++-- _base-layout.scss         # Base layout styles
++-- _shadow_alt.scss          # Shadow utilities
++-- _xoscontrols.scss         # XOS control styles
++-- _xoselect.scss            # Select component styles
++-- _wc_calendar.scss         # Calendar styles
++-- _witgrid.scss             # Grid styles
++-- _wittree.scss             # Tree component styles
+</code></pre></div></p><p><h3>Compiled CSS</h3>
+<div class="code-block"><pre><code>
+{ProjectName}.WebApi/UIPages/src/assets/css/
++-- theme.css                  # Compiled theme CSS
++-- theme.css.map             # Source map
+</code></pre></div></p><p><h3>Build Output CSS</h3>
+<div class="code-block"><pre><code>
+{ProjectName}.WebApi/UIPages/build/static/css/
++-- [bundled CSS files]       # Production-ready CSS
+</code></pre></div></p><p><h2>?? Fonts Location</h2></p><p><h3>Development Fonts</h3>
+<div class="code-block"><pre><code>
+{ProjectName}.WebApi/UIPages/src/fonts/
++-- materialdesignicons-webfont.eot
++-- materialdesignicons-webfont.ttf
++-- materialdesignicons-webfont.woff
++-- materialdesignicons-webfont.woff2
+</code></pre></div></p><p><h3>Production/Build Fonts</h3>
+<div class="code-block"><pre><code>
+{ProjectName}.WebApi/UIPages/build/fonts/
++-- font-awesome/
+¦   +-- css/
+¦   ¦   +-- fontawesome.css
+¦   ¦   +-- v4-font-face.css
+¦   ¦   +-- v5-font-face.css
+¦   +-- scss/
+¦   ¦   +-- fontawesome.scss
+¦   ¦   +-- brands.scss
+¦   ¦   +-- regular.scss
+¦   ¦   +-- solid.scss
+¦   +-- webfonts/
+¦       +-- [font files]
++-- [other font files]
+</code></pre></div></p><p><h2>?? Third-Party Dependencies</h2></p><p><h3>Bootstrap Integration</h3>
+<div class="code-block"><pre><code>
+{ProjectName}.WebApi/UIPages/node_modules/bootstrap/
++-- dist/
+¦   +-- css/              # Bootstrap CSS
+¦   +-- js/               # Bootstrap JS
++-- scss/                 # Bootstrap SCSS sources
+</code></pre></div></p><p><h3>Font Awesome</h3>
+<div class="code-block"><pre><code>
+{ProjectName}.WebApi/UIPages/node_modules/@fortawesome/
++-- fontawesome-svg-core/
++-- free-solid-svg-icons/
++-- free-regular-svg-icons/
++-- react-fontawesome/
+</code></pre></div></p><p><h2>??? Module Components Location</h2></p><p><h3>Business Module Components</h3>
+<div class="code-block"><pre><code>
+{ProjectName}.WebApi/UIPages/src/components/
++-- General/              # CVSM modules (Master/Config)
+¦   +-- CVSM001/         # User Management
+¦   +-- CVSM005/         # Site Configuration
+¦   +-- ...
++-- Transaction/          # CVST modules (Transactions)
+¦   +-- CVST005/         # Bank Reconciliation
+¦   +-- CVST020/         # Opera Income Audit
+¦   +-- ...
++-- Reports/              # CVSR modules (Reports)
+    +-- CVSR005/         # Revenue Reports
+    +-- ...
+</code></pre></div></p><p><h3>Module Structure Pattern</h3>
+<div class="code-block"><pre><code>
+{ModuleCode}/
++-- index.jsx            # Component implementation
++-- {ModuleCode}VM.js    # ViewModel logic
++-- index.css           # Module-specific styles (optional)
+</code></pre></div></p><p><h2>?? Icon Assets</h2></p><p><h3>XOS Component Icons</h3>
+<div class="code-block"><pre><code>
+xos-components/XOSTreeview/images/
++-- tree_icons.png       # Tree view icons</p><p>xos-components/XOSCardInput/images/
++-- visa.svg            # Payment card icons
++-- mastercard.svg
++-- [other card types]
+</code></pre></div></p><p><h2>?? Style Import Order</h2></p><p>When importing styles in the application:</p><p><div class="code-block"><pre><code>javascript
+// In App.js or index.js
+import 'bootstrap/dist/css/bootstrap.min.css';  // 1. Bootstrap base
+import './assets/css/theme.css';                // 2. Custom theme
+import './xos-components/index.css';            // 3. XOS components
+import './App.css';                             // 4. App-specific
+</code></pre></div></p><p><h2>?? SCSS Compilation</h2></p><p><h3>Build Script</h3>
+<div class="code-block"><pre><code>json
+// package.json
+"scripts": {
+  "build-css": "sass src/scss/theme.scss src/assets/css/theme.css",
+  "watch-css": "sass --watch src/scss/theme.scss:src/assets/css/theme.css"
+}
+</code></pre></div></p><p><h2>?? Asset Bundling</h2></p><p>During build process:
+<ul><li>SCSS files compile to CSS</li><li>CSS files are bundled and minified</li><li>Fonts are copied to build/fonts</li><li>Images are optimized and included in bundle</li><li>XOS components are bundled with the application</li></ul></p><p><h2>?? Deployment Structure</h2></p><p><div class="code-block"><pre><code>
+wwwroot/                  # Production deployment
++-- static/
+¦   +-- css/             # Bundled styles
+¦   +-- js/              # Bundled JavaScript
+¦   +-- media/           # Images and fonts
++-- fonts/               # Font files
++-- index.html           # Entry point
+</code></pre></div></p><p><h2>?? Best Practices</h2></p><p><ul><li><strong>XOS Components</strong>: Always use from <code>src/xos-components/</code></li><li><strong>Custom Styles</strong>: Add to <code>src/scss/</code> and import in theme.scss</li><li><strong>Module Styles</strong>: Keep in module folder as <code>index.css</code></li><li><strong>Fonts</strong>: Place in <code>src/fonts/</code> for custom fonts</li><li><strong>Icons</strong>: Use Font Awesome or Material Design Icons</li><li><strong>Images</strong>: Store component images in component folder</li><li><strong>Build Assets</strong>: Never edit files in <code>build/</code> directory</li></ul></p><p><h2>?? Asset Pipeline</h2></p><p><ul><li><strong>Development</strong>: Assets served from <code>src/</code></li><li><strong>Build Process</strong>: SCSS ? CSS, Bundle, Minify</li><li><strong>Production</strong>: Optimized assets in <code>build/</code> and <code>wwwroot/</code></li></ul></p><p>This structure ensures consistent asset management across development and production environments.</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

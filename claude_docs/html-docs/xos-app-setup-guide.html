@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xos-app-setup-guide - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># XOS Application Setup Guide
+
+<h2>Overview</h2>
+This guide provides instructions for setting up and running applications that follow the XOS framework structure with .NET backend and React frontend.
+
+<h2>?? CRITICAL SETUP REQUIREMENTS</h2>
+
+<h3>1. Copy theme.css (MANDATORY)</h3>
+<div class="code-block"><pre><code>bash
+# The theme.css file MUST be copied from the assets folder to src/assets/css/
+cp assets/css/theme.css [ProjectName].WebApi/UIPages/src/assets/css/theme.css
+</code></pre></div>
+<strong>Without this file, XOS components will NOT display properly!</strong>
+
+<h3>2. Install ALL Dependencies</h3>
+<div class="code-block"><pre><code>bash
+npm install @microsoft/signalr axios bootstrap bootstrap-icons crypto-js fast-sort jquery moment react react-color react-dom react-router-dom react-scripts
+</code></pre></div>
+
+<h3>3. Copy XOS Components</h3>
+<div class="code-block"><pre><code>bash
+# Copy the entire xos-components folder to src/
+cp -r xos-components/ [ProjectName].WebApi/UIPages/src/xos-components/
+</code></pre></div>
+
+<h3>4. Fix Common Issues</h3>
+<ul><li><strong>Invalid regex in Utils.js line 447</strong>: Change <code>'^\(?([0-9]{3})\)?'</code> to <code>'^\\(?([0-9]{3})\\)?'</code></li><li><strong>XOSModal doesn't exist</strong>: Use Bootstrap modals or XOSControl instead</li></ul>
+
+<h2>Project Structure Pattern</h2>
+<div class="code-block"><pre><code>
+[ProjectName]/
++-- [ProjectName].WebApi/
+¦   +-- Controllers/           # API endpoints
+¦   +-- UIPages/               # Frontend React app
+¦       +-- src/
+¦           +-- components/    # React components
+¦           +-- xos-components/ # XOS framework
++-- [ProjectName].Transaction/  # Shared library/Domain
+</code></pre></div>
+
+<h2>Quick Setup Files</h2>
+
+<h3>1. Create package.json</h3>
+Location: <code>[ProjectName].WebApi/UIPages/package.json</code>
+
+<div class="code-block"><pre><code>json
+{
+  "name": "xos-application",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@microsoft/signalr": "^9.0.6",
+    "axios": "^1.4.0",
+    "bootstrap": "^5.3.0",
+    "bootstrap-icons": "^1.10.0",
+    "crypto-js": "^4.2.0",
+    "fast-sort": "^3.4.1",
+    "jquery": "^3.7.1",
+    "moment": "^2.30.1",
+    "react": "^18.2.0",
+    "react-color": "^2.19.3",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.0",
+    "react-scripts": "5.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:5000",
+  "eslintConfig": {
+    "extends": ["react-app"]
+  },
+  "browserslist": {
+    "production": [">0.2%", "not dead", "not op_mini all"],
+    "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
+  }
+}
+</code></pre></div>
+
+<h3>2. Create public/index.html</h3>
+Location: <code>[ProjectName].WebApi/UIPages/public/index.html</code>
+
+<div class="code-block"><pre><code>html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="XOS Application" />
+    <title>Application</title>
+</head>
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+</body>
+</html>
+</code></pre></div>
+
+<h3>3. Create src/index.js</h3>
+Location: <code>[ProjectName].WebApi/UIPages/src/index.js</code>
+
+<div class="code-block"><pre><code>javascript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+</code></pre></div>
+
+<h3>4. Create src/App.js</h3>
+Location: <code>[ProjectName].WebApi/UIPages/src/App.js</code>
+
+``<code>javascript
+import React, { Component } from 'react';
+import './App.css';
+
+// Import Bootstrap (REQUIRED - must be in this order)
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
+// Import theme CSS (REQUIRED - must come after Bootstrap)
+import './assets/css/theme.css';
+
+// NOTE: theme.css must be copied from assets/css/theme.css to src/assets/css/theme.css
+// This is MANDATORY for XOS components to display properly
+
+// Dynamic component loader
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentComponent: null,
+      componentName: ''
+    };
+  }
+
+  componentDidMount() {
+    // Load default component or from URL
+    this.loadComponent(this.getDefaultComponent());
+  }
+
+  getDefaultComponent() {
+    // Try to detect from existing components
+    // You can customize this to load your specific component
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('component') || this.findFirstComponent();
+  }
+
+  findFirstComponent() {
+    // Attempt to find and load the first available component
+    // Modify this list based on your project's components
+    const possibleComponents = [
+      'CVSM062',  // CVS Document Master
+      'Dashboard',
+      'Home',
+      'Main'
+    ];
+
+    for (const comp of possibleComponents) {
+      try {
+        const module = require(</code>./components/General/${comp}/index.jsx<code>);
+        return comp;
+      } catch (e) {
+        // Component doesn't exist, try next
+      }
+    }
+    return null;
+  }
+
+  loadComponent = (componentName) => {
+    if (!componentName) {
+      this.setState({ 
+        currentComponent: <div className="container mt-5">
+          <h2>No components found</h2>
+          <p>Please create components in src/components/General/</p>
+        </div> 
+      });
+      return;
+    }
+
+    try {
+      const ComponentModule = require(</code>./components/General/${componentName}/index.jsx<code>);
+      const Component = ComponentModule.default;
+      
+      this.setState({
+        currentComponent: <Component context={this} />,
+        componentName: componentName
+      });
+    } catch (error) {
+      console.error(</code>Failed to load component ${componentName}:<code>, error);
+      this.setState({ 
+        currentComponent: <div className="container mt-5">
+          <h2>Component Load Error</h2>
+          <p>Failed to load component: {componentName}</p>
+          <pre>{error.message}</pre>
+        </div> 
+      });
+    }
+  };
+
+  render() {
+    return (
+      <div className="App">
+        {this.state.currentComponent || (
+          <div className="container mt-5">
+            <h1>XOS Application</h1>
+            <p>Loading components...</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+}
+
+export default App;
+</code>`<code>
+
+<h3>5. Create src/index.css</h3>
+Location: </code>[ProjectName].WebApi/UIPages/src/index.css<code>
+
+<div class="code-block"><pre><code>css
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.App {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+</code></pre></div>
+
+<h3>6. Create src/App.css</h3>
+Location: </code>[ProjectName].WebApi/UIPages/src/App.css<code>
+
+<div class="code-block"><pre><code>css
+.App {
+  text-align: left;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+</code></pre></div>
+
+<h3>7. Create XOS Components Base (if missing)</h3>
+Location: </code>[ProjectName].WebApi/UIPages/src/xos-components/index.js<code>
+
+</code>`<code>javascript
+// XOS Component Framework Base
+import React, { Component } from 'react';
+
+export class XOSComponent extends Component {
+    constructor(props, vm) {
+        super(props);
+        this.VM = vm;
+        this.state = {};
+    }
+
+    componentDidMount() {
+        if (this.onLoad) {
+            this.onLoad();
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.onClosing) {
+            this.onClosing();
+        }
+    }
+
+    updateUI = () => {
+        this.forceUpdate();
+    }
+}
+
+export class VMBase {
+    constructor(props) {
+        this.props = props;
+        this.Data = {};
+    }
+
+    updateUI() {
+        if (this.props && this.props.updateUI) {
+            this.props.updateUI();
+        }
+    }
+}
+
+// Export other XOS components
+export const XOSControl = ({ children, loading, title, className }) => (
+    <div className={</code>xos-control ${className || ''}<code>}>
+        {loading && <div className="loading-overlay">Loading...</div>}
+        {title && <div className="xos-title">{title}</div>}
+        {children}
+    </div>
+);
+
+export const XOSBody = ({ children }) => (
+    <div className="xos-body">{children}</div>
+);
+
+export const XOSTextbox = React.forwardRef(({ value, onChange, placeholder, maxLength, mandatory }, ref) => (
+    <input
+        ref={ref}
+        type="text"
+        className={</code>form-control ${mandatory ? 'mandatory' : ''}<code>}
+        value={value || ''}
+        onChange={(e) => onChange({ value: e.target.value })}
+        placeholder={placeholder}
+        maxLength={maxLength}
+    />
+));
+
+export const XOSSelect = React.forwardRef(({ dataSource, selectedItem, onChange, displayField, compareKey, placeholder, allowClear }, ref) => (
+    <select
+        ref={ref}
+        className="form-select"
+        value={selectedItem?.[compareKey] || ''}
+        onChange={(e) => {
+            const item = dataSource?.find(d => d[compareKey]?.toString() === e.target.value);
+            onChange({ selectedItem: item });
+        }}
+    >
+        <option value="">{placeholder || 'Select...'}</option>
+        {dataSource?.map((item, idx) => (
+            <option key={idx} value={item[compareKey]}>
+                {item[displayField]}
+            </option>
+        ))}
+    </select>
+));
+
+export const XOSGrid = ({ dataSource, columns, onGridCellClick, onGridCellDoubleClick }) => (
+    <table className="table table-hover">
+        <thead>
+            <tr>
+                {columns?.map((col, idx) => (
+                    <th key={idx} style={{ width: col.width }}>
+                        {col.title}
+                    </th>
+                ))}
+            </tr>
+        </thead>
+        <tbody>
+            {dataSource?.map((row, rowIdx) => (
+                <tr 
+                    key={rowIdx}
+                    onClick={() => onGridCellClick?.({ rowData: row })}
+                    onDoubleClick={() => onGridCellDoubleClick?.({ rowData: row })}
+                >
+                    {columns?.map((col, colIdx) => (
+                        <td key={colIdx}>
+                            {col.render ? col.render(row[col.field], row) : row[col.field]}
+                        </td>
+                    ))}
+                </tr>
+            ))}
+        </tbody>
+    </table>
+);
+
+export const XOSModal = ({ show, title, children, onClose, size }) => {
+    if (!show) return null;
+    
+    return (
+        <div className="modal show d-block" tabIndex="-1">
+            <div className={</code>modal-dialog ${size ? <code>modal-${size}</code> : ''}<code>}>
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title">{title}</h5>
+                        <button type="button" className="btn-close" onClick={onClose}></button>
+                    </div>
+                    {children}
+                </div>
+            </div>
+            <div className="modal-backdrop show"></div>
+        </div>
+    );
+};
+
+export const XOSButtonWrapper = ({ children, loading, onClick }) => (
+    <span onClick={!loading ? onClick : undefined} style={{ opacity: loading ? 0.6 : 1 }}>
+        {children}
+    </span>
+);
+<div class="code-block"><pre><code>
+
+<h2>Running the Application</h2>
+
+<h3>Step 1: Install Dependencies</h3>
+</code></pre></div>bash
+cd [ProjectName].WebApi/UIPages
+npm install
+<div class="code-block"><pre><code>
+
+<h3>Step 2: Start the Frontend</h3>
+</code></pre></div>bash
+npm start
+</code>`<code>
+The application will run on </code>http://localhost:3000<code>
+
+<h3>Step 3: Start Backend (if needed)</h3>
+If you have a .NET backend:
+<div class="code-block"><pre><code>bash
+cd [ProjectName].WebApi
+dotnet restore
+dotnet build
+dotnet run
+</code></pre></div>
+The API will run on </code>http://localhost:5000<code>
+
+<h2>Troubleshooting</h2>
+
+<h3>Component Not Loading</h3>
+<ul><li>Check that your component is in the correct path: </code>src/components/General/[ComponentName]/<code></li><li>Ensure the component exports a default class</li><li>Check browser console for specific error messages</li></ul>
+
+<h3>Missing Theme Styles</h3>
+If XOS components don't look right:
+<ul><li><strong>CRITICAL</strong>: Copy theme.css from </code>assets/css/theme.css<code> to </code>src/assets/css/theme.css<code></li><li>Ensure Bootstrap CSS is loaded BEFORE theme.css</li><li>Check that imports are in correct order in App.js:</li></ul>
+   <div class="code-block"><pre><code>javascript
+   import 'bootstrap/dist/css/bootstrap.min.css';
+   import 'bootstrap-icons/font/bootstrap-icons.css';
+   import './assets/css/theme.css';  // MUST come after Bootstrap
+   </code></pre></div>
+
+<h3>Common Compilation Errors</h3>
+<ul><li><strong>Module not found: 'react-color'</strong> ? </code>npm install react-color<code></li><li><strong>Module not found: 'fast-sort'</strong> ? </code>npm install fast-sort<code></li><li><strong>Invalid regex in Utils.js</strong> ? Fix escape characters in phone regex</li><li><strong>'XOSModal' is not exported</strong> ? XOSModal doesn't exist, use Bootstrap modals</li></ul>
+
+<h3>Port Conflicts</h3>
+If port 3000 is in use:
+<div class="code-block"><pre><code>bash
+# Windows
+netstat -ano | findstr :3000
+taskkill /PID [PID_NUMBER] /F
+
+# Or change port in package.json:
+"scripts": {
+  "start": "PORT=3001 react-scripts start"
+}
+</code></pre></div>
+
+<h2>Customization</h2>
+
+<h3>Loading Specific Component</h3>
+Modify the </code>findFirstComponent()` function in App.js to list your project's components:
+
+<div class="code-block"><pre><code>javascript
+const possibleComponents = [
+  'YourComponent1',
+  'YourComponent2',
+  // Add your component names here
+];
+</code></pre></div>
+
+<h3>API Configuration</h3>
+Update the proxy in package.json to point to your backend:
+<div class="code-block"><pre><code>json
+"proxy": "http://localhost:YOUR_API_PORT"
+</code></pre></div>
+
+<h2>Quick Start Commands</h2>
+<div class="code-block"><pre><code>bash
+# One-line setup and run
+cd [ProjectName].WebApi/UIPages && npm install && npm start
+</code></pre></div>
+
+---
+
+Last Updated: 2025-08-13</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

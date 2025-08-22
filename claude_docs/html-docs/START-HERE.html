@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>START-HERE - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># ?? START HERE - Claude Code XOS Framework Guide</p><p><h2>Quick Navigation - Read This First</h2></p><p><strong>New to XOS Framework?</strong> Start with <code>essential/CRITICAL_PATTERNS.md</code> (5 minutes)</p><p><strong>Building a Module?</strong> Go straight to <code>xos-complete-patterns/</code> (Everything you need)</p><p><strong>Need Tools/Setup?</strong> Check the preserved sections below</p><p>---</p><p><h2>?? What Are You Building?</h2></p><p><h3>Frontend Component</h3>
+<div class="code-block"><pre><code>
+?? READ: xos-complete-patterns/frontend/
+   - component-complete.jsx (1000 lines - EVERY UI pattern)
+   - viewmodel-complete.jsx (800 lines - ALL VM patterns)
+   - service-complete.js (500 lines - ALL API calls)
+</code></pre></div></p><p><h3>Backend API</h3>
+<div class="code-block"><pre><code>
+?? READ: xos-complete-patterns/backend/
+   - controller-complete.cs (600 lines - ALL endpoints)
+   - service-complete.cs (1200 lines - ALL DB operations)
+</code></pre></div></p><p><h3>Full-Stack Module</h3>
+<div class="code-block"><pre><code>
+?? READ: Both frontend/ and backend/ patterns above
+?? THEN: xos-complete-patterns/integration/frontend-to-backend.md
+</code></pre></div></p><p><h3>Styling/Theme Work</h3>
+<div class="code-block"><pre><code>
+?? READ: xos-complete-patterns/styling/
+   - bootstrap-complete.html (1000 lines - ALL Bootstrap usage)
+   - theme-complete.css (600 lines - ALL theming)
+</code></pre></div></p><p>---</p><p><h2>?? Pattern Files Explanation</h2></p><p><h3>? EXHAUSTIVE PATTERNS (95%+ Accuracy)</h3>
+All patterns in <code>xos-complete-patterns/</code> are <strong>complete working code</strong>:
+<ul><li>Not fragments or examples</li><li>Include error handling, validation, loading states</li><li>Cover every edge case</li><li>Production-ready patterns</li></ul></p><p><h3>?? ESSENTIAL DOCS (Quick Reference)</h3>
+<ul><li><code>essential/CRITICAL_PATTERNS.md</code> - Quick XOS overview</li><li><code>essential/MODULE-DEVELOPMENT-GUIDE.md</code> - Development workflow</li><li><code>essential/SETUP.md</code> - Environment setup</li></ul></p><p><h3>?? AUTOMATION & TOOLS (Preserved)</h3>
+<ul><li><code>automation/agents/</code> - Specialized AI agents</li><li><code>hooks/</code> - Claude Code configuration</li><li><code>setup/</code> - Environment setup scripts</li><li><code>git-github/</code> - Version control workflows</li></ul></p><p>---</p><p><h2>?? Common Tasks Quick Links</h2></p><p>| What You're Doing | Read This File |
+|-------------------|----------------|
+| Creating a form component | <code>xos-complete-patterns/frontend/component-complete.jsx</code> |
+| Building an API endpoint | <code>xos-complete-patterns/backend/controller-complete.cs</code> |
+| Database queries | <code>xos-complete-patterns/backend/service-complete.cs</code> |
+| Styling with Bootstrap | <code>xos-complete-patterns/styling/bootstrap-complete.html</code> |
+| API calls from frontend | <code>xos-complete-patterns/frontend/service-complete.js</code> |
+| Setting up authentication | <code>xos-complete-patterns/infrastructure/program-complete.cs</code> |
+| Modal/popup handling | <code>xos-complete-patterns/jquery-bootstrap/modal-patterns.js</code> |
+| File uploads | <code>xos-complete-patterns/integration/file-upload-complete.jsx</code> |
+| Real-time updates | <code>xos-complete-patterns/integration/signalr-complete.cs</code> |</p><p>---</p><p><h2>?? CRITICAL XOS RULES (Never Break These)</h2></p><p><ul><li><strong>Frontend</strong>: Always extend <code>XOSComponent</code>, pass VM to super()</li><li><strong>ViewModel</strong>: Always use Data reference pattern: <code>const model = this.Data</code></li><li><strong>Event Handlers</strong>: Always use 3-step pattern + <code>updateUI()</code></li><li><strong>Backend</strong>: All endpoints are POST, return domain types directly</li><li><strong>Database</strong>: Always use <code>row.GetValue<T>("column")</code> pattern</li><li><strong>API Calls</strong>: Always use <code>Utils.ajax</code> with relative URLs</li></ul></p><p>Full rules: <code>xos-complete-patterns/ABSOLUTE-RULES.md</code></p><p>---</p><p><h2>?? Folder Structure</h2></p><p><div class="code-block"><pre><code>
+claude_docs/
++-- ?? START-HERE.md (this file)
++-- ?? xos-complete-patterns/         # THE source of truth
+¦   +-- frontend/                     # UI components, ViewModels
+¦   +-- backend/                      # Controllers, Services
+¦   +-- infrastructure/               # XOS packages, startup
+¦   +-- styling/                      # Bootstrap, CSS, theming
+¦   +-- api-patterns/                 # API calls, error handling
+¦   +-- database/                     # Queries, transactions
+¦   +-- integration/                  # Frontend-backend flow
+¦   +-- jquery-bootstrap/             # jQuery patterns
+¦   +-- ABSOLUTE-RULES.md            # Unbreakable laws
+¦   +-- COMMON-PITFALLS.md           # What breaks everything
++-- ?? essential/                     # Core reference docs
++-- ?? automation/                    # AI agents & tools
++-- ?? hooks/                         # Claude Code config
++-- ?? setup/                         # Environment setup
++-- ?? git-github/                    # Git workflows
++-- ?? project/                       # Project structure
++-- ?? security/                      # Security rules
+</code></pre></div></p><p>---</p><p><h2>?? Getting Errors?</h2></p><p><ul><li><strong>"Cannot set property Data"</strong> ? Read <code>xos-complete-patterns/frontend/viewmodel-complete.jsx</code> (line 50-100)</li><li><strong>Inputs not accepting typing</strong> ? Read <code>xos-complete-patterns/frontend/component-complete.jsx</code> (line 200-300)</li><li><strong>API calls failing</strong> ? Read <code>xos-complete-patterns/frontend/service-complete.js</code> (line 100-200)</li><li><strong>Database errors</strong> ? Read <code>xos-complete-patterns/backend/service-complete.cs</code> (line 500-700)</li></ul></p><p>Full troubleshooting: <code>xos-complete-patterns/COMMON-PITFALLS.md</code></p><p>---</p><p><h2>?? Pro Tips</h2></p><p><ul><li><strong>One-shot accuracy</strong>: Read the complete pattern file for your layer</li><li><strong>Context efficient</strong>: Each pattern file is self-contained</li><li><strong>Copy-paste ready</strong>: All code is production-ready</li><li><strong>Framework agnostic</strong>: Patterns work for any XOS project</li></ul></p><p>---</p><p><h2>?? Need Help?</h2></p><p><ul><li><strong>General XOS questions</strong>: <code>essential/CRITICAL_PATTERNS.md</code></li><li><strong>Specific patterns</strong>: <code>xos-complete-patterns/[your-area]/</code></li><li><strong>Setup issues</strong>: <code>setup/</code> folder</li><li><strong>Automation</strong>: <code>automation/agents/</code> for specialized help</li></ul></p><p><strong>Remember</strong>: Everything XOS-related is in <code>xos-complete-patterns/</code>. Everything else is tooling and project-specific content.</p><p>Happy coding! ??</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

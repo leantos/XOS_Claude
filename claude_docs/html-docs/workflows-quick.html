@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>workflows-quick - XOS Framework</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Module Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <p># CVS Business Workflows Quick Reference</p><p><h2>Workflow Types</h2></p><p>| Code | Workflow | Module | Trigger | Final State |
+|------|----------|--------|---------|-------------|
+| WF-01 | Opera Income Audit | CVST020 | Daily/Manual | Approved/Rejected |
+| WF-02 | Refund Processing | CVST010 | Guest Request | Completed/Failed |
+| WF-03 | BACS Refund | CVST015 | Batch Process | Transmitted |
+| WF-04 | Bank Reconciliation | CVST005 | Statement Import | Reconciled |
+| WF-05 | F&B Void | CVST016 | Void Request | Approved/Rejected |
+| WF-06 | Night Checklist | CVST025 | Night Audit | Completed |</p><p><h2>WF-01: Opera Income Audit Workflow</h2></p><p><h3>Steps</h3>
+<ul><li><strong>Data Import</strong> ? OperaIncomeAuditService.AutoFillData()</li><li><strong>Validation</strong> ? Check statistics, revenue, balances</li><li><strong>Review</strong> ? User reviews discrepancies</li><li><strong>Routing</strong> ? WorkFlowMasterService.RouteToNext()</li><li><strong>Approval</strong> ? Manager approves/rejects</li><li><strong>Finalization</strong> ? Update status, send notifications</li></ul></p><p><h3>Decision Points</h3>
+<ul><li>Auto-fill success? ? Continue/Manual entry</li><li>Discrepancies found? ? Route for review/Auto-approve</li><li>Manager decision? ? Approve/Reject/Return</li></ul></p><p><h3>Services Involved</h3>
+<ul><li>OperaIncomeAuditService (primary)</li><li>WorkFlowMasterService (routing)</li><li>EmailService (notifications)</li><li>ReportService (audit report)</li></ul></p><p><h2>WF-02: Refund Processing Workflow</h2></p><p><h3>Steps</h3>
+<ul><li><strong>Initiation</strong> ? RefundService.CreateRefund()</li><li><strong>Validation</strong> ? Check amount, guest details</li><li><strong>Approval Level 1</strong> ? Supervisor review</li><li><strong>Approval Level 2</strong> ? Manager review (if > threshold)</li><li><strong>Processing</strong> ? Generate refund transaction</li><li><strong>Completion</strong> ? Update records, notify</li></ul></p><p><h3>Business Rules</h3>
+<ul><li>Amount < 500: Single approval</li><li>Amount >= 500: Dual approval</li><li>Credit card: Auto-process after approval</li><li>Bank transfer: Queue for BACS</li></ul></p><p><h3>Services Involved</h3>
+<ul><li>RefundService (primary)</li><li>BacsRefundService (BACS processing)</li><li>WorkFlowMasterService (approvals)</li><li>EmailService (notifications)</li></ul></p><p><h2>WF-03: BACS Refund Workflow</h2></p><p><h3>Steps</h3>
+<ul><li><strong>Collection</strong> ? Gather approved refunds</li><li><strong>Batch Creation</strong> ? BacsRefundService.CreateBatch()</li><li><strong>Validation</strong> ? Verify bank details</li><li><strong>File Generation</strong> ? Create BACS file</li><li><strong>Transmission</strong> ? Send to bank</li><li><strong>Confirmation</strong> ? Update status</li></ul></p><p><h3>Batch Rules</h3>
+<ul><li>Daily batch at 14:00</li><li>Min batch size: 1</li><li>Max batch size: 500</li><li>Cut-off time: 13:30</li></ul></p><p><h2>WF-04: Bank Reconciliation Workflow</h2></p><p><h3>Steps</h3>
+<ul><li><strong>Import</strong> ? BankDataService.ImportStatement()</li><li><strong>Auto-Match</strong> ? BankReconciliationService.AutoMatch()</li><li><strong>Manual Match</strong> ? User matches remaining</li><li><strong>Exception Handling</strong> ? Flag unmatched items</li><li><strong>Review</strong> ? Supervisor review</li><li><strong>Completion</strong> ? Close reconciliation</li></ul></p><p><h3>Matching Rules</h3>
+<ul><li>Exact amount + date: Auto-match</li><li>Amount within 1%: Suggest match</li><li>Date within 3 days: Possible match</li><li>No match: Manual intervention</li></ul></p><p><h3>Services Involved</h3>
+<ul><li>BankReconciliationService (primary)</li><li>BankDataService (import)</li><li>ReportService (reconciliation report)</li></ul></p><p><h2>WF-05: F&B Void Workflow</h2></p><p><h3>Steps</h3>
+<ul><li><strong>Request</strong> ? FBVoidService.CreateVoid()</li><li><strong>Validation</strong> ? Check transaction exists</li><li><strong>Manager Review</strong> ? Verify reason</li><li><strong>Approval/Rejection</strong> ? Decision recorded</li><li><strong>Processing</strong> ? Update POS system</li><li><strong>Audit Trail</strong> ? Log all actions</li></ul></p><p><h3>Void Rules</h3>
+<ul><li>Same day: Auto-approve if < $50</li><li>Previous day: Requires manager</li><li>> 2 days: Requires GM approval</li><li>Multiple voids: Flag for review</li></ul></p><p><h2>WF-06: Night Audit Checklist</h2></p><p><h3>Steps</h3>
+<ul><li><strong>Initialization</strong> ? NightChecklistService.StartChecklist()</li><li><strong>Task Execution</strong> ? Complete each item</li><li><strong>Validation</strong> ? Verify completeness</li><li><strong>Sign-off</strong> ? Night auditor confirmation</li><li><strong>Report Generation</strong> ? Create audit report</li><li><strong>Distribution</strong> ? Email to management</li></ul></p><p><h3>Checklist Items</h3>
+<ul><li>Close POS day</li><li>Run credit card batch</li><li>Generate reports</li><li>Balance cash</li><li>Review exceptions</li><li>Update forecasts</li></ul></p><p><h2>Routing Configuration</h2></p><p>| Workflow | Stage | Role | Action | Next Stage |
+|----------|-------|------|--------|------------|
+| Opera Audit | 1 | User | Submit | 2 |
+| Opera Audit | 2 | Supervisor | Review | 3 |
+| Opera Audit | 3 | Manager | Approve | Complete |
+| Refund | 1 | User | Create | 2 |
+| Refund | 2 | Supervisor | Approve | 3/Complete |
+| Refund | 3 | Manager | Approve | Complete |</p><p><h2>Notification Points</h2></p><p>| Workflow | Event | Recipients | Channel |
+|----------|-------|------------|---------|
+| Opera Audit | Submitted | Supervisor | Email, SignalR |
+| Opera Audit | Approved | User, Finance | Email |
+| Refund | Created | Supervisor | SignalR |
+| Refund | Approved | Guest, Accounting | Email |
+| Bank Rec | Unmatched | Finance Manager | Email |
+| F&B Void | Multiple | GM | Email, SMS |</p><p><h2>Error Handling</h2></p><p>| Workflow | Error Type | Action | Recovery |
+|----------|------------|--------|----------|
+| Opera Import | File missing | Alert user | Manual upload |
+| Opera Import | Invalid format | Log error | Retry with mapping |
+| Refund | Invalid amount | Reject | User correction |
+| Bank Import | Duplicate | Skip row | Continue import |
+| BACS | Bank rejection | Queue retry | Manual process |</p><p><h2>Performance SLAs</h2></p><p>| Workflow | Step | Target Time |
+|----------|------|-------------|
+| Opera Import | File processing | < 30 sec |
+| Refund Approval | Each level | < 4 hours |
+| Bank Reconciliation | Auto-match | < 2 min |
+| BACS Batch | Generation | < 5 min |
+| Report Generation | Standard | < 10 sec |</p><p><h2>Audit Requirements</h2></p><p>| Workflow | Audit Data | Retention |
+|----------|------------|-----------|
+| All workflows | User, timestamp, action | 7 years |
+| Financial workflows | Before/after values | 7 years |
+| Approval workflows | Comments, decisions | 5 years |
+| System workflows | Performance metrics | 1 year |</p>
+            
+            <div class="footer">
+                <p><em>Auto-generated from Markdown</em><br>
+                <em>Part of XOS Framework Documentation</em></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>
