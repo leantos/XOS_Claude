@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Troubleshooting Guide - XOS Framework</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <!-- Theme Toggle Button -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="bi bi-moon-fill" id="theme-icon"></i>
+                <span id="theme-text">Dark</span>
+            </button>
+            
+            <h3><i class="bi bi-house"></i> Navigation</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-arrow-left"></i> Back to Home</a></li>
+                <li><a href="#authentication-security"><i class="bi bi-shield-check"></i> Authentication & Security</a></li>
+                <li><a href="#database-issues"><i class="bi bi-database"></i> Database & Data Access</a></li>
+                <li><a href="#service-business-logic"><i class="bi bi-gear"></i> Service & Business Logic</a></li>
+                <li><a href="#api-controller-issues"><i class="bi bi-cloud"></i> API & Controller Issues</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-bug"></i> Quick Fixes</h3>
+            <ul>
+                <li><a href="#xos-framework-integration"><i class="bi bi-puzzle"></i> XOS Framework Issues</a></li>
+                <li><a href="#dependency-injection"><i class="bi bi-diagram-3"></i> Dependency Injection</a></li>
+                <li><a href="#performance-issues"><i class="bi bi-speedometer2"></i> Performance Issues</a></li>
+                <li><a href="#error-handling"><i class="bi bi-exclamation-triangle"></i> Error Handling</a></li>
+            </ul>
+
+            <h3><i class="bi bi-life-preserver"></i> Other Troubleshooting</h3>
+            <ul>
+                <li><a href="frontend-troubleshooting.html"><i class="bi bi-palette"></i> Frontend Issues</a></li>
+                <li><a href="api-troubleshooting.html"><i class="bi bi-cloud-arrow-up"></i> API Issues</a></li>
+                <li><a href="database-troubleshooting.html"><i class="bi bi-database"></i> Database Issues</a></li>
+                <li><a href="testing-troubleshooting.html"><i class="bi bi-check2-square"></i> Testing Issues</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search backend troubleshooting..." id="searchInput">
+            </div>
+
+            <h1><i class="bi bi-server"></i> Backend Issues & Solutions</h1>
+            
+            <div class="alert alert-info">
+                <h3><i class="bi bi-info-circle"></i> About This Guide</h3>
+                <p>This document tracks backend-related issues encountered during module development and their solutions. Use this as a reference to avoid repeating similar problems.</p>
+            </div>
+
+            <section id="authentication-security">
+                <h2><i class="bi bi-shield-check"></i> Authentication & Security Issues</h2>
+                
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>JWT Token Validation Failing</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> 401 Unauthorized errors despite valid tokens</p>
+                        <p><strong>Root Cause:</strong> Clock skew between token issuer and validator</p>
+                        <p><strong>Solution:</strong> Add clock skew tolerance in token validation parameters</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Token Validation Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'token-validation')">Copy</button>
+                            </div>
+                            <pre id="token-validation"><code class="language-csharp">TokenValidationParameters = new TokenValidationParameters
+{
+    ClockSkew = TimeSpan.FromMinutes(5), // Add tolerance
+    ValidateLifetime = true,
+    // ... other parameters
+};</code></pre>
+                        </div>
+                        <p><strong>Applied In:</strong> Multiple authentication services</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Password Hashing Performance Degradation</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Login taking >2 seconds with large user base</p>
+                        <p><strong>Root Cause:</strong> BCrypt salt rounds set too high (12+)</p>
+                        <p><strong>Solution:</strong> Reduce to 10 rounds, implement result caching</p>
+                        <p><strong>Pattern:</strong> Balance security vs performance for password hashing</p>
+                        <p><strong>Applied In:</strong> PasswordService implementations</p>
+                    </div>
+                </div>
+
+                <div class="collapsible" id="xos-framework-integration">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>XOS Framework Integration Problems</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> ExecuteReaderAsync returns empty results, context not set properly</p>
+                        <p><strong>Root Cause:</strong> Improper XOS framework pattern usage</p>
+                        <p><strong>Solution:</strong> Always extend XOSServiceBase and set context before DB operations</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>XOS Service Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'xos-service')">Copy</button>
+                            </div>
+                            <pre id="xos-service"><code class="language-csharp">public class UserLoginService : XOSServiceBase, IUserLoginService
+{
+    public UserLoginService(IServiceProvider serviceProvider, ILogger<UserLoginService> logger, IConfiguration configuration)
+        : base(serviceProvider, logger, configuration) // Must call base constructor
+    {
+    }
+
+    public async Task<UserLogin?> GetByIdAsync(int loginId)
+    {
+        SetUserContext(ClientID, SiteID, UserID); // Set context first
+        
+        var parameters = new Dictionary<string, object>
+        {
+            { "@LoginId", loginId },
+            { "@ClientId", ClientID }, // Use base class properties
+            { "@SiteId", SiteID }
+        };
+
+        var results = await ExecuteReaderAsync(query, parameters, MapRowToUserLogin);
+        return results.FirstOrDefault();
+    }
+
+    private UserLogin MapRowToUserLogin(dynamic row)
+    {
+        return new UserLogin
+        {
+            LoginID = row.GetValue<int>("login_id"), // Exact column names
+            UserName = row.GetValue<string>("user_name", ""), // With defaults
+            Status = (LoginStatus)row.GetValue<int>("status", 1) // Cast enums
+        };
+    }
+}</code></pre>
+                        </div>
+                        <p><strong>Applied In:</strong> UserLogin module, all XOS-based services</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Multi-Tenant Data Isolation Failures</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Users seeing data from other clients/sites</p>
+                        <p><strong>Root Cause:</strong> Missing client/site context in queries</p>
+                        <p><strong>Solution:</strong> Always include ClientId/SiteId filters in WHERE clauses</p>
+                        <p><strong>Pattern:</strong> Every query must include tenant isolation</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Multi-Tenant Query Template</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'tenant-query')">Copy</button>
+                            </div>
+                            <pre id="tenant-query"><code class="language-sql">-- Always include in WHERE clause
+WHERE client_id = @ClientId AND site_id = @SiteId AND is_deleted = false</code></pre>
+                        </div>
+                        <p><strong>Applied In:</strong> All multi-tenant database operations</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="database-issues">
+                <h2><i class="bi bi-database"></i> Database & Data Access Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>PostgreSQL Connection Pool Exhaustion</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> "Sorry, too many clients already" errors under load</p>
+                        <p><strong>Root Cause:</strong> Connections not properly disposed</p>
+                        <p><strong>Solution:</strong> Use `using` statements for all database contexts, configure pool size</p>
+                        <p><strong>Pattern:</strong> Always dispose database contexts properly</p>
+                        <p><strong>Applied In:</strong> All repository implementations</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Entity Framework Migration Conflicts</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Migration fails with "column already exists" errors</p>
+                        <p><strong>Root Cause:</strong> Multiple developers creating migrations simultaneously</p>
+                        <p><strong>Solution:</strong> Always pull latest before creating migrations, use descriptive names</p>
+                        <p><strong>Pattern:</strong> Coordinate migration creation in team environments</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="service-business-logic">
+                <h2><i class="bi bi-gear"></i> Service & Business Logic Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Circular Dependency in Services</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Stack overflow during service resolution</p>
+                        <p><strong>Root Cause:</strong> Service A depends on Service B which depends on Service A</p>
+                        <p><strong>Solution:</strong> Extract common functionality to shared service or use events</p>
+                        <p><strong>Pattern:</strong> Avoid circular dependencies through proper service design</p>
+                        <p><strong>Applied In:</strong> Order and Inventory services</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Async/Await Deadlocks</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Application hangs when calling async methods</p>
+                        <p><strong>Root Cause:</strong> Mixing synchronous and asynchronous calls incorrectly</p>
+                        <p><strong>Solution:</strong> Use ConfigureAwait(false) or make entire call chain async</p>
+                        <p><strong>Pattern:</strong> Be consistent with async patterns throughout call chain</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api-controller-issues">
+                <h2><i class="bi bi-cloud"></i> API & Controller Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Model Validation Not Working</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Invalid data reaching service layer despite validation attributes</p>
+                        <p><strong>Root Cause:</strong> ModelState not checked in controller actions</p>
+                        <p><strong>Solution:</strong> Always check ModelState.IsValid before processing</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Model Validation Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'model-validation')">Copy</button>
+                            </div>
+                            <pre id="model-validation"><code class="language-csharp">[HttpPost]
+public async Task<IActionResult> Create([FromBody] CreateRequest request)
+{
+    if (!ModelState.IsValid)
+        return BadRequest(ModelState);
+    // ... rest of implementation
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Large Response Payloads Causing Timeouts</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> API calls timing out with large datasets</p>
+                        <p><strong>Root Cause:</strong> Loading all data into memory before serialization</p>
+                        <p><strong>Solution:</strong> Implement pagination and streaming responses</p>
+                        <p><strong>Pattern:</strong> Always paginate large datasets</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="dependency-injection">
+                <h2><i class="bi bi-diagram-3"></i> Dependency Injection Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Service Not Found During Runtime</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> "Unable to resolve service" exceptions</p>
+                        <p><strong>Root Cause:</strong> Service not registered in DI container</p>
+                        <p><strong>Solution:</strong> Ensure service is registered in Program.cs or ServiceExtensions</p>
+                        <p><strong>Pattern:</strong> Verify all dependencies are properly registered</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Incorrect Service Lifetime Causing Memory Leaks</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Memory usage growing continuously</p>
+                        <p><strong>Root Cause:</strong> Singleton services holding references to transient objects</p>
+                        <p><strong>Solution:</strong> Review service lifetimes, use appropriate scope</p>
+                        <p><strong>Pattern:</strong> Match service lifetime to actual usage pattern</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="performance-issues">
+                <h2><i class="bi bi-speedometer2"></i> Performance Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>N+1 Query Problem</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Slow database operations with many small queries</p>
+                        <p><strong>Root Cause:</strong> Loading related entities in loops</p>
+                        <p><strong>Solution:</strong> Use Include() for Entity Framework or optimize queries</p>
+                        <p><strong>Pattern:</strong> Always review generated SQL for query efficiency</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Memory Leaks in Long-Running Processes</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Memory usage growing over time</p>
+                        <p><strong>Root Cause:</strong> Event handlers not unsubscribed, disposable objects not disposed</p>
+                        <p><strong>Solution:</strong> Implement proper cleanup patterns, use weak references</p>
+                        <p><strong>Pattern:</strong> Always clean up resources properly</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="error-handling">
+                <h2><i class="bi bi-exclamation-triangle"></i> Error Handling Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Unhandled Exceptions Crashing Application</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Application stops responding after errors</p>
+                        <p><strong>Root Cause:</strong> No global exception handling</p>
+                        <p><strong>Solution:</strong> Implement global exception middleware</p>
+                        <p><strong>Pattern:</strong> Always have global exception handling</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Generic Error Messages Not Helpful for Debugging</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> "An error occurred" messages without context</p>
+                        <p><strong>Root Cause:</strong> Catching exceptions too broadly</p>
+                        <p><strong>Solution:</strong> Catch specific exceptions, provide meaningful messages</p>
+                        <p><strong>Pattern:</strong> Catch specific exceptions and provide actionable error messages</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="testing-backend">
+                <h2><i class="bi bi-check2-square"></i> Testing-Related Backend Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Tests Failing Due to Database State</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Tests pass individually but fail when run together</p>
+                        <p><strong>Root Cause:</strong> Tests not cleaning up database state</p>
+                        <p><strong>Solution:</strong> Use transaction rollback or in-memory database for tests</p>
+                        <p><strong>Pattern:</strong> Isolate test data to avoid interference</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Mocking Framework Conflicts</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Unexpected behavior in mocked dependencies</p>
+                        <p><strong>Root Cause:</strong> Mock setup conflicts or incorrect mock configuration</p>
+                        <p><strong>Solution:</strong> Reset mocks between tests, verify mock setups</p>
+                        <p><strong>Pattern:</strong> Keep mocks simple and verify their behavior</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="usage-guide">
+                <h2><i class="bi bi-book"></i> How to Use This Guide</h2>
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Search for Similar Issues</h4>
+                        <p>Use the search box or browse sections to find similar symptoms or error messages.</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Apply the Pattern</h4>
+                        <p>Look for the general pattern rather than copying exact code. Adapt solutions to your context.</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Update This Guide</h4>
+                        <p>When you encounter and solve new issues, add them here to help the team.</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Reference in Code</h4>
+                        <p>Link back to this guide in code comments when applying solutions.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>Backend Troubleshooting Guide</em><br>
+                <em>Last Updated: August 21, 2025</em><br>
+                <em>Maintainer: Development Team</em></p>
+                
+                <p><strong>Need More Help?</strong> Check <a href="README.html">main documentation</a> or other troubleshooting guides: 
+                <a href="frontend-troubleshooting.html">Frontend</a> | 
+                <a href="api-troubleshooting.html">API</a> | 
+                <a href="database-troubleshooting.html">Database</a> | 
+                <a href="testing-troubleshooting.html">Testing</a></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+
+        // Search functionality
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const content = document.querySelector('.main-content');
+            const sections = content.querySelectorAll('section, h2, h3, p, li, td');
+            
+            // Remove previous highlights
+            sections.forEach(section => {
+                section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
+            });
+            
+            if (searchTerm.length > 2) {
+                sections.forEach(section => {
+                    const text = section.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        section.innerHTML = highlightText(section.innerHTML, searchTerm);
+                    }
+                });
+
+                // Auto-expand sections with search results
+                document.querySelectorAll('.collapsible').forEach(collapsible => {
+                    const text = collapsible.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        collapsible.classList.add('expanded');
+                    }
+                });
+            }
+        });
+
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+                localStorage.setItem('preferred-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('preferred-theme', 'dark');
+            }
+        }
+
+        // Load saved theme preference
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.setAttribute('data-theme', theme);
+            
+            if (theme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', loadTheme);
+    </script>
+</body>
+</html>

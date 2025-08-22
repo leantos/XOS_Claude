@@ -1,0 +1,69 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -Command \"if ($env:CLAUDE_TOOL_CONTENT -match 'XOSButton(?!Wrapper)') { Write-Host '⚠️ WARNING: XOSButton does not exist! Use XOSButtonWrapper instead.' -ForegroundColor Yellow } else { Write-Host '✅ Component check passed' -ForegroundColor Green }\""
+          },
+          {
+            "type": "command",
+            "command": "powershell -Command \"if ($env:CLAUDE_TOOL_CONTENT -match 'btn-(primary|secondary|success|danger)') { Write-Host '⚠️ WARNING: Use XOS button classes (btn-save, btn-edit, btn-delete) instead of Bootstrap!' -ForegroundColor Yellow } else { Write-Host '✅ Button classes valid' -ForegroundColor Green }\""
+          },
+          {
+            "type": "command",
+            "command": "powershell -Command \"if ($env:CLAUDE_TOOL_CONTENT -match 'extends React\\.Component') { Write-Host '❌ ERROR: Components must extend cntrl.XOSComponent in XOS projects!' -ForegroundColor Red; exit 1 }\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write|*VM.js|*VM.jsx",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -Command \"if ($env:CLAUDE_TOOL_CONTENT -match 'this\\.state|setState\\(') { Write-Host '❌ ERROR: ViewModels must use this.Data and updateUI(), not state/setState!' -ForegroundColor Red; exit 1 }\""
+          },
+          {
+            "type": "command",
+            "command": "powershell -Command \"if ($env:CLAUDE_TOOL_CONTENT -notmatch 'extends VMBase') { Write-Host '⚠️ WARNING: ViewModel should extend VMBase' -ForegroundColor Yellow }\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -Command \"Write-Host '📝 File modified: ' -NoNewline; Write-Host $env:CLAUDE_TOOL_FILE_PATH -ForegroundColor Cyan\""
+          },
+          {
+            "type": "command",
+            "command": "powershell -Command \"$log = 'D:\\Projects\\CVS_Claude\\claude_docs\\hooks\\file-usage.log'; Add-Content -Path $log -Value \\\"$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'): $env:CLAUDE_TOOL_FILE_PATH\\\" -ErrorAction SilentlyContinue\""
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Grep|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -Command \"$stats = 'D:\\Projects\\CVS_Claude\\claude_docs\\hooks\\access-stats.json'; if (Test-Path $stats) { $data = Get-Content $stats | ConvertFrom-Json; if ($data.PSObject.Properties.Name -contains $env:CLAUDE_TOOL_FILE_PATH) { $data.$($env:CLAUDE_TOOL_FILE_PATH)++ } else { $data | Add-Member -NotePropertyName $env:CLAUDE_TOOL_FILE_PATH -NotePropertyValue 1 }; $data | ConvertTo-Json | Set-Content $stats } else { @{$env:CLAUDE_TOOL_FILE_PATH = 1} | ConvertTo-Json | Set-Content $stats }\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|*test*|*npm test*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -Command \"if ($env:CLAUDE_TOOL_EXIT_CODE -ne 0) { Write-Host '❌ Tests failed! Review the output above.' -ForegroundColor Red } else { Write-Host '✅ Tests passed!' -ForegroundColor Green }\""
+          }
+        ]
+      }
+    ]
+  }
+}

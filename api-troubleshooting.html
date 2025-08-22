@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Troubleshooting Guide - XOS Framework</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <!-- Theme Toggle Button -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="bi bi-moon-fill" id="theme-icon"></i>
+                <span id="theme-text">Dark</span>
+            </button>
+            
+            <h3><i class="bi bi-house"></i> Navigation</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-arrow-left"></i> Back to Home</a></li>
+                <li><a href="#endpoint-design"><i class="bi bi-diagram-3"></i> Endpoint Design</a></li>
+                <li><a href="#userlogin-api-issues"><i class="bi bi-person-check"></i> UserLogin API Issues</a></li>
+                <li><a href="#authentication-authorization"><i class="bi bi-shield-check"></i> Authentication & Authorization</a></li>
+                <li><a href="#request-validation"><i class="bi bi-check2-square"></i> Request Validation</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-bug"></i> Quick Fixes</h3>
+            <ul>
+                <li><a href="#response-handling"><i class="bi bi-arrow-left-right"></i> Response Handling</a></li>
+                <li><a href="#error-handling"><i class="bi bi-exclamation-triangle"></i> Error Handling</a></li>
+                <li><a href="#performance-issues"><i class="bi bi-speedometer2"></i> Performance Issues</a></li>
+                <li><a href="#content-type-issues"><i class="bi bi-file-earmark"></i> Content Type Issues</a></li>
+            </ul>
+
+            <h3><i class="bi bi-life-preserver"></i> Other Troubleshooting</h3>
+            <ul>
+                <li><a href="frontend-troubleshooting.html"><i class="bi bi-palette"></i> Frontend Issues</a></li>
+                <li><a href="backend-troubleshooting.html"><i class="bi bi-server"></i> Backend Issues</a></li>
+                <li><a href="database-troubleshooting.html"><i class="bi bi-database"></i> Database Issues</a></li>
+                <li><a href="testing-troubleshooting.html"><i class="bi bi-check2-square"></i> Testing Issues</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search API troubleshooting..." id="searchInput">
+            </div>
+
+            <h1><i class="bi bi-cloud-arrow-up"></i> API Issues & Solutions</h1>
+            
+            <div class="alert alert-info">
+                <h3><i class="bi bi-info-circle"></i> About This Guide</h3>
+                <p>This document tracks REST API-related issues encountered during development and their solutions. Focus on endpoint design, validation, responses, and API architecture patterns.</p>
+            </div>
+
+            <section id="endpoint-design">
+                <h2><i class="bi bi-diagram-3"></i> Endpoint Design Issues</h2>
+                
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Inconsistent API Response Formats</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Frontend receives different response structures from similar endpoints</p>
+                        <p><strong>Root Cause:</strong> No standardized response format across controllers</p>
+                        <p><strong>Solution:</strong> Implement consistent response wrapper pattern</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>API Response Wrapper</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'api-response')">Copy</button>
+                            </div>
+                            <pre id="api-response"><code class="language-csharp">public class ApiResponse<T>
+{
+    public bool Success { get; set; }
+    public T Data { get; set; }
+    public string Message { get; set; }
+    public List<string> Errors { get; set; } = new();
+}
+
+[HttpGet]
+public async Task<IActionResult> Get()
+{
+    var data = await _service.GetAllAsync();
+    return Ok(new ApiResponse<List<Item>> 
+    { 
+        Success = true, 
+        Data = data,
+        Message = "Items retrieved successfully"
+    });
+}</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Use consistent response wrapper for all API endpoints</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>RESTful URL Design Violations</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> URLs like `/api/getUserById` instead of `/api/users/{id}`</p>
+                        <p><strong>Root Cause:</strong> Not following REST conventions</p>
+                        <p><strong>Solution:</strong> Use proper REST resource naming</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Correct REST Patterns</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'rest-patterns')">Copy</button>
+                            </div>
+                            <pre id="rest-patterns"><code class="language-csharp">// Wrong
+[HttpGet("getUserById/{id}")]
+
+// Correct
+[HttpGet("{id}")]</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Use resource-based URLs with HTTP verbs</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="userlogin-api-issues">
+                <h2><i class="bi bi-person-check"></i> UserLogin Module API Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>JWT Token Validation Always Returns 401</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> All protected endpoints return 401 despite valid JWT tokens</p>
+                        <p><strong>Root Cause:</strong> JWT configuration mismatch between generation and validation</p>
+                        <p><strong>Solution:</strong> Ensure consistent JWT settings across all services</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JWT Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'jwt-config')">Copy</button>
+                            </div>
+                            <pre id="jwt-config"><code class="language-csharp">// In Program.cs - ensure consistent configuration
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"];
+var issuer = jwtSettings["Issuer"];
+var audience = jwtSettings["Audience"];
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+            ValidateIssuer = true,
+            ValidIssuer = issuer,
+            ValidateAudience = true,
+            ValidAudience = audience,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromMinutes(5) // Add tolerance for clock skew
+        };
+    });</code></pre>
+                        </div>
+                        <p><strong>Applied In:</strong> UserLogin authentication endpoints</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Multi-Tenant Context Lost in API Calls</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Users seeing data from wrong client/site, authorization failures</p>
+                        <p><strong>Root Cause:</strong> BaseController not extracting tenant context from JWT claims</p>
+                        <p><strong>Solution:</strong> Implement proper claim extraction in BaseController</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Tenant Context Extraction</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'tenant-context')">Copy</button>
+                            </div>
+                            <pre id="tenant-context"><code class="language-csharp">protected short GetClientId()
+{
+    var clientIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "ClientID");
+    return short.TryParse(clientIdClaim?.Value, out short clientId) ? clientId : (short)1;
+}</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Always extract ClientId/SiteId from JWT claims in base controller</p>
+                        <p><strong>Applied In:</strong> All UserLogin API endpoints</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Session Management Endpoint Inconsistencies</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Some session endpoints work, others return unexpected results</p>
+                        <p><strong>Root Cause:</strong> Inconsistent parameter validation and response formatting</p>
+                        <p><strong>Solution:</strong> Standardize all session management endpoints</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Standardized Session Endpoint</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'session-endpoint')">Copy</button>
+                            </div>
+                            <pre id="session-endpoint"><code class="language-csharp">[HttpGet("sessions/{userId}")]
+[Authorize]
+public async Task<IActionResult> GetActiveSessions(int userId)
+{
+    if (userId <= 0)
+    {
+        Logger.LogWarning("Invalid user ID requested for active sessions: {UserId}", userId);
+        return BadRequest("Invalid user ID");
+    }
+
+    var result = await _userLoginService.GetActiveSessionsAsync(userId);
+    return Ok(result); // Consistent response format
+}</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Use consistent validation and response patterns across related endpoints</p>
+                        <p><strong>Applied In:</strong> UserLogin session management endpoints</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="authentication-authorization">
+                <h2><i class="bi bi-shield-check"></i> Authentication & Authorization Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>JWT Token Expiration Not Handled Gracefully</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> API returns 401 but frontend doesn't refresh token automatically</p>
+                        <p><strong>Root Cause:</strong> No automatic token refresh mechanism</p>
+                        <p><strong>Solution:</strong> Implement token refresh interceptor</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Token Refresh Interceptor</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'token-refresh')">Copy</button>
+                            </div>
+                            <pre id="token-refresh"><code class="language-javascript">// API interceptor for token refresh
+axios.interceptors.response.use(
+    response => response,
+    async error => {
+        if (error.response.status === 401) {
+            const newToken = await refreshToken();
+            if (newToken) {
+                error.config.headers.Authorization = `Bearer ${newToken}`;
+                return axios.request(error.config);
+            }
+        }
+        return Promise.reject(error);
+    }
+);</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Implement automatic token refresh for better UX</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>CORS Errors Blocking Frontend Requests</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Browser blocks API requests with CORS policy errors</p>
+                        <p><strong>Root Cause:</strong> CORS not configured properly for development/production environments</p>
+                        <p><strong>Solution:</strong> Configure CORS policy correctly</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>CORS Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'cors-config')">Copy</button>
+                            </div>
+                            <pre id="cors-config"><code class="language-csharp">builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("https://localhost:3000", "http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>API Accessible Without Authentication</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Sensitive endpoints can be accessed without proper authentication</p>
+                        <p><strong>Root Cause:</strong> Missing [Authorize] attributes or incorrect authorization setup</p>
+                        <p><strong>Solution:</strong> Apply proper authorization attributes</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Authorization Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'authorization')">Copy</button>
+                            </div>
+                            <pre id="authorization"><code class="language-csharp">[Authorize]
+[ApiController]
+[Route("api/[controller]")]
+public class SecureController : ControllerBase
+{
+    [HttpGet]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> AdminOnly()
+    {
+        // Implementation
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="request-validation">
+                <h2><i class="bi bi-check2-square"></i> Request Validation Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Invalid Data Reaching Business Logic</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Services receive malformed or invalid data</p>
+                        <p><strong>Root Cause:</strong> Missing or insufficient input validation</p>
+                        <p><strong>Solution:</strong> Implement comprehensive model validation</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Request Validation Model</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'request-validation')">Copy</button>
+                            </div>
+                            <pre id="request-validation"><code class="language-csharp">public class CreateUserRequest
+{
+    [Required]
+    [StringLength(100, MinimumLength = 2)]
+    public string Name { get; set; }
+
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
+
+    [Required]
+    [MinLength(8)]
+    public string Password { get; set; }
+}
+
+[HttpPost]
+public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
+{
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState);
+    }
+    // Process valid request
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Mass Assignment Vulnerabilities</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Unintended properties being modified through API requests</p>
+                        <p><strong>Root Cause:</strong> Accepting entire model objects without filtering</p>
+                        <p><strong>Solution:</strong> Use specific DTOs for API operations</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>DTO Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'dto-pattern')">Copy</button>
+                            </div>
+                            <pre id="dto-pattern"><code class="language-csharp">// Don't accept domain models directly
+[HttpPost]
+public async Task<IActionResult> Create([FromBody] CreateUserDto request) // Use DTO
+{
+    var user = _mapper.Map<User>(request); // Map to domain model
+    // Process
+}</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Always use DTOs for API boundaries, never expose domain models directly</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="response-handling">
+                <h2><i class="bi bi-arrow-left-right"></i> Response Handling Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Sensitive Data Leaked in API Responses</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Passwords, internal IDs, or sensitive fields returned to client</p>
+                        <p><strong>Root Cause:</strong> Returning domain models directly without filtering</p>
+                        <p><strong>Solution:</strong> Use response DTOs with only necessary fields</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Safe Response DTO</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'response-dto')">Copy</button>
+                            </div>
+                            <pre id="response-dto"><code class="language-csharp">public class UserResponseDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Email { get; set; }
+    // Note: No Password field
+}
+
+[HttpGet("{id}")]
+public async Task<IActionResult> Get(int id)
+{
+    var user = await _service.GetByIdAsync(id);
+    var response = _mapper.Map<UserResponseDto>(user);
+    return Ok(response);
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Large Response Payloads Causing Timeouts</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> API requests timing out or consuming excessive bandwidth</p>
+                        <p><strong>Root Cause:</strong> Returning too much data in single response</p>
+                        <p><strong>Solution:</strong> Implement pagination and field selection</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Pagination Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'pagination')">Copy</button>
+                            </div>
+                            <pre id="pagination"><code class="language-csharp">[HttpGet]
+public async Task<IActionResult> Get([FromQuery] PaginationRequest request)
+{
+    var result = await _service.GetPaginatedAsync(request.Offset, request.Limit);
+    return Ok(new PaginatedResponse<UserDto>
+    {
+        Data = result.Items,
+        Offset = request.Offset,
+        Limit = request.Limit,
+        TotalCount = result.TotalCount
+    });
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="error-handling">
+                <h2><i class="bi bi-exclamation-triangle"></i> Error Handling Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Unhandled Exceptions Returning Stack Traces</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Internal server errors expose sensitive system information</p>
+                        <p><strong>Root Cause:</strong> No global exception handling middleware</p>
+                        <p><strong>Solution:</strong> Implement global exception handler</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Global Exception Middleware</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'exception-middleware')">Copy</button>
+                            </div>
+                            <pre id="exception-middleware"><code class="language-csharp">public class GlobalExceptionMiddleware
+{
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    {
+        try
+        {
+            await next(context);
+        }
+        catch (Exception ex)
+        {
+            await HandleExceptionAsync(context, ex);
+        }
+    }
+
+    private async Task HandleExceptionAsync(HttpContext context, Exception ex)
+    {
+        context.Response.ContentType = "application/json";
+        
+        var response = new ApiResponse<object>
+        {
+            Success = false,
+            Message = "An error occurred processing your request"
+        };
+
+        switch (ex)
+        {
+            case NotFoundException:
+                context.Response.StatusCode = 404;
+                response.Message = "Resource not found";
+                break;
+            case ValidationException:
+                context.Response.StatusCode = 400;
+                response.Message = ex.Message;
+                break;
+            default:
+                context.Response.StatusCode = 500;
+                // Don't expose internal errors in production
+                break;
+        }
+
+        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Inconsistent HTTP Status Codes</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> API returns 200 OK even for error conditions</p>
+                        <p><strong>Root Cause:</strong> Not following HTTP status code conventions</p>
+                        <p><strong>Solution:</strong> Use appropriate HTTP status codes</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>HTTP Status Code Patterns</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'status-codes')">Copy</button>
+                            </div>
+                            <pre id="status-codes"><code class="language-csharp">[HttpGet("{id}")]
+public async Task<IActionResult> Get(int id)
+{
+    var user = await _service.GetByIdAsync(id);
+    if (user == null)
+        return NotFound(); // 404
+
+    return Ok(user); // 200
+}
+
+[HttpPost]
+public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
+{
+    if (!ModelState.IsValid)
+        return BadRequest(ModelState); // 400
+
+    var user = await _service.CreateAsync(request);
+    return CreatedAtAction(nameof(Get), new { id = user.Id }, user); // 201
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="performance-issues">
+                <h2><i class="bi bi-speedometer2"></i> Performance Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>N+1 Query Problems from API Endpoints</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Database queries multiplying with each API request</p>
+                        <p><strong>Root Cause:</strong> Lazy loading causing additional queries in loops</p>
+                        <p><strong>Solution:</strong> Use explicit loading or projection</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>N+1 Query Solution</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'n-plus-one')">Copy</button>
+                            </div>
+                            <pre id="n-plus-one"><code class="language-csharp">// Problem: N+1 queries
+var users = await context.Users.ToListAsync();
+foreach(var user in users)
+{
+    Console.WriteLine(user.Orders.Count); // Each access hits database
+}
+
+// Solution: Include related data
+var users = await context.Users
+    .Include(u => u.Orders)
+    .ToListAsync();</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>API Endpoints Without Rate Limiting</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> API can be overwhelmed by too many requests</p>
+                        <p><strong>Root Cause:</strong> No rate limiting implemented</p>
+                        <p><strong>Solution:</strong> Implement rate limiting middleware</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Rate Limiting Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'rate-limiting')">Copy</button>
+                            </div>
+                            <pre id="rate-limiting"><code class="language-csharp">// Configure rate limiting
+builder.Services.Configure<IpRateLimitOptions>(options =>
+{
+    options.GeneralRules = new List<RateLimitRule>
+    {
+        new RateLimitRule
+        {
+            Endpoint = "*",
+            Period = "1m",
+            Limit = 60
+        }
+    };
+});</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-type-issues">
+                <h2><i class="bi bi-file-earmark"></i> Content Type Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>API Not Accepting JSON Requests</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> 415 Unsupported Media Type errors</p>
+                        <p><strong>Root Cause:</strong> Content-Type header not properly configured</p>
+                        <p><strong>Solution:</strong> Ensure proper content type configuration</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Content Type Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'content-type')">Copy</button>
+                            </div>
+                            <pre id="content-type"><code class="language-csharp">[HttpPost]
+[Consumes("application/json")]
+[Produces("application/json")]
+public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
+{
+    // Implementation
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>File Upload Endpoints Not Working</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> File uploads fail or receive empty files</p>
+                        <p><strong>Root Cause:</strong> Incorrect form encoding or file handling</p>
+                        <p><strong>Solution:</strong> Use proper multipart form handling</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>File Upload Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'file-upload')">Copy</button>
+                            </div>
+                            <pre id="file-upload"><code class="language-csharp">[HttpPost("upload")]
+public async Task<IActionResult> UploadFile(IFormFile file)
+{
+    if (file == null || file.Length == 0)
+        return BadRequest("No file uploaded");
+
+    // Process file
+    using var stream = file.OpenReadStream();
+    // Handle file processing
+    
+    return Ok(new { FileName = file.FileName, Size = file.Length });
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api-patterns">
+                <h2><i class="bi bi-diagram-2"></i> API Design Patterns</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>RESTful Resource Design</h4>
+                        <ul>
+                            <li>Use nouns for resources: `/api/users` not `/api/getUsers`</li>
+                            <li>Use HTTP verbs for actions: GET, POST, PUT, DELETE</li>
+                            <li>Use hierarchical URLs: `/api/users/123/orders`</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Consistent Response Format</h4>
+                        <p>Always return responses in the same structure:</p>
+                        <div class="code-block">
+                            <pre><code class="language-json">{
+    "success": true,
+    "data": {...},
+    "message": "Operation completed",
+    "errors": []
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Error Response Format</h4>
+                        <p>Standardize error responses:</p>
+                        <div class="code-block">
+                            <pre><code class="language-json">{
+    "success": false,
+    "data": null,
+    "message": "Validation failed",
+    "errors": ["Email is required", "Password too short"]
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="usage-guide">
+                <h2><i class="bi bi-book"></i> How to Use This Guide</h2>
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Check Status Codes</h4>
+                        <p>Verify you're using appropriate HTTP status codes for different scenarios.</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Review Response Format</h4>
+                        <p>Ensure consistent response structure across all endpoints.</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Validate Security</h4>
+                        <p>Check authentication, authorization, and data exposure patterns.</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Test Edge Cases</h4>
+                        <p>Verify error handling and validation for various input scenarios.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>API Troubleshooting Guide</em><br>
+                <em>Last Updated: August 21, 2025</em><br>
+                <em>Maintainer: Development Team</em></p>
+                
+                <p><strong>Need More Help?</strong> Check <a href="README.html">main documentation</a> or other troubleshooting guides: 
+                <a href="frontend-troubleshooting.html">Frontend</a> | 
+                <a href="backend-troubleshooting.html">Backend</a> | 
+                <a href="database-troubleshooting.html">Database</a> | 
+                <a href="testing-troubleshooting.html">Testing</a></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+
+        // Search functionality
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const content = document.querySelector('.main-content');
+            const sections = content.querySelectorAll('section, h2, h3, p, li, td');
+            
+            // Remove previous highlights
+            sections.forEach(section => {
+                section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
+            });
+            
+            if (searchTerm.length > 2) {
+                sections.forEach(section => {
+                    const text = section.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        section.innerHTML = highlightText(section.innerHTML, searchTerm);
+                    }
+                });
+
+                // Auto-expand sections with search results
+                document.querySelectorAll('.collapsible').forEach(collapsible => {
+                    const text = collapsible.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        collapsible.classList.add('expanded');
+                    }
+                });
+            }
+        });
+
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+                localStorage.setItem('preferred-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('preferred-theme', 'dark');
+            }
+        }
+
+        // Load saved theme preference
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.setAttribute('data-theme', theme);
+            
+            if (theme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', loadTheme);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing Troubleshooting Guide - XOS Framework</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <!-- Theme Toggle Button -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="bi bi-moon-fill" id="theme-icon"></i>
+                <span id="theme-text">Dark</span>
+            </button>
+            
+            <h3><i class="bi bi-house"></i> Navigation</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-arrow-left"></i> Back to Home</a></li>
+                <li><a href="#xunit-framework"><i class="bi bi-check-circle"></i> xUnit & Test Framework</a></li>
+                <li><a href="#userlogin-testing"><i class="bi bi-person-check"></i> UserLogin Module Testing</a></li>
+                <li><a href="#mocking-framework"><i class="bi bi-layers"></i> Mocking Framework (Moq)</a></li>
+                <li><a href="#test-data-management"><i class="bi bi-database-gear"></i> Test Data Management</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-bug"></i> Quick Fixes</h3>
+            <ul>
+                <li><a href="#integration-testing"><i class="bi bi-puzzle"></i> Integration Testing</a></li>
+                <li><a href="#test-coverage"><i class="bi bi-graph-up"></i> Test Coverage</a></li>
+                <li><a href="#performance-testing"><i class="bi bi-speedometer2"></i> Performance Testing</a></li>
+                <li><a href="#test-organization"><i class="bi bi-folder"></i> Test Organization</a></li>
+            </ul>
+
+            <h3><i class="bi bi-life-preserver"></i> Other Troubleshooting</h3>
+            <ul>
+                <li><a href="frontend-troubleshooting.html"><i class="bi bi-palette"></i> Frontend Issues</a></li>
+                <li><a href="backend-troubleshooting.html"><i class="bi bi-server"></i> Backend Issues</a></li>
+                <li><a href="api-troubleshooting.html"><i class="bi bi-cloud-arrow-up"></i> API Issues</a></li>
+                <li><a href="database-troubleshooting.html"><i class="bi bi-database"></i> Database Issues</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search testing troubleshooting..." id="searchInput">
+            </div>
+
+            <h1><i class="bi bi-check2-square"></i> Testing Issues & Solutions</h1>
+            
+            <div class="alert alert-info">
+                <h3><i class="bi bi-info-circle"></i> About This Guide</h3>
+                <p>This document tracks testing-related issues encountered during TDD development cycles, focusing on unit testing, integration testing, mocking, and test automation patterns.</p>
+            </div>
+
+            <section id="xunit-framework">
+                <h2><i class="bi bi-check-circle"></i> xUnit & Test Framework Issues</h2>
+                
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Tests Failing Due to Async/Await Problems</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Tests hanging, deadlocks, or incorrect async behavior</p>
+                        <p><strong>Root Cause:</strong> Mixing synchronous and asynchronous calls incorrectly</p>
+                        <p><strong>Solution:</strong> Use proper async/await patterns throughout test chain</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Async Test Patterns</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'async-tests')">Copy</button>
+                            </div>
+                            <pre id="async-tests"><code class="language-csharp">// Wrong - can cause deadlocks
+[Fact]
+public void TestAsyncMethod()
+{
+    var result = _service.GetDataAsync().Result; // Blocking call
+    Assert.NotNull(result);
+}
+
+// Correct - proper async test
+[Fact]
+public async Task TestAsyncMethod()
+{
+    var result = await _service.GetDataAsync();
+    Assert.NotNull(result);
+}</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Always use async/await consistently in test methods</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="userlogin-testing">
+                <h2><i class="bi bi-person-check"></i> UserLogin Module Testing Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Mock Services Not Working with XOS Framework</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Tests fail because XOS framework services can't be properly mocked</p>
+                        <p><strong>Root Cause:</strong> XOS services have complex inheritance and dependency chains</p>
+                        <p><strong>Solution:</strong> Create wrapper interfaces for XOS services to enable mocking</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>XOS Service Wrapper Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'xos-wrapper')">Copy</button>
+                            </div>
+                            <pre id="xos-wrapper"><code class="language-csharp">// Create wrapper interface
+public interface IUserLoginServiceWrapper
+{
+    Task<UserLoginResponse> AuthenticateAsync(UserLoginRequest request);
+    // ... other methods
+}
+
+// Implement wrapper
+public class UserLoginServiceWrapper : IUserLoginServiceWrapper
+{
+    private readonly UserLoginService _service;
+    
+    public UserLoginServiceWrapper(UserLoginService service)
+    {
+        _service = service;
+    }
+    
+    public Task<UserLoginResponse> AuthenticateAsync(UserLoginRequest request)
+        => _service.AuthenticateAsync(request);
+}
+
+// Mock the wrapper in tests
+var mockWrapper = new Mock<IUserLoginServiceWrapper>();
+mockWrapper.Setup(x => x.AuthenticateAsync(It.IsAny<UserLoginRequest>()))
+          .ReturnsAsync(new UserLoginResponse { Success = true });</code></pre>
+                        </div>
+                        <p><strong>Applied In:</strong> UserLogin service testing</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Database Context Not Isolated Between Tests</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Tests pass individually but fail when run together</p>
+                        <p><strong>Root Cause:</strong> Tests sharing database state through XOS framework</p>
+                        <p><strong>Solution:</strong> Use test database with transaction rollback pattern</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Test Isolation Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'test-isolation')">Copy</button>
+                            </div>
+                            <pre id="test-isolation"><code class="language-csharp">[SetUp]
+public void Setup()
+{
+    _testDb = new TestDatabase();
+    _transaction = _testDb.BeginTransaction();
+}
+
+[TearDown]
+public void TearDown()
+{
+    _transaction?.Rollback();
+    _transaction?.Dispose();
+}</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Isolate test data using database transactions</p>
+                        <p><strong>Applied In:</strong> All UserLogin integration tests</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>XOS Framework row.GetValue&lt;T&gt;() Not Mockable</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Can't unit test data mapping logic that uses row.GetValue&lt;T&gt;()</p>
+                        <p><strong>Root Cause:</strong> Dynamic row object from XOS framework not mockable</p>
+                        <p><strong>Solution:</strong> Extract mapping logic to testable methods with interface</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Mockable Data Row Interface</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'data-row-mock')">Copy</button>
+                            </div>
+                            <pre id="data-row-mock"><code class="language-csharp">public interface IDataRow
+{
+    T GetValue<T>(string columnName);
+    T GetValue<T>(string columnName, T defaultValue);
+}
+
+// Test with mock data row
+var mockRow = new Mock<IDataRow>();
+mockRow.Setup(x => x.GetValue<int>("login_id")).Returns(123);
+mockRow.Setup(x => x.GetValue<string>("user_name", "")).Returns("testuser");
+
+var userLogin = MapRowToUserLogin(mockRow.Object);</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Create mockable data row interface</p>
+                        <p><strong>Applied In:</strong> UserLogin data mapping tests</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Authentication Tests Failing Due to BCrypt Timing</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Password validation tests intermittently fail</p>
+                        <p><strong>Root Cause:</strong> BCrypt hashing takes variable time, causing test timeouts</p>
+                        <p><strong>Solution:</strong> Use deterministic password hashes in tests</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Mock Password Service</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'mock-password')">Copy</button>
+                            </div>
+                            <pre id="mock-password"><code class="language-csharp">var mockPasswordService = new Mock<IPasswordService>();
+mockPasswordService.Setup(x => x.VerifyPassword("correct", It.IsAny<string>()))
+                   .Returns(true);
+mockPasswordService.Setup(x => x.VerifyPassword("wrong", It.IsAny<string>()))
+                   .Returns(false);</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Mock password service for consistent test behavior</p>
+                        <p><strong>Applied In:</strong> UserLogin authentication tests</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Tests Passing in Isolation but Failing in Suite</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Individual tests pass but fail when run with others</p>
+                        <p><strong>Root Cause:</strong> Tests not properly isolated, shared state between tests</p>
+                        <p><strong>Solution:</strong> Ensure proper test isolation and cleanup</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Test Isolation Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'proper-isolation')">Copy</button>
+                            </div>
+                            <pre id="proper-isolation"><code class="language-csharp">public class UserServiceTests : IDisposable
+{
+    private readonly Mock<IUserRepository> _mockRepo;
+    private readonly UserService _sut;
+    private readonly List<User> _testUsers;
+
+    public UserServiceTests()
+    {
+        _mockRepo = new Mock<IUserRepository>();
+        _sut = new UserService(_mockRepo.Object);
+        _testUsers = new List<User>();
+    }
+
+    [Fact]
+    public async Task CreateUser_ValidData_ReturnsUser()
+    {
+        // Each test gets fresh mocks and service instance
+        var user = new User { Name = "Test" };
+        _testUsers.Add(user); // Track for cleanup
+        
+        _mockRepo.Setup(x => x.CreateAsync(It.IsAny<User>()))
+                 .ReturnsAsync(user);
+
+        var result = await _sut.CreateUserAsync(user);
+        
+        result.Should().NotBeNull();
+    }
+
+    public void Dispose()
+    {
+        // Clean up test data
+        _testUsers.Clear();
+        _mockRepo.Reset();
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Theory Tests Not Running All Data Cases</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Some theory test cases not executing or being skipped</p>
+                        <p><strong>Root Cause:</strong> Invalid test data or data source configuration</p>
+                        <p><strong>Solution:</strong> Verify test data sources and handle edge cases</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Theory Test Patterns</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'theory-tests')">Copy</button>
+                            </div>
+                            <pre id="theory-tests"><code class="language-csharp">public class CalculatorTests
+{
+    [Theory]
+    [InlineData(2, 3, 5)]
+    [InlineData(0, 0, 0)]
+    [InlineData(-1, 1, 0)]
+    [InlineData(int.MaxValue, 1, int.MinValue)] // Edge case
+    public void Add_VariousInputs_ReturnsExpected(int a, int b, int expected)
+    {
+        var calculator = new Calculator();
+        var result = calculator.Add(a, b);
+        result.Should().Be(expected);
+    }
+
+    // For complex test data
+    public static IEnumerable<object[]> GetComplexTestCases()
+    {
+        yield return new object[] { new User { Name = "John" }, true };
+        yield return new object[] { new User { Name = "" }, false };
+        yield return new object[] { null, false };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetComplexTestCases))]
+    public void ValidateUser_VariousUsers_ReturnsExpected(User user, bool expected)
+    {
+        var validator = new UserValidator();
+        var result = validator.IsValid(user);
+        result.Should().Be(expected);
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="mocking-framework">
+                <h2><i class="bi bi-layers"></i> Mocking Framework Issues (Moq)</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Mock Setup Not Working as Expected</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Mock returns default values instead of configured values</p>
+                        <p><strong>Root Cause:</strong> Mock setup doesn't match actual method call parameters</p>
+                        <p><strong>Solution:</strong> Use precise parameter matching or It.IsAny&lt;T&gt;()</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Mock Setup Patterns</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'mock-setup')">Copy</button>
+                            </div>
+                            <pre id="mock-setup"><code class="language-csharp">[Fact]
+public async Task GetUser_ExistingId_ReturnsUser()
+{
+    // Wrong - setup doesn't match call
+    _mockRepo.Setup(x => x.GetByIdAsync(1))
+             .ReturnsAsync(new User { Id = 1 });
+    
+    var result = await _sut.GetUserAsync(2); // Called with 2, not 1
+    
+    // Correct - flexible parameter matching
+    _mockRepo.Setup(x => x.GetByIdAsync(It.IsAny<int>()))
+             .ReturnsAsync((int id) => new User { Id = id });
+    
+    // Or specific setup for each case
+    _mockRepo.Setup(x => x.GetByIdAsync(2))
+             .ReturnsAsync(new User { Id = 2 });
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Verifying Mock Calls Not Working</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Verify() calls failing even though method was called</p>
+                        <p><strong>Root Cause:</strong> Parameter matching in Verify doesn't match actual call</p>
+                        <p><strong>Solution:</strong> Use consistent parameter matching in Setup and Verify</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Mock Verification Patterns</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'mock-verify')">Copy</button>
+                            </div>
+                            <pre id="mock-verify"><code class="language-csharp">[Fact]
+public async Task CreateUser_ValidUser_CallsRepository()
+{
+    var user = new User { Name = "Test User" };
+    
+    await _sut.CreateUserAsync(user);
+    
+    // Wrong - exact object comparison might fail
+    _mockRepo.Verify(x => x.CreateAsync(user), Times.Once);
+    
+    // Better - verify by property matching
+    _mockRepo.Verify(x => x.CreateAsync(
+        It.Is<User>(u => u.Name == "Test User")), Times.Once);
+    
+    // Or use It.IsAny if exact parameters don't matter
+    _mockRepo.Verify(x => x.CreateAsync(It.IsAny<User>()), Times.Once);
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Complex Object Mocking Failures</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Mocks not working with complex nested objects</p>
+                        <p><strong>Root Cause:</strong> Deep object comparison issues in mock setup</p>
+                        <p><strong>Solution:</strong> Use property-based matching instead of object equality</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Complex Object Mocking</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'complex-mock')">Copy</button>
+                            </div>
+                            <pre id="complex-mock"><code class="language-csharp">[Fact]
+public async Task ProcessOrder_ValidOrder_UpdatesInventory()
+{
+    var order = new Order 
+    { 
+        Items = new List<OrderItem> 
+        { 
+            new OrderItem { ItemId = 1, Quantity = 2 }
+        }
+    };
+    
+    // Wrong - complex object comparison
+    _mockInventory.Setup(x => x.UpdateStock(order.Items))
+                  .Returns(true);
+    
+    // Better - match by properties
+    _mockInventory.Setup(x => x.UpdateStock(
+        It.Is<List<OrderItem>>(items => 
+            items.Any(i => i.ItemId == 1 && i.Quantity == 2))))
+        .Returns(true);
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="test-data-management">
+                <h2><i class="bi bi-database-gear"></i> Test Data Management Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Hard-to-Maintain Test Data</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Tests break when small data changes are made</p>
+                        <p><strong>Root Cause:</strong> Hardcoded test data scattered throughout tests</p>
+                        <p><strong>Solution:</strong> Use Test Data Builders or Object Mother pattern</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Test Data Builder Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'test-builder')">Copy</button>
+                            </div>
+                            <pre id="test-builder"><code class="language-csharp">// Test Data Builder Pattern
+public class UserBuilder
+{
+    private User _user = new User();
+
+    public UserBuilder WithDefaults()
+    {
+        _user.Id = 1;
+        _user.Name = "Test User";
+        _user.Email = "test@example.com";
+        _user.CreatedAt = DateTime.UtcNow;
+        return this;
+    }
+
+    public UserBuilder WithName(string name)
+    {
+        _user.Name = name;
+        return this;
+    }
+
+    public UserBuilder WithEmail(string email)
+    {
+        _user.Email = email;
+        return this;
+    }
+
+    public User Build() => _user;
+    
+    public static implicit operator User(UserBuilder builder) => builder.Build();
+}
+
+// Usage in tests
+[Fact]
+public void ValidateUser_ValidUser_ReturnsTrue()
+{
+    var user = new UserBuilder()
+        .WithDefaults()
+        .WithEmail("valid@test.com")
+        .Build();
+    
+    var result = _validator.IsValid(user);
+    result.Should().BeTrue();
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Flaky Tests Due to Date/Time Dependencies</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Tests fail sporadically based on when they're run</p>
+                        <p><strong>Root Cause:</strong> Tests depend on current date/time</p>
+                        <p><strong>Solution:</strong> Use dependency injection for time providers or fixed dates</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Time Provider Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'time-provider')">Copy</button>
+                            </div>
+                            <pre id="time-provider"><code class="language-csharp">// Create time abstraction
+public interface IDateTimeProvider
+{
+    DateTime UtcNow { get; }
+}
+
+public class SystemDateTimeProvider : IDateTimeProvider
+{
+    public DateTime UtcNow => DateTime.UtcNow;
+}
+
+// In service
+public class UserService
+{
+    private readonly IDateTimeProvider _dateTimeProvider;
+    
+    public UserService(IDateTimeProvider dateTimeProvider)
+    {
+        _dateTimeProvider = dateTimeProvider;
+    }
+    
+    public User CreateUser(string name)
+    {
+        return new User 
+        { 
+            Name = name, 
+            CreatedAt = _dateTimeProvider.UtcNow 
+        };
+    }
+}
+
+// In test
+[Fact]
+public void CreateUser_WithName_SetsCreatedDate()
+{
+    var fixedDate = new DateTime(2023, 1, 1);
+    var mockDateProvider = new Mock<IDateTimeProvider>();
+    mockDateProvider.Setup(x => x.UtcNow).Returns(fixedDate);
+    
+    var service = new UserService(mockDateProvider.Object);
+    
+    var user = service.CreateUser("Test");
+    
+    user.CreatedAt.Should().Be(fixedDate);
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="integration-testing">
+                <h2><i class="bi bi-puzzle"></i> Integration Testing Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Database Tests Affecting Each Other</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Integration tests fail when run together due to shared data</p>
+                        <p><strong>Root Cause:</strong> Tests sharing same database without proper cleanup</p>
+                        <p><strong>Solution:</strong> Use test database with transaction rollback or unique test data</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Integration Test Isolation</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'integration-isolation')">Copy</button>
+                            </div>
+                            <pre id="integration-isolation"><code class="language-csharp">public class RepositoryIntegrationTests : IDisposable
+{
+    private readonly AppDbContext _context;
+    private readonly IDbContextTransaction _transaction;
+
+    public RepositoryIntegrationTests()
+    {
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+        _context = new AppDbContext(options);
+        _transaction = _context.Database.BeginTransaction();
+    }
+
+    [Fact]
+    public async Task CreateUser_ValidUser_SavesSuccessfully()
+    {
+        var repository = new UserRepository(_context);
+        var user = new User { Name = "Test User" };
+
+        var result = await repository.CreateAsync(user);
+
+        result.Should().NotBeNull();
+        result.Id.Should().BeGreaterThan(0);
+    }
+
+    public void Dispose()
+    {
+        _transaction?.Rollback(); // Rollback all changes
+        _transaction?.Dispose();
+        _context?.Dispose();
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>External API Dependencies in Tests</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Tests fail when external services are unavailable</p>
+                        <p><strong>Root Cause:</strong> Tests calling real external APIs</p>
+                        <p><strong>Solution:</strong> Mock external dependencies or use test doubles</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>External API Mocking</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'external-api-mock')">Copy</button>
+                            </div>
+                            <pre id="external-api-mock"><code class="language-csharp">public class PaymentServiceTests
+{
+    private readonly Mock<IHttpClient> _mockHttp;
+    private readonly PaymentService _sut;
+
+    public PaymentServiceTests()
+    {
+        _mockHttp = new Mock<IHttpClient>();
+        _sut = new PaymentService(_mockHttp.Object);
+    }
+
+    [Fact]
+    public async Task ProcessPayment_ValidCard_ReturnsSuccess()
+    {
+        // Mock external API response
+        var apiResponse = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(JsonSerializer.Serialize(new 
+            { 
+                success = true, 
+                transactionId = "12345" 
+            }))
+        };
+        
+        _mockHttp.Setup(x => x.PostAsync(
+                It.IsAny<string>(), 
+                It.IsAny<HttpContent>()))
+            .ReturnsAsync(apiResponse);
+
+        var result = await _sut.ProcessPaymentAsync(new PaymentRequest());
+
+        result.Should().NotBeNull();
+        result.Success.Should().BeTrue();
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="test-coverage">
+                <h2><i class="bi bi-graph-up"></i> Test Coverage Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Low Test Coverage on Important Code</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Critical bugs in production that weren't caught by tests</p>
+                        <p><strong>Root Cause:</strong> Tests not covering all execution paths</p>
+                        <p><strong>Solution:</strong> Use coverage tools and focus on critical business logic</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Coverage Commands</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'coverage-commands')">Copy</button>
+                            </div>
+                            <pre id="coverage-commands"><code class="language-bash"># Generate coverage report
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+# Generate HTML report
+reportgenerator -reports:coverage.opencover.xml -targetdir:coveragereport</code></pre>
+                        </div>
+                        <p><strong>Pattern:</strong> Aim for high coverage on business logic, less critical on simple properties</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Tests Covering Implementation Details Instead of Behavior</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Tests break when refactoring even though behavior unchanged</p>
+                        <p><strong>Root Cause:</strong> Tests coupled to implementation rather than public API</p>
+                        <p><strong>Solution:</strong> Test public behavior and outcomes, not internal implementation</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Behavior vs Implementation Testing</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'behavior-testing')">Copy</button>
+                            </div>
+                            <pre id="behavior-testing"><code class="language-csharp">// Wrong - testing implementation details
+[Fact]
+public void SaveUser_CallsValidateAndRepository()
+{
+    _mockValidator.Setup(x => x.Validate(It.IsAny<User>())).Returns(true);
+    
+    _sut.SaveUser(new User());
+    
+    // These test HOW it works, not WHAT it does
+    _mockValidator.Verify(x => x.Validate(It.IsAny<User>()), Times.Once);
+    _mockRepo.Verify(x => x.Save(It.IsAny<User>()), Times.Once);
+}
+
+// Better - testing behavior and outcome
+[Fact]
+public void SaveUser_ValidUser_ReturnsSuccessResult()
+{
+    var user = new User { Name = "Test User" };
+    
+    var result = _sut.SaveUser(user);
+    
+    result.Success.Should().BeTrue();
+    result.User.Should().NotBeNull();
+    result.User.Id.Should().BeGreaterThan(0);
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="performance-testing">
+                <h2><i class="bi bi-speedometer2"></i> Performance Testing Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Tests Running Too Slowly</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Test suite takes too long to execute</p>
+                        <p><strong>Root Cause:</strong> Heavy setup, database operations, or file I/O in unit tests</p>
+                        <p><strong>Solution:</strong> Optimize test setup and use appropriate test types</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Test Performance Optimization</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'test-performance')">Copy</button>
+                            </div>
+                            <pre id="test-performance"><code class="language-csharp">// Slow - database setup for each test
+[Fact]
+public async Task TestUserCreation()
+{
+    using var context = new AppDbContext(GetDbOptions());
+    await context.Database.EnsureCreatedAsync(); // Slow
+    var repository = new UserRepository(context);
+    
+    // Test implementation
+}
+
+// Faster - use mocks for unit tests
+[Fact]
+public async Task TestUserCreation()
+{
+    var mockRepo = new Mock<IUserRepository>();
+    mockRepo.Setup(x => x.CreateAsync(It.IsAny<User>()))
+            .ReturnsAsync(new User { Id = 1 });
+            
+    var service = new UserService(mockRepo.Object);
+    
+    // Test implementation - much faster
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="test-organization">
+                <h2><i class="bi bi-folder"></i> Test Organization Issues</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Unclear Test Names and Structure</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Difficult to understand test failures or find relevant tests</p>
+                        <p><strong>Root Cause:</strong> Poor test naming and organization</p>
+                        <p><strong>Solution:</strong> Use descriptive test names following conventions</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Test Organization Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'test-organization')">Copy</button>
+                            </div>
+                            <pre id="test-organization"><code class="language-csharp">public class UserServiceTests
+{
+    #region Constructor Tests
+    
+    [Fact]
+    public void Constructor_NullRepository_ThrowsArgumentNullException()
+    {
+        Action act = () => new UserService(null);
+        act.Should().Throw<ArgumentNullException>();
+    }
+    
+    #endregion
+    
+    #region CreateUser Tests
+    
+    [Fact]
+    public void CreateUser_ValidData_ReturnsUserWithId()
+    {
+        // Test implementation
+    }
+    
+    [Fact]
+    public void CreateUser_NullUser_ThrowsArgumentNullException()
+    {
+        // Test implementation
+    }
+    
+    [Fact]
+    public void CreateUser_DuplicateEmail_ThrowsBusinessException()
+    {
+        // Test implementation
+    }
+    
+    #endregion
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Tests Not Following AAA Pattern</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p><strong>Symptoms:</strong> Tests difficult to read and understand</p>
+                        <p><strong>Root Cause:</strong> Mixed arrangement, action, and assertion code</p>
+                        <p><strong>Solution:</strong> Clearly separate Arrange, Act, Assert sections</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>AAA Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'aaa-pattern')">Copy</button>
+                            </div>
+                            <pre id="aaa-pattern"><code class="language-csharp">[Fact]
+public void CalculateDiscount_PremiumCustomer_Returns15Percent()
+{
+    // Arrange
+    var customer = new Customer { Type = CustomerType.Premium };
+    var order = new Order { Total = 100m };
+    var calculator = new DiscountCalculator();
+
+    // Act
+    var discount = calculator.CalculateDiscount(customer, order);
+
+    // Assert
+    discount.Should().Be(15m);
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="best-practices">
+                <h2><i class="bi bi-star"></i> Testing Best Practices</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Unit Testing</h4>
+                        <ul>
+                            <li>Test one thing at a time</li>
+                            <li>Use descriptive test names: `Method_Scenario_ExpectedOutcome`</li>
+                            <li>Follow AAA pattern (Arrange, Act, Assert)</li>
+                            <li>Mock all external dependencies</li>
+                            <li>Keep tests fast and isolated</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Integration Testing</h4>
+                        <ul>
+                            <li>Test real interactions between components</li>
+                            <li>Use test database or in-memory alternatives</li>
+                            <li>Clean up test data between tests</li>
+                            <li>Test critical integration points</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Test Data Management</h4>
+                        <ul>
+                            <li>Use builders for complex test objects</li>
+                            <li>Avoid hardcoded magic values</li>
+                            <li>Make test data creation explicit and readable</li>
+                            <li>Use meaningful test data that reflects real scenarios</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Mock Management</h4>
+                        <ul>
+                            <li>Reset mocks between tests</li>
+                            <li>Use precise parameter matching</li>
+                            <li>Verify important interactions</li>
+                            <li>Don't over-mock (mock only what you need)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="anti-patterns">
+                <h2><i class="bi bi-x-circle"></i> Common TDD Anti-Patterns to Avoid</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Testing Implementation Details</h4>
+                        <p>Focus on behavior, not internal structure. Tests should verify what the code does, not how it does it.</p>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Fragile Tests</h4>
+                        <p>Tests that break with minor refactoring. Write tests that focus on public contracts and behavior.</p>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Slow Tests</h4>
+                        <p>Unit tests should run in milliseconds. Use mocks for external dependencies and avoid heavy I/O operations.</p>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Test Interdependence</h4>
+                        <p>Each test should run independently. Avoid shared state between tests that can cause cascading failures.</p>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Poor Test Names</h4>
+                        <p>Tests should clearly describe what they verify. Use the pattern: `Method_Scenario_ExpectedOutcome`.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="usage-guide">
+                <h2><i class="bi bi-book"></i> How to Use This Guide</h2>
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Identify Test Smells</h4>
+                        <p>Look for patterns that indicate test quality issues like slow execution or frequent failures.</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Apply Appropriate Patterns</h4>
+                        <p>Choose unit vs integration vs end-to-end testing based on what you're actually testing.</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Optimize for Speed</h4>
+                        <p>Keep unit tests fast, integration tests focused, and reserve expensive operations for higher-level tests.</p>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Maintain Test Quality</h4>
+                        <p>Refactor tests like production code. Keep them clean, readable, and maintainable.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>Testing Troubleshooting Guide</em><br>
+                <em>Last Updated: August 21, 2025</em><br>
+                <em>Maintainer: Development Team</em></p>
+                
+                <p><strong>Need More Help?</strong> Check <a href="README.html">main documentation</a> or other troubleshooting guides: 
+                <a href="frontend-troubleshooting.html">Frontend</a> | 
+                <a href="backend-troubleshooting.html">Backend</a> | 
+                <a href="api-troubleshooting.html">API</a> | 
+                <a href="database-troubleshooting.html">Database</a></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+
+        // Search functionality
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const content = document.querySelector('.main-content');
+            const sections = content.querySelectorAll('section, h2, h3, p, li, td');
+            
+            // Remove previous highlights
+            sections.forEach(section => {
+                section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
+            });
+            
+            if (searchTerm.length > 2) {
+                sections.forEach(section => {
+                    const text = section.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        section.innerHTML = highlightText(section.innerHTML, searchTerm);
+                    }
+                });
+
+                // Auto-expand sections with search results
+                document.querySelectorAll('.collapsible').forEach(collapsible => {
+                    const text = collapsible.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        collapsible.classList.add('expanded');
+                    }
+                });
+            }
+        });
+
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+                localStorage.setItem('preferred-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('preferred-theme', 'dark');
+            }
+        }
+
+        // Load saved theme preference
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.setAttribute('data-theme', theme);
+            
+            if (theme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', loadTheme);
+    </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+{
+  "description": "Optimized Claude Code hooks for Windows XOS framework projects (16 hooks with latest XOS patterns)",
+  "version": "2.1",
+  "compatibility": "Claude Code 1.0+",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "name": "XOS Component Validation",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; if ($content -match 'XOSButton(?!Wrapper)|XOSModal|XOSCheckbox') { Write-Host '❌ ERROR: Non-existent XOS component detected!' -ForegroundColor Red; if ($content -match 'XOSButton(?!Wrapper)') { Write-Host '  XOSButton → Use XOSButtonWrapper instead' -ForegroundColor Yellow }; if ($content -match 'XOSModal') { Write-Host '  XOSModal → Use Bootstrap modal (<div class=modal>)' -ForegroundColor Yellow }; if ($content -match 'XOSCheckbox') { Write-Host '  XOSCheckbox → Use Bootstrap form-check' -ForegroundColor Yellow }; exit 1 }\"",
+            "timeout": 5
+          },
+          {
+            "name": "Theme CSS Validation",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; $file = $env:CLAUDE_TOOL_FILE_PATH; if ($file -match 'App\\.(js|jsx)$' -and $content -match 'XOS' -and $content -notmatch 'theme\\.css') { Write-Host '❌ CRITICAL: Missing theme.css import! XOS components will be invisible!' -ForegroundColor Red; Write-Host 'Add: import ''./assets/css/theme.css'';' -ForegroundColor Yellow; exit 1 }\"",
+            "timeout": 5
+          },
+          {
+            "name": "React Pattern Validation",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; $file = $env:CLAUDE_TOOL_FILE_PATH; if ($file -match '\\.(jsx?)$' -and ($content -match 'extends\\s+React\\.Component' -or $content -match 'useState|useEffect|useCallback|useMemo|useContext|useReducer')) { Write-Host '❌ ERROR: Invalid React patterns for XOS framework!' -ForegroundColor Red; if ($content -match 'extends\\s+React\\.Component') { Write-Host '  Components must extend cntrl.XOSComponent' -ForegroundColor Yellow }; if ($content -match 'use(State|Effect|Callback|Memo|Context|Reducer)') { Write-Host '  React Hooks not allowed! Use MVVM with this.Data and updateUI()' -ForegroundColor Yellow }; exit 1 }\"",
+            "timeout": 5
+          },
+          {
+            "name": "ViewModel Pattern Validation",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; $file = $env:CLAUDE_TOOL_FILE_PATH; if ($file -match 'VM\\.(js|jsx)$') { if ($content -notmatch 'extends VMBase') { Write-Host '❌ ERROR: ViewModels must extend VMBase' -ForegroundColor Red; exit 1 }; if ($content -match 'this\\.Data\\s*=\\s*\\{') { Write-Host '❌ ERROR: Cannot set this.Data directly - Data is getter-only!' -ForegroundColor Red; Write-Host '  Use: const model = this.Data; model.prop = value;' -ForegroundColor Yellow; exit 1 }; if ($content -match 'this\\._____state\\s*\\.') { Write-Host '⚠️ WARNING: Avoid direct _____state access' -ForegroundColor Yellow; Write-Host '  Use: const model = this.Data; model.prop = value;' -ForegroundColor Yellow }; if ($content -match 'setState|this\\.state') { Write-Host '❌ ERROR: Use this.Data and updateUI(), not React state' -ForegroundColor Red; exit 1 } }\"",
+            "timeout": 5
+          },
+          {
+            "name": "Button Class Warning",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; if ($content -match 'btn-(primary|secondary|success|danger|warning|info)(?![\\w-])') { Write-Host '⚠️ Use XOS button classes: btn-save, btn-edit, btn-delete, btn-add' -ForegroundColor Yellow }\"",
+            "timeout": 3
+          },
+          {
+            "name": "Utils.js Regex Validation",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; $file = $env:CLAUDE_TOOL_FILE_PATH; if ($file -match 'Utils\\.js$' -and $content -match 'phoneRegex\\s*=\\s*[\"'']\\^') { Write-Host '❌ ERROR: Phone regex in Utils.js needs escaping!' -ForegroundColor Red; Write-Host 'Use: const phoneRegex = ''^\\\\\\\\(?([0-9]{3})\\\\\\\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})'';' -ForegroundColor Yellow; exit 1 }\"",
+            "timeout": 5
+          },
+          {
+            "name": "Dependency Check",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; $file = $env:CLAUDE_TOOL_FILE_PATH; if ($file -match '\\.(jsx?)$' -and ($content -match 'import\\s+[\"''](react-color|fast-sort)[\"'']')) { $pkg = if (Test-Path (Join-Path (Split-Path $file) '..\\..\\package.json')) { Get-Content (Join-Path (Split-Path $file) '..\\..\\package.json') -Raw } else { '' }; if ($content -match 'react-color' -and $pkg -notmatch 'react-color') { Write-Host '⚠️ Missing: npm install react-color' -ForegroundColor Yellow }; if ($content -match 'fast-sort' -and $pkg -notmatch 'fast-sort') { Write-Host '⚠️ Missing: npm install fast-sort' -ForegroundColor Yellow } }\"",
+            "timeout": 3
+          },
+          {
+            "name": "ViewModel File Check",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; $file = $env:CLAUDE_TOOL_FILE_PATH; if ($file -match '\\.(jsx?)$' -and $file -notmatch 'VM\\.(js|jsx)$' -and $content -match 'class\\s+\\w+\\s+extends\\s+cntrl\\.XOSComponent' -and !(Test-Path ($file -replace '\\.(jsx?)$', 'VM.js'))) { Write-Host '⚠️ Component created without ViewModel file' -ForegroundColor Yellow }\"",
+            "timeout": 3
+          },
+          {
+            "name": "Lifecycle Method Warning",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; $file = $env:CLAUDE_TOOL_FILE_PATH; if ($file -match '\\.(jsx?)$' -and $content -match 'componentDidMount|componentWillUnmount') { Write-Host '⚠️ Use XOS lifecycle: onLoad() and onClosing()' -ForegroundColor Yellow }\"",
+            "timeout": 3
+          },
+          {
+            "name": "XOSContainer Misuse Detection",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; $file = $env:CLAUDE_TOOL_FILE_PATH; if ($file -match '\\.(jsx?)$' -and $content -match '<cntrl\\.XOSContainer[^>]*>\\s*<\\w+') { Write-Host '❌ ERROR: Don not wrap components in XOSContainer!' -ForegroundColor Red; Write-Host '  XOSContainer is ONLY for app-level dynamic loading via URLs' -ForegroundColor Yellow; Write-Host '  Individual components extend XOSComponent directly' -ForegroundColor Yellow; exit 1 }\"",
+            "timeout": 5
+          },
+          {
+            "name": "Event Handler Pattern Check",
+            "type": "command", 
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; $file = $env:CLAUDE_TOOL_FILE_PATH; if ($file -match '\\.(jsx?)$' -and $content -match 'onChange.*evt?\\.target\\.value' -and $content -match 'XOSTextbox') { Write-Host '⚠️ WARNING: XOSTextbox uses e.value, not e.target.value!' -ForegroundColor Yellow; Write-Host '  XOS pattern: onChange={(e) => model[e.name] = e.value}' -ForegroundColor Yellow }\"",
+            "timeout": 3
+          },
+          {
+            "name": "Missing Name Prop Detection",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$content = $env:CLAUDE_TOOL_CONTENT; $file = $env:CLAUDE_TOOL_FILE_PATH; if ($file -match '\\.(jsx?)$' -and $content -match '<cntrl\\.XOSTextbox[^>]*onChange' -and $content -notmatch '<cntrl\\.XOSTextbox[^>]*name\\s*=') { Write-Host '❌ ERROR: XOSTextbox missing required name prop!' -ForegroundColor Red; Write-Host '  XOSTextbox needs name prop for e.name in onChange handler' -ForegroundColor Yellow; exit 1 }\"",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "name": "Windows Path Validation",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$cmd = $env:CLAUDE_TOOL_COMMAND; if ($cmd -match '^(mkdir|md)\\s+') { $path = $cmd -replace '^(mkdir|md)\\s+', ''; if ($path -match '^[A-Z][^:\\\\]' -or $path -match '^[A-Z]src' -or $path -match '^[A-Z]Projects') { Write-Host '❌ ERROR: Malformed Windows path!' -ForegroundColor Red; Write-Host '  Wrong: ' -NoNewline; Write-Host $path -ForegroundColor Yellow; Write-Host '  Right: D:\\src\\example' -ForegroundColor Green; exit 1 } }\"",
+            "timeout": 5
+          },
+          {
+            "name": "Linux Command Detection",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$cmd = $env:CLAUDE_TOOL_COMMAND; if ($cmd -match '^(sudo|apt|apt-get|yum|dnf|pacman|systemctl|service)\\s' -or $cmd -match '^wsl\\s') { Write-Host '❌ ERROR: Command not available on Windows!' -ForegroundColor Red; if ($cmd -match 'sudo') { Write-Host '  sudo is disabled. Run commands directly or use admin terminal' -ForegroundColor Yellow }; if ($cmd -match 'apt|yum|dnf|pacman') { Write-Host '  Package managers not available. Use npm, choco, or winget instead' -ForegroundColor Yellow }; if ($cmd -match 'systemctl|service') { Write-Host '  Use Windows services: sc or Get-Service' -ForegroundColor Yellow }; exit 1 }\"",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "name": "Build/Test Failure Reporter",
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"$cmd = $env:CLAUDE_TOOL_COMMAND; $exit = $env:CLAUDE_TOOL_EXIT_CODE; if ($exit -ne '0') { if ($cmd -match 'npm (run )?test') { Write-Host '❌ Tests failed!' -ForegroundColor Red } elseif ($cmd -match 'npm start') { Write-Host '❌ Build failed! Check: dependencies, Utils.js regex, theme.css' -ForegroundColor Red } }\"",
+            "timeout": 3
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XOS Framework Complete Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <!-- Theme Toggle Button -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="bi bi-moon-fill" id="theme-icon"></i>
+                <span id="theme-text">Dark</span>
+            </button>
+            
+            <h3><i class="bi bi-arrow-left"></i> Navigation</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="xos-input-handling-fix.html"><i class="bi bi-tools"></i> Input Fix Guide</a></li>
+                <li><a href="frontend-troubleshooting.html"><i class="bi bi-bug"></i> Frontend Troubleshooting</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-book"></i> Guide Sections</h3>
+            <ul>
+                <li><a href="#overview"><i class="bi bi-info-circle"></i> Overview</a></li>
+                <li><a href="#architecture"><i class="bi bi-diagram-3"></i> Architecture</a></li>
+                <li><a href="#mvvm-pattern"><i class="bi bi-layers"></i> MVVM Pattern</a></li>
+                <li><a href="#component-development"><i class="bi bi-puzzle"></i> Component Development</a></li>
+                <li><a href="#state-management"><i class="bi bi-database"></i> State Management</a></li>
+                <li><a href="#api-integration"><i class="bi bi-cloud-arrow-up"></i> API Integration</a></li>
+                <li><a href="#component-reference"><i class="bi bi-grid"></i> Component Reference</a></li>
+                <li><a href="#theming-styling"><i class="bi bi-palette"></i> Theming & Styling</a></li>
+                <li><a href="#best-practices"><i class="bi bi-check-circle"></i> Best Practices</a></li>
+                <li><a href="#migration-guide"><i class="bi bi-arrow-repeat"></i> Migration Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1><i class="bi bi-laptop"></i> XOS Framework Complete Guide</h1>
+
+            <section id="overview">
+                <h2><i class="bi bi-info-circle"></i> Overview</h2>
+                <p>The XOS Framework is a React-based enterprise UI framework implementing Model-View-ViewModel (MVVM) architecture with sophisticated state management, navigation systems, and a comprehensive component library.</p>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4><i class="bi bi-check-circle"></i> Use XOS Framework when:</h4>
+                        <ul>
+                            <li>Project has <code>xos-components</code> directory</li>
+                            <li>Enterprise-level application requirements</li>
+                            <li>Need for consistent MVVM architecture</li>
+                            <li>Complex state management requirements</li>
+                            <li>Multi-window/tab navigation needs</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-x-circle"></i> Use Standard React when:</h4>
+                        <ul>
+                            <li>No XOS components available</li>
+                            <li>Simple applications</li>
+                            <li>Prototype/POC development</li>
+                            <li>Modern React patterns preferred</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="architecture">
+                <h2><i class="bi bi-diagram-3"></i> Architecture</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Technology Stack</h4>
+                        <ul>
+                            <li><strong>Framework</strong>: React 18+ with class-based components</li>
+                            <li><strong>Pattern</strong>: MVVM (Model-View-ViewModel)</li>
+                            <li><strong>Styling</strong>: SCSS/SASS with Bootstrap 5 integration</li>
+                            <li><strong>State</strong>: Hierarchical state management with persistence</li>
+                            <li><strong>API</strong>: Custom ApiManager with JWT authentication</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Component Hierarchy</h4>
+                        <div class="code-block">
+                            <pre>React.Component
+└── XOSComponent (Base class with lifecycle management)
+    └── Your Component (Business component)
+        └── ViewModel (Business logic layer)</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <h3>Key Architectural Principles</h3>
+                    <ol>
+                        <li><strong>Component-Based Architecture</strong>: Modular, reusable components</li>
+                        <li><strong>MVVM Pattern</strong>: Clear separation of View and ViewModel</li>
+                        <li><strong>Hierarchical State</strong>: Tree-structured state with parent-child relationships</li>
+                        <li><strong>Context-Driven</strong>: React Context for cross-component communication</li>
+                        <li><strong>Session-Aware</strong>: Built-in authentication and session management</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="mvvm-pattern">
+                <h2><i class="bi bi-layers"></i> MVVM Pattern</h2>
+                
+                <div class="alert alert-critical">
+                    <h3>⚠️ MANDATORY: Every Component Must Follow MVVM</h3>
+                    <p>The MVVM pattern is <strong>NOT OPTIONAL</strong>. Every component in an XOS project must follow this architecture.</p>
+                </div>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>ViewModel Structure</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>ViewModel Template</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'viewmodel-structure')">Copy</button>
+                            </div>
+                            <pre id="viewmodel-structure">// {ComponentName}VM.js
+import { VMBase, Utils } from '../../xos-components';
+
+export default class {ComponentName}VM extends VMBase {
+    constructor(props) {
+        super(props);
+        
+        // ALL state goes in Data object
+        this.Data = {
+            // Initialize all state properties here
+            loading: false,
+            items: [],
+            selectedItem: null,
+            errorMessage: ''
+        };
+    }
+    
+    // Lifecycle - called once when component loads
+    onLoad() {
+        // Initial data loading
+        // API calls
+        // Setup operations
+    }
+    
+    // Business logic methods
+    async loadData() {
+        this.Data.loading = true;
+        this.updateUI(); // Trigger re-render
+        
+        try {
+            const response = await Utils.fetchData('/api/endpoint');
+            this.Data.items = response.data;
+        } catch (error) {
+            this.Data.errorMessage = error.message;
+        } finally {
+            this.Data.loading = false;
+            this.updateUI();
+        }
+    }
+    
+    // Validation logic
+    validateInput() {
+        // Return true/false
+        // Update this.Data.errorMessage if invalid
+    }
+    
+    // Lifecycle - called when component unmounts
+    onClosing() {
+        // Cleanup
+        // Cancel subscriptions
+        // Clear timers
+    }
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Component Structure</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Component Template</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'component-structure')">Copy</button>
+                            </div>
+                            <pre id="component-structure">// {ComponentName}.jsx
+import React from 'react';
+import * as cntrl from '../../xos-components';
+import {ComponentName}VM from './{ComponentName}VM';
+
+export default class {ComponentName} extends cntrl.XOSComponent {
+    constructor(props) {
+        super(props, new {ComponentName}VM(props)); // ALWAYS bind ViewModel
+    }
+    
+    render() {
+        // ALWAYS access state from VM.Data
+        const vm = this.VM;
+        const { loading, items, errorMessage } = vm.Data;
+        
+        return (
+            <cntrl.XOSControl 
+                loading={loading}
+                title="Component Title">
+                <cntrl.XOSBody>
+                    {/* Component content using XOS components */}
+                </cntrl.XOSBody>
+            </cntrl.XOSControl>
+        );
+    }
+}</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <h3>Key Differences from Standard React</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>React Pattern</th>
+                                    <th>XOS Pattern</th>
+                                    <th>Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>extends Component</code></td>
+                                    <td><code>extends XOSComponent</code></td>
+                                    <td>Enhanced lifecycle</td>
+                                </tr>
+                                <tr>
+                                    <td><code>this.state</code></td>
+                                    <td><code>this.Data</code> in VM</td>
+                                    <td>Centralized state</td>
+                                </tr>
+                                <tr>
+                                    <td><code>setState()</code></td>
+                                    <td><code>updateUI()</code></td>
+                                    <td>Direct mutation allowed</td>
+                                </tr>
+                                <tr>
+                                    <td><code>componentDidMount</code></td>
+                                    <td><code>onLoad()</code></td>
+                                    <td>Simplified lifecycle</td>
+                                </tr>
+                                <tr>
+                                    <td><code>useState</code> hook</td>
+                                    <td>Not used</td>
+                                    <td>Class-based only</td>
+                                </tr>
+                                <tr>
+                                    <td>Props drilling</td>
+                                    <td>Context navigation</td>
+                                    <td>Built-in communication</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="component-development">
+                <h2><i class="bi bi-puzzle"></i> Component Development</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>File Structure</h4>
+                        <div class="code-block">
+                            <pre>components/
+└── {ModuleType}/
+    └── {ModuleCode}/
+        ├── index.jsx           # Component file
+        ├── {ModuleCode}VM.js   # ViewModel
+        └── index.css           # Styles (optional)</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Module Naming Convention</h4>
+                        <p>Replace <code>{PROJECT}</code> with your project prefix:</p>
+                        <ul>
+                            <li><strong>{PROJECT}M{XXX}</strong>: Master/Configuration modules</li>
+                            <li><strong>{PROJECT}T{XXX}</strong>: Transaction modules</li>
+                            <li><strong>{PROJECT}R{XXX}</strong>: Report modules</li>
+                        </ul>
+                        <p><strong>Example for project "ERP":</strong></p>
+                        <ul>
+                            <li><code>ERPM001</code>: User Management</li>
+                            <li><code>ERPT001</code>: Sales Transaction</li>
+                            <li><code>ERPR001</code>: Sales Report</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="collapsible expanded">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Development Checklist</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="nav-grid">
+                            <div class="nav-card">
+                                <h4>Before Creating Component:</h4>
+                                <ul>
+                                    <li>☐ Business requirement defined</li>
+                                    <li>☐ Module code assigned</li>
+                                    <li>☐ XOS components available</li>
+                                </ul>
+                            </div>
+
+                            <div class="nav-card">
+                                <h4>ViewModel Creation:</h4>
+                                <ul>
+                                    <li>☐ File named <code>{ModuleCode}VM.js</code></li>
+                                    <li>☐ Extends <code>VMBase</code></li>
+                                    <li>☐ Constructor calls <code>super(props)</code></li>
+                                    <li>☐ State initialized in <code>this.Data = {}</code></li>
+                                    <li>☐ Business methods defined</li>
+                                    <li>☐ <code>updateUI()</code> called after state changes</li>
+                                    <li>☐ <code>onLoad()</code> implemented if needed</li>
+                                    <li>☐ <code>onClosing()</code> for cleanup</li>
+                                </ul>
+                            </div>
+
+                            <div class="nav-card">
+                                <h4>Component Creation:</h4>
+                                <ul>
+                                    <li>☐ File named <code>index.jsx</code></li>
+                                    <li>☐ Imports ViewModel</li>
+                                    <li>☐ Extends <code>cntrl.XOSComponent</code></li>
+                                    <li>☐ Constructor binds ViewModel</li>
+                                    <li>☐ Render accesses <code>this.VM.Data</code></li>
+                                    <li>☐ Uses XOS components</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="state-management">
+                <h2><i class="bi bi-database"></i> State Management</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>XOSStateManager Architecture</h4>
+                        <p>The state manager maintains a hierarchical tree structure:</p>
+                        <div class="code-block">
+                            <pre>{
+    id: 'component-id',
+    state: {},           // Public state (VM.Data)
+    internalState: {     // Private state
+        vm: VMInstance,
+        data: {}
+    },
+    children: []         // Child component states
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>State Persistence</h4>
+                        <p>States are automatically preserved during:</p>
+                        <ul>
+                            <li>Tab switches</li>
+                            <li>Window navigation</li>
+                            <li>Component re-mounting</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Update Pattern</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>State Update Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'state-update')">Copy</button>
+                            </div>
+                            <pre id="state-update">// In ViewModel
+handleChange(field, value) {
+    this.Data[field] = value;  // Direct mutation
+    this.updateUI();            // Trigger re-render
+}</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api-integration">
+                <h2><i class="bi bi-cloud-arrow-up"></i> API Integration</h2>
+                
+                <div class="nav-card">
+                    <h4>Using ApiManager</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>API Call Pattern</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'api-pattern')">Copy</button>
+                        </div>
+                        <pre id="api-pattern">// In ViewModel
+async saveData() {
+    this.Data.loading = true;
+    this.updateUI();
+    
+    Utils.ajax({
+        url: '/api/save',
+        method: 'POST',
+        data: this.Data.formData
+    }, (response) => {
+        if (response.success) {
+            this.Data.successMessage = 'Saved successfully';
+        } else {
+            this.Data.errorMessage = response.error;
+        }
+        this.Data.loading = false;
+        this.updateUI();
+    });
+}</pre>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <h3>Authentication</h3>
+                    <p>The framework handles JWT tokens automatically:</p>
+                    <ul>
+                        <li>Token storage in session</li>
+                        <li>Automatic refresh</li>
+                        <li>401 handling with retry</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="theming-styling">
+                <h2><i class="bi bi-palette"></i> Theming & Styling</h2>
+                
+                <div class="alert alert-critical">
+                    <h3>⚠️ CRITICAL: Button Styling Issues</h3>
+                    <p><strong>ALWAYS use XOS button classes, NOT Bootstrap button classes!</strong></p>
+                    
+                    <div class="nav-grid">
+                        <div class="nav-card">
+                            <div class="alert alert-critical">
+                                <p><strong>❌ WRONG - Bootstrap classes</strong></p>
+                                <div class="code-block">
+                                    <pre><button className="btn btn-primary">Save</button></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="nav-card">
+                            <div class="alert alert-success">
+                                <p><strong>✅ CORRECT - XOS button classes</strong></p>
+                                <div class="code-block">
+                                    <pre><button className="btn-save">Save</button></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>XOS Button Classes</h4>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>XOS Class</th>
+                                        <th>Purpose</th>
+                                        <th>Usage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>btn-save</code></td>
+                                        <td>Save operations</td>
+                                        <td>Primary save actions</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>btn-edit</code></td>
+                                        <td>Edit operations</td>
+                                        <td>Modify/edit triggers</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>btn-delete</code></td>
+                                        <td>Delete operations</td>
+                                        <td>Destructive actions</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>btn-add</code></td>
+                                        <td>Add/Create operations</td>
+                                        <td>New item creation</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>btn-search</code></td>
+                                        <td>Search operations</td>
+                                        <td>Search triggers</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>btn-clear</code></td>
+                                        <td>Clear/Reset operations</td>
+                                        <td>Form resets</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>btn-close-custom</code></td>
+                                        <td>Close operations</td>
+                                        <td>Modal/window close</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Import Order (Critical!)</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Correct Import Order</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'import-order')">Copy</button>
+                            </div>
+                            <pre id="import-order">// index.js or App.js
+// 1. Bootstrap CSS (if using)
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+// 2. XOS Components CSS (must come after Bootstrap)
+import './xos-components/index.css';
+
+// 3. Your custom theme overrides
+import './styles/theme.scss';
+
+// 4. Component-specific styles
+import './components/styles.scss';</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="best-practices">
+                <h2><i class="bi bi-check-circle"></i> Best Practices</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4><i class="bi bi-check-circle"></i> DO's ✅</h4>
+                        <ol>
+                            <li><strong>Always use MVVM pattern</strong> - No exceptions</li>
+                            <li><strong>Initialize all state in constructor</strong> - Define structure upfront</li>
+                            <li><strong>Call updateUI() after state changes</strong> - Ensure re-renders</li>
+                            <li><strong>Use lifecycle methods properly</strong>:
+                                <ul>
+                                    <li><code>onLoad()</code> for initialization</li>
+                                    <li><code>onClosing()</code> for cleanup</li>
+                                </ul>
+                            </li>
+                            <li><strong>Handle errors gracefully</strong> - Always try/catch async operations</li>
+                            <li><strong>Use XOS components</strong> - Maintain consistency</li>
+                        </ol>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-x-circle"></i> DON'Ts ❌</h4>
+                        <ol>
+                            <li><strong>Never use React hooks</strong> - Class components only</li>
+                            <li><strong>Never use setState</strong> - Use updateUI() instead</li>
+                            <li><strong>Never put business logic in components</strong> - Keep in ViewModel</li>
+                            <li><strong>Never manipulate DOM directly</strong> - Use XOS methods</li>
+                            <li><strong>Never skip ViewModel</strong> - Even for simple components</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Common Patterns</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="nav-grid">
+                            <div class="nav-card">
+                                <h4>Form Handling</h4>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Form Pattern</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'form-pattern')">Copy</button>
+                                    </div>
+                                    <pre id="form-pattern">// ViewModel
+handleFieldChange(fieldName, value) {
+    this.Data.formData[fieldName] = value;
+    this.validateField(fieldName);
+    this.updateUI();
+}
+
+validateField(fieldName) {
+    // Field-specific validation
+    switch(fieldName) {
+        case 'email':
+            this.Data.errors[fieldName] = 
+                !this.isValidEmail(this.Data.formData[fieldName]) 
+                ? 'Invalid email' : '';
+            break;
+    }
+}</pre>
+                                </div>
+                            </div>
+
+                            <div class="nav-card">
+                                <h4>Loading States</h4>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Loading Pattern</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'loading-pattern')">Copy</button>
+                                    </div>
+                                    <pre id="loading-pattern">// ViewModel
+async performOperation() {
+    this.Data.loading = true;
+    this.Data.errorMessage = '';
+    this.updateUI();
+    
+    try {
+        const result = await this.apiCall();
+        this.Data.result = result;
+    } catch (error) {
+        this.Data.errorMessage = error.message;
+    } finally {
+        this.Data.loading = false;
+        this.updateUI();
+    }
+}</pre>
+                                </div>
+                            </div>
+
+                            <div class="nav-card">
+                                <h4>List Operations</h4>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>List Pattern</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'list-pattern')">Copy</button>
+                                    </div>
+                                    <pre id="list-pattern">// ViewModel
+addItem(item) {
+    this.Data.items.push(item);
+    this.updateUI();
+}
+
+removeItem(index) {
+    this.Data.items.splice(index, 1);
+    this.updateUI();
+}
+
+updateItem(index, updates) {
+    Object.assign(this.Data.items[index], updates);
+    this.updateUI();
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="migration-guide">
+                <h2><i class="bi bi-arrow-repeat"></i> Migration Guide</h2>
+                
+                <div class="alert alert-info">
+                    <h3>From Standard React to XOS</h3>
+                </div>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Step 1: Convert Functional to Class Component</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Component Conversion</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'component-conversion')">Copy</button>
+                            </div>
+                            <pre id="component-conversion">// Before (React)
+function MyComponent({ data }) {
+    const [state, setState] = useState({ loading: false });
+    // ...
+}
+
+// After (XOS)
+class MyComponent extends cntrl.XOSComponent {
+    constructor(props) {
+        super(props, new MyComponentVM(props));
+    }
+    // ...
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Step 2: Move State to ViewModel</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>State Migration</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'state-migration')">Copy</button>
+                            </div>
+                            <pre id="state-migration">// Before (React)
+const [loading, setLoading] = useState(false);
+const [data, setData] = useState([]);
+
+// After (XOS ViewModel)
+this.Data = {
+    loading: false,
+    data: []
+};</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Step 3: Convert Hooks to Methods</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Hook Conversion</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'hook-conversion')">Copy</button>
+                            </div>
+                            <pre id="hook-conversion">// Before (React)
+useEffect(() => {
+    loadData();
+}, []);
+
+// After (XOS ViewModel)
+onLoad() {
+    this.loadData();
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Step 4: Update State Management</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>State Update Migration</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'state-update-migration')">Copy</button>
+                            </div>
+                            <pre id="state-update-migration">// Before (React)
+setState(prev => ({ ...prev, loading: true }));
+
+// After (XOS ViewModel)
+this.Data.loading = true;
+this.updateUI();</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="troubleshooting">
+                <h2><i class="bi bi-bug"></i> Troubleshooting</h2>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Issue</th>
+                                <th>Cause</th>
+                                <th>Solution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Component not updating</td>
+                                <td>Missing <code>updateUI()</code></td>
+                                <td>Call <code>updateUI()</code> after state changes</td>
+                            </tr>
+                            <tr>
+                                <td>State lost on navigation</td>
+                                <td>Not using XOSStateManager</td>
+                                <td>Ensure proper VM registration</td>
+                            </tr>
+                            <tr>
+                                <td>Focus issues</td>
+                                <td>Active/Inactive handling</td>
+                                <td>Implement proper focus management</td>
+                            </tr>
+                            <tr>
+                                <td>Memory leaks</td>
+                                <td>Missing cleanup</td>
+                                <td>Implement <code>onClosing()</code> method</td>
+                            </tr>
+                            <tr>
+                                <td>API calls failing</td>
+                                <td>Token expiry</td>
+                                <td>Check ApiManager configuration</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="nav-card">
+                    <h4>Debug Helpers</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Debug Utilities</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'debug-helpers')">Copy</button>
+                        </div>
+                        <pre id="debug-helpers">// In ViewModel
+debugState() {
+    console.log('Current State:', JSON.stringify(this.Data, null, 2));
+}
+
+// Check component lifecycle
+onLoad() {
+    console.log('Component loaded:', this.constructor.name);
+}
+
+onClosing() {
+    console.log('Component closing:', this.constructor.name);
+}</pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="version-compatibility">
+                <h2><i class="bi bi-info-square"></i> Version Compatibility</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>System Requirements</h4>
+                        <ul>
+                            <li><strong>React</strong>: 18.2.0+</li>
+                            <li><strong>Bootstrap</strong>: 5.1.3+</li>
+                            <li><strong>Node.js</strong>: 16+</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Browser Support</h4>
+                        <ul>
+                            <li><strong>Chrome</strong>: 90+</li>
+                            <li><strong>Firefox</strong>: 88+</li>
+                            <li><strong>Safari</strong>: 14+</li>
+                            <li><strong>Edge</strong>: 90+</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>XOS Framework Complete Guide - Version 2.1.0</em><br>
+                <em>Last Updated: August 21, 2025</em><br>
+                <em>Framework Version: XOS 2.0</em></p>
+                
+                <p><strong>Related Guides:</strong> <a href="CRITICAL_PATTERNS.html">Critical Patterns</a> | <a href="xos-input-handling-fix.html">Input Fix Guide</a> | <a href="frontend-troubleshooting.html">Frontend Troubleshooting</a></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+                localStorage.setItem('preferred-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('preferred-theme', 'dark');
+            }
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.setAttribute('data-theme', theme);
+            
+            if (theme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadTheme);
+    </script>
+</body>
+</html>

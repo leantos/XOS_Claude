@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XOS Input Handling - Critical Fix Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <!-- Theme Toggle Button -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="bi bi-moon-fill" id="theme-icon"></i>
+                <span id="theme-text">Dark</span>
+            </button>
+            
+            <h3><i class="bi bi-arrow-left"></i> <a href="README.html" style="color: inherit; text-decoration: none;">Back to Hub</a></h3>
+            
+            <h3><i class="bi bi-tools"></i> Quick Fix</h3>
+            <ul>
+                <li><a href="#critical-problem"><i class="bi bi-exclamation-triangle"></i> The Problem</a></li>
+                <li><a href="#root-cause"><i class="bi bi-search"></i> Root Cause</a></li>
+                <li><a href="#wrong-patterns"><i class="bi bi-x-circle"></i> Wrong Patterns</a></li>
+                <li><a href="#correct-patterns"><i class="bi bi-check-circle"></i> Correct Patterns</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-clipboard-check"></i> Implementation</h3>
+            <ul>
+                <li><a href="#implementation-checklist"><i class="bi bi-list-check"></i> Checklist</a></li>
+                <li><a href="#event-handler-pattern"><i class="bi bi-gear"></i> Event Handler</a></li>
+                <li><a href="#working-example"><i class="bi bi-code-square"></i> Working Example</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-bug"></i> Debugging</h3>
+            <ul>
+                <li><a href="#debugging-checklist"><i class="bi bi-wrench"></i> Debug Checklist</a></li>
+                <li><a href="#quick-reference"><i class="bi bi-bookmark"></i> Quick Reference</a></li>
+                <li><a href="#never-do"><i class="bi bi-shield-x"></i> Never Do</a></li>
+                <li><a href="#always-do"><i class="bi bi-shield-check"></i> Always Do</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search fix guide..." id="searchInput">
+            </div>
+
+            <h1><i class="bi bi-tools"></i> XOS Input Handling - Critical Fix Guide</h1>
+
+            <div class="alert alert-critical" id="critical-problem">
+                <h2><i class="bi bi-exclamation-triangle"></i> CRITICAL: Why XOSTextbox Inputs Stop Accepting Keyboard Input</h2>
+                <h3>The Problem</h3>
+                <p>When XOSTextbox components don't accept keyboard input, it's <strong>NOT</strong> a problem with XOSTextbox itself. The issue is always in how the parent component implements the controlled component pattern with the XOS framework's ViewModel system.</p>
+            </div>
+
+            <section id="root-cause">
+                <h2>The Root Cause: VMBase Data Property</h2>
+                
+                <div class="alert alert-info">
+                    <h4>VMBase.js Implementation:</h4>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>VMBase Data Property</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'vmbase-implementation')">Copy</button>
+                        </div>
+                        <pre><code class="language-javascript" id="vmbase-implementation">export class VMBase {
+    get Data() {
+        return this._____state;  // Data is a GETTER, not a setter!
+    }
+    constructor(props) {
+        this._____state = {};
+        // ...
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="wrong-patterns">
+                <h2><i class="bi bi-x-circle"></i> WRONG: Common Mistakes That Break Input</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>1. Trying to Set Data Directly (CAUSES ERROR)</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>❌ WRONG - Direct Data Assignment</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'wrong-data-direct')">Copy</button>
+                            </div>
+                            <pre><code class="language-javascript" id="wrong-data-direct">// ❌ WRONG - This throws: "Cannot set property Data of #<VMBase> which has only a getter"
+export default class UserLoginVM extends VMBase {
+    constructor(props) {
+        super(props);
+        this.Data = {  // ❌ ERROR! Data only has a getter!
+            userName: '',
+            password: ''
+        };
+    }
+}
+
+// ❌ ALSO WRONG - Direct _____state access (bad practice)
+export default class UserLoginVM extends VMBase {
+    constructor(props) {
+        super(props);
+        this._____state.userName = '';  // ❌ Don't access _____state directly
+        this._____state.password = '';
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>2. Wrong Event Handler Pattern</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>❌ WRONG - Incorrect Event Handlers</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'wrong-handlers')">Copy</button>
+                            </div>
+                            <pre><code class="language-javascript" id="wrong-handlers">// ❌ WRONG - Expects standard event, but XOSTextbox passes {name, value}
+handleUsernameChange = (evt) => {
+    this.VM.Data.userName = evt.target.value;  // undefined - no evt.target!
+}
+
+// ❌ WRONG - Updates state but doesn't trigger re-render
+handleInputChange = (e) => {
+    const model = this.VM.Data;
+    model[e.name] = e.value;  // No updateUI() = no re-render!
+}
+
+// ❌ WRONG - Missing name prop on XOSTextbox
+&lt;cntrl.XOSTextbox 
+    value={this.VM.Data.userName}
+    onChange={this.handleInputChange}  // Won't work without name prop!
+/&gt;
+
+// ❌ WRONG - Using React patterns in XOS
+componentDidMount() {
+    // React lifecycle methods don't work in XOS
+    this.loadData();
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="correct-patterns">
+                <h2><i class="bi bi-check-circle"></i> CORRECT: The Working Pattern</h2>
+
+                <div class="collapsible expanded">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>1. ViewModel Initialization</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>✅ CORRECT - ViewModel Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'correct-viewmodel')">Copy</button>
+                            </div>
+                            <pre><code class="language-javascript" id="correct-viewmodel">export default class UserLoginVM extends VMBase {
+    constructor(props) {
+        super(props);
+        this.init();
+    }
+    
+    init() {
+        // ✅ CORRECT - Get reference to Data, then set properties
+        const model = this.Data;  // Get reference to _____state
+        model.userName = '';      // Set properties on that reference
+        model.password = '';
+        model.isLoading = false;
+        model.errorMessage = '';
+    }
+    
+    // Continue using Data reference in methods
+    validateForm() {
+        const model = this.Data;
+        if (!model.userName) {
+            return 'Username required';
+        }
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible expanded">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>2. Component Event Handler Pattern</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>✅ CORRECT - Component Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'correct-component')">Copy</button>
+                            </div>
+                            <pre><code class="language-javascript" id="correct-component">export default class UserLogin extends cntrl.XOSComponent {
+    constructor(props) {
+        super(props, new UserLoginVM(props));
+    }
+    
+    // ✅ CORRECT - The pattern that makes inputs work
+    handleInputChange = (e) => {
+        if (this.VM) {
+            const model = this.VM.Data;  // Get reference to _____state
+            model[e.name] = e.value;     // Modify property on that reference
+            this.VM.updateUI();           // CRITICAL: Trigger re-render!
+        }
+    };
+    
+    render() {
+        // Access state via VM.Data
+        let vm = this.VM;
+        let { userName, password } = vm.Data;
+        
+        return (
+            &lt;cntrl.XOSTextbox
+                name="userName"              // CRITICAL: name prop for e.name
+                value={userName || ''}       // Controlled component
+                onChange={this.handleInputChange}  // Unified handler
+                placeholder="Enter username"
+            /&gt;
+        );
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="implementation-checklist">
+                <h2><i class="bi bi-list-check"></i> Implementation Checklist</h2>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>ViewModel Setup</h4>
+                        <ul class="checklist">
+                            <li>Extend VMBase correctly</li>
+                            <li>Use <code>init()</code> method to initialize state</li>
+                            <li>Get Data reference first: <code>const model = this.Data</code></li>
+                            <li>Set properties on the reference: <code>model.prop = value</code></li>
+                            <li>Never try to set <code>this.Data = {}</code></li>
+                            <li>Access state via <code>this.Data</code> getter in methods</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Component Setup</h4>
+                        <ul class="checklist">
+                            <li>Extend <code>cntrl.XOSComponent</code></li>
+                            <li>Pass ViewModel to <code>super(props, new VM(props))</code></li>
+                            <li>Create proper event handlers with the 3-step pattern</li>
+                            <li>Add <code>name</code> prop to all XOSTextbox components</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="event-handler-pattern">
+                <h2>Event Handler Pattern (MEMORIZE THIS!)</h2>
+                <div class="alert alert-success">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>The 3-Step Pattern</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'three-step-pattern')">Copy</button>
+                        </div>
+                        <pre><code class="language-javascript" id="three-step-pattern">handleInputChange = (e) => {
+    if (this.VM) {
+        const model = this.VM.Data;  // Step 1: Get reference
+        model[e.name] = e.value;     // Step 2: Modify property
+        this.VM.updateUI();           // Step 3: Trigger re-render
+    }
+};</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="debugging-checklist">
+                <h2><i class="bi bi-wrench"></i> Debugging Checklist</h2>
+
+                <div class="alert alert-warning">
+                    <p>If inputs aren't working, check:</p>
+
+                    <div class="nav-grid">
+                        <div class="nav-card">
+                            <h4>1. Console Error: "Cannot set property Data"</h4>
+                            <p><strong>Fix:</strong> Use <code>const model = this.Data; model.prop = value</code> not <code>this.Data = {}</code></p>
+                        </div>
+
+                        <div class="nav-card">
+                            <h4>2. Input doesn't update when typing</h4>
+                            <p><strong>Fix:</strong> Add <code>this.VM.updateUI()</code> to handler</p>
+                            <p><strong>Fix:</strong> Ensure <code>name</code> prop matches property name</p>
+                        </div>
+
+                        <div class="nav-card">
+                            <h4>3. Handler receives undefined</h4>
+                            <p><strong>Fix:</strong> Use <code>e.value</code> not <code>e.target.value</code></p>
+                            <p><strong>Fix:</strong> Check XOSTextbox has <code>name</code> prop</p>
+                        </div>
+
+                        <div class="nav-card">
+                            <h4>4. State not updating</h4>
+                            <p><strong>Fix:</strong> Get reference first: <code>const model = this.VM.Data</code></p>
+                            <p><strong>Fix:</strong> Then modify: <code>model[e.name] = e.value</code></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="quick-reference">
+                <h2><i class="bi bi-bookmark"></i> Quick Reference</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>XOSTextbox Props</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>XOSTextbox Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'xostextbox-props')">Copy</button>
+                            </div>
+                            <pre><code class="language-javascript" id="xostextbox-props">&lt;cntrl.XOSTextbox
+    name="fieldName"                    // Required for e.name
+    value={this.VM.Data.fieldName || ''}  // Controlled
+    onChange={this.handleInputChange}   // Handler
+    placeholder="Enter value"
+    disabled={this.VM.Data.isLoading}
+    inputType={cntrl.XOSTextboxTypes.textbox}  // or .password
+    mandatory={true}
+/&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="working-example">
+                <h2>Complete Working Example</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Full Implementation</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Complete Working Form</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'complete-example')">Copy</button>
+                            </div>
+                            <pre><code class="language-javascript" id="complete-example">// ViewModel
+export default class FormVM extends VMBase {
+    constructor(props) {
+        super(props);
+        this.init();
+    }
+    
+    init() {
+        const model = this.Data;
+        model.email = '';
+        model.password = '';
+    }
+}
+
+// Component
+export default class Form extends cntrl.XOSComponent {
+    constructor(props) {
+        super(props, new FormVM(props));
+    }
+    
+    handleInputChange = (e) => {
+        if (this.VM) {
+            const model = this.VM.Data;
+            model[e.name] = e.value;
+            this.VM.updateUI();
+        }
+    };
+    
+    render() {
+        const { email, password } = this.VM.Data;
+        
+        return (
+            &lt;&gt;
+                &lt;cntrl.XOSTextbox
+                    name="email"
+                    value={email || ''}
+                    onChange={this.handleInputChange}
+                /&gt;
+                &lt;cntrl.XOSTextbox
+                    name="password"
+                    value={password || ''}
+                    onChange={this.handleInputChange}
+                    inputType={cntrl.XOSTextboxTypes.password}
+                /&gt;
+            &lt;/&gt;
+        );
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="never-do">
+                <h2><i class="bi bi-shield-x"></i> 🚨 NEVER DO THIS</h2>
+                <div class="alert alert-danger">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>❌ Anti-Patterns</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'never-do-this')">Copy</button>
+                        </div>
+                        <pre><code class="language-javascript" id="never-do-this">// ❌ Setting Data directly
+this.Data = { userName: 'test' };
+
+// ❌ Accessing _____state directly
+this._____state.userName = 'test';
+
+// ❌ Forgetting updateUI()
+model.userName = e.value;  // No re-render!
+
+// ❌ Using evt.target.value instead of e.value
+onChange = (evt) => model.userName = evt.target.value;
+
+// ❌ Not using name prop
+&lt;cntrl.XOSTextbox value={userName} onChange={handler} /&gt;
+
+// ❌ Using React lifecycle in XOS components
+componentDidMount() { this.loadData(); }
+
+// ❌ Wrapping XOSComponent in XOSContainer
+&lt;XOSContainer&gt;&lt;MyComponent /&gt;&lt;/XOSContainer&gt;</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="always-do">
+                <h2><i class="bi bi-shield-check"></i> ✅ ALWAYS DO THIS</h2>
+                <div class="alert alert-success">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>✅ Correct Patterns</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'always-do-this')">Copy</button>
+                        </div>
+                        <pre><code class="language-javascript" id="always-do-this">// ✅ Initialize using Data reference in ViewModel
+const model = this.Data;
+model.userName = '';
+
+// ✅ Three-step pattern in Component
+const model = this.VM.Data;
+model[e.name] = e.value;
+this.VM.updateUI();
+
+// ✅ Use e.value (XOS pattern)
+onChange = (e) => model.userName = e.value;
+
+// ✅ Include name prop (REQUIRED!)
+&lt;cntrl.XOSTextbox name="userName" value={userName} onChange={handler} /&gt;
+
+// ✅ Use XOS lifecycle methods
+onLoad = () => { this.VM.loadData(); }
+
+// ✅ XOSComponent extends directly
+export default class MyComponent extends cntrl.XOSComponent { ... }</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="architecture">
+                <h2>🏗️ XOSContainer vs XOSComponent - When to Use Which</h2>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>XOSComponent (for individual components)</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>✅ Individual Components</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'xos-component-usage')">Copy</button>
+                            </div>
+                            <pre><code class="language-javascript" id="xos-component-usage">// ✅ CORRECT: Use for individual form components
+export default class UserLogin extends cntrl.XOSComponent {
+    constructor(props) {
+        super(props, new UserLoginVM(props));
+    }
+    // Component implementation...
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>XOSContainer (for application-level dynamic loading)</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>✅ Dynamic Loading</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'xos-container-usage')">Copy</button>
+                            </div>
+                            <pre><code class="language-javascript" id="xos-container-usage">// ✅ CORRECT: Use at app level for dynamic component loading
+&lt;cntrl.XOSContainer
+    url="Common/Login"           // Loads component by URL path
+    context={{ parentID: 'CVS', id: 'LOGIN_ID' }}
+    data={{ User: userInfo, QueryToken: queryToken }}
+    className="col container-fluid h-100 m-0 p-0"
+/&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <h4>Key Differences:</h4>
+                    <ul>
+                        <li><strong>XOSComponent</strong>: Base class for individual components (forms, lists, etc.)</li>
+                        <li><strong>XOSContainer</strong>: Application-level wrapper for dynamic loading via URLs</li>
+                        <li><strong>Don't wrap XOSComponents in XOSContainer</strong> - they extend XOSComponent directly</li>
+                        <li><strong>XOSContainer is for loading components dynamically</strong>, not for layout</li>
+                    </ul>
+
+                    <h4>Architecture Pattern:</h4>
+                    <pre>App Level:    XOSContainer (dynamic loading)
+Component:    extends XOSComponent (individual components)  
+ViewModel:    extends VMBase (state management)</pre>
+                </div>
+            </section>
+
+            <div class="alert alert-success">
+                <p><strong>This pattern is GUARANTEED to work</strong> because it follows the XOS framework's architecture correctly.</p>
+            </div>
+
+            <div class="footer">
+                <p><em>XOS Input Handling Fix Guide</em><br>
+                <em>Last Updated: August 21, 2025</em><br>
+                <em>Maintainer: Development Team</em></p>
+                
+                <p><strong>Still having issues?</strong> <a href="README.html">Return to Documentation Hub</a> or check <a href="frontend-troubleshooting.html">Frontend Troubleshooting</a></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+
+        // Search functionality
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const content = document.querySelector('.main-content');
+            const sections = content.querySelectorAll('section, h2, h3, p, li, td');
+            
+            // Remove previous highlights
+            sections.forEach(section => {
+                section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
+            });
+            
+            if (searchTerm.length > 2) {
+                sections.forEach(section => {
+                    const text = section.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        section.innerHTML = highlightText(section.innerHTML, searchTerm);
+                    }
+                });
+            }
+        });
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        }
+
+        // Add mobile menu button for smaller screens
+        if (window.innerWidth <= 768) {
+            const menuButton = document.createElement('button');
+            menuButton.innerHTML = '☰ Menu';
+            menuButton.style.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
+            menuButton.onclick = toggleSidebar;
+            document.body.appendChild(menuButton);
+        }
+
+        // Auto-expand sections with search results
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            if (searchTerm.length > 2) {
+                document.querySelectorAll('.collapsible').forEach(collapsible => {
+                    const text = collapsible.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        collapsible.classList.add('expanded');
+                    }
+                });
+            }
+        });
+
+        // Theme Toggle Functionality - Fluent 2 Design System
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+                localStorage.setItem('preferred-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('preferred-theme', 'dark');
+            }
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.setAttribute('data-theme', theme);
+            
+            if (theme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadTheme);
+    </script>
+</body>
+</html>

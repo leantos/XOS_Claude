@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Development Blueprint - XOS Framework</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <!-- Theme Toggle Button -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="bi bi-moon-fill" id="theme-icon"></i>
+                <span id="theme-text">Dark</span>
+            </button>
+            
+            <h3><i class="bi bi-arrow-left"></i> <a href="README.html">Back to Hub</a></h3>
+            
+            <h3><i class="bi bi-server"></i> Backend Architecture</h3>
+            <ul>
+                <li><a href="#system-overview"><i class="bi bi-diagram-3"></i> System Overview</a></li>
+                <li><a href="#data-flow"><i class="bi bi-arrow-right-circle"></i> Data Flow</a></li>
+                <li><a href="#api-roadmap"><i class="bi bi-map"></i> API Roadmap</a></li>
+                <li><a href="#database-design"><i class="bi bi-database"></i> Database Schema</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-gear"></i> Implementation</h3>
+            <ul>
+                <li><a href="#phase-1"><i class="bi bi-1-circle"></i> Environment Setup</a></li>
+                <li><a href="#phase-2"><i class="bi bi-2-circle"></i> Authentication</a></li>
+                <li><a href="#phase-3"><i class="bi bi-3-circle"></i> Database Layer</a></li>
+                <li><a href="#phase-4"><i class="bi bi-4-circle"></i> Business Services</a></li>
+                <li><a href="#phase-5"><i class="bi bi-5-circle"></i> API Controllers</a></li>
+                <li><a href="#phase-6"><i class="bi bi-6-circle"></i> SignalR</a></li>
+                <li><a href="#phase-7"><i class="bi bi-7-circle"></i> Frontend Integration</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-shield-check"></i> Security & Testing</h3>
+            <ul>
+                <li><a href="#authentication-flow"><i class="bi bi-key"></i> Auth Flow</a></li>
+                <li><a href="#testing-strategy"><i class="bi bi-bug"></i> Testing</a></li>
+                <li><a href="#error-handling"><i class="bi bi-exclamation-triangle"></i> Error Handling</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-rocket"></i> Deployment</h3>
+            <ul>
+                <li><a href="#deployment"><i class="bi bi-cloud-upload"></i> Deployment</a></li>
+                <li><a href="#replication-guide"><i class="bi bi-copy"></i> Replication Guide</a></li>
+                <li><a href="#next-steps"><i class="bi bi-arrow-right"></i> Next Steps</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search documentation..." id="searchInput">
+            </div>
+
+            <h1><i class="bi bi-server"></i> Backend Development Blueprint</h1>
+
+            <section id="system-overview">
+                <h2>System Overview</h2>
+
+                <div class="alert alert-critical">
+                    <h3><i class="bi bi-exclamation-triangle"></i> Architecture Type</h3>
+                    <p><strong>Custom XOS Framework Architecture</strong> - This is NOT standard ASP.NET Core. The system uses a proprietary XOS framework that wraps ASP.NET Core with custom patterns for transactions, database access, and API design.</p>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>🚨 Critical Differences from Standard ASP.NET Core</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li><strong>API Pattern</strong>: 95% POST endpoints (NOT RESTful)</li>
+                            <li><strong>Database Access</strong>: MUST use <code>row.GetValue&lt;T&gt;("ColumnName")</code> pattern</li>
+                            <li><strong>Transactions</strong>: Complex nested patterns with SignalR notifications</li>
+                            <li><strong>Response Type</strong>: Return domain types directly (no IActionResult)</li>
+                            <li><strong>Multi-tenant</strong>: Key-based routing in connection strings</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Technology Stack (Customizable)</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li><strong>Runtime:</strong> .NET 8.0+ (C#)</li>
+                            <li><strong>Framework:</strong> XOS-wrapped ASP.NET Core Web API</li>
+                            <li><strong>Database:</strong> PostgreSQL (Primary), SQLite (Secondary/Local) <em>- Replace with your database</em></li>
+                            <li><strong>ORM:</strong> Custom XOS Data Framework (NOT Entity Framework)</li>
+                            <li><strong>Authentication:</strong> Custom XOS JWT Factory (configurable expiration)</li>
+                            <li><strong>Real-time Communication:</strong> SignalR</li>
+                            <li><strong>Logging:</strong> Serilog with enrichers</li>
+                            <li><strong>Frontend:</strong> XOS Framework + React + jQuery (hybrid)</li>
+                            <li><strong>Document Processing:</strong> PdfPig, custom document processors <em>- Customize as needed</em></li>
+                            <li><strong>Security:</strong> Custom XOS Security Framework with CSP</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Project Structure</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Project Structure</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'project-structure')">Copy</button>
+                            </div>
+                            <pre id="project-structure" class="language-none"><code>{ProjectName} Solution/
+├── {ProjectName}.WebApi/          # Main Web API Project
+│   ├── Controllers/               # API Controllers
+│   ├── Domain/                    # Web API Domain Models
+│   ├── Extensions/                # Service Extensions & Configuration
+│   ├── Services/                  # Web API Services (Auth, Token Management)
+│   ├── SignalR/                   # Real-time Communication Hubs
+│   ├── PDFConverter/              # PDF Processing Tools
+│   ├── Files/                     # File Storage
+│   ├── UIPages/                   # React Frontend Application
+│   └── wwwroot/                   # Static Web Content
+├── {ProjectName}.Transaction/     # Business Logic Layer
+│   ├── Core/                      # Core Base Classes
+│   ├── Domain/                    # Business Domain Models
+│   ├── Interfaces/                # Service Contracts
+│   ├── Services/                  # Business Logic Services
+│   ├── Extensions/                # Transaction Extensions
+│   └── Utils/                     # Utility Classes
+└── Documents/                     # Database Scripts & Documentation
+    └── DB/                        # Database Files</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="data-flow">
+                <h2>Data Flow Architecture</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Request Flow Diagram</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Request Flow</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'request-flow')">Copy</button>
+                            </div>
+                            <pre id="request-flow" class="language-none"><code>Client (React SPA)
+    ↓ HTTP/WebSocket
+[Authentication Middleware]
+    ↓
+[CORS Policy & Security Headers]
+    ↓
+[Controller] → [Business Service] → [Database Layer]
+    ↓                ↓                    ↓
+[Response] ← [Domain Models] ← [PostgreSQL/SQLite]
+    ↑
+[SignalR Hub] (Real-time notifications)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Component Responsibilities</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ol>
+                            <li><strong>Controllers</strong> - HTTP request/response handling, authentication validation, input sanitization</li>
+                            <li><strong>Business Services</strong> - Domain logic, data validation, business rules enforcement</li>
+                            <li><strong>Domain Models</strong> - Data structures, entity definitions, business objects</li>
+                            <li><strong>Database Layer</strong> - Data access, query execution, connection management</li>
+                            <li><strong>SignalR Hubs</strong> - Real-time communication, push notifications</li>
+                            <li><strong>Authentication Layer</strong> - JWT token management, user validation, session handling</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <section id="api-roadmap">
+                <h2>API Development Roadmap</h2>
+
+                <section id="phase-1">
+                    <h3>Phase 1: Environment Setup (Day 1)</h3>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Solution Setup Commands</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'setup-commands')">Copy</button>
+                        </div>
+                        <pre id="setup-commands" class="language-bash"><code># 1. Create Solution Structure
+dotnet new sln -n {ProjectName}
+dotnet new webapi -n {ProjectName}.WebApi
+dotnet new classlib -n {ProjectName}.Transaction
+dotnet sln add {ProjectName}.WebApi {ProjectName}.Transaction
+
+# 2. Install Core Dependencies
+dotnet add {ProjectName}.WebApi package Microsoft.AspNetCore.Mvc.NewtonsoftJson
+dotnet add {ProjectName}.WebApi package Npgsql
+dotnet add {ProjectName}.WebApi package Serilog.AspNetCore
+dotnet add {ProjectName}.WebApi package Swashbuckle.AspNetCore
+dotnet add {ProjectName}.Transaction package Microsoft.Extensions.DependencyInjection.Abstractions</code></pre>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <h4>Key Configuration Files:</h4>
+                        <ul>
+                            <li><code>appsettings.json</code> - Database connections, JWT settings, logging configuration</li>
+                            <li><code>Program.cs</code> - Service registration, middleware pipeline</li>
+                            <li><code>ServiceExtensions.cs</code> - Custom service registration methods</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="phase-2">
+                    <h3>Phase 2: Authentication & Security Layer (Day 2-3)</h3>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                            <h4>Create Authentication Components</h4>
+                            <span class="collapsible-toggle">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <ol>
+                                <li><code>Domain/AppConstants.cs</code> - Application constants</li>
+                                <li><code>Domain/AppClaims.cs</code> - JWT claim definitions</li>
+                                <li><code>Services/TokenStoreService.cs</code> - Token storage management</li>
+                                <li><code>Services/TokenValidatorService.cs</code> - Token validation logic</li>
+                                <li><code>Controllers/AuthController.cs</code> - Authentication endpoints</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>JWT Configuration Template</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'jwt-config')">Copy</button>
+                        </div>
+                        <pre id="jwt-config" class="language-json"><code>"JwtOptions": {
+  "SecretKey": "your-secure-secret-key",
+  "EncryptKey": "your-encrypt-key",
+  "Issuer": "http://localhost:5139",
+  "Audience": "{PROJECT_NAME}",
+  "AccessTokenExpirationMinutes": 5,
+  "RefreshTokenExpirationMinutes": 1440
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="phase-3">
+                    <h3>Phase 3: Database Layer Setup (Day 3-4)</h3>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                            <h4>Database Configuration Steps</h4>
+                            <span class="collapsible-toggle">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <ol>
+                                <li>Configure multi-database support in <code>appsettings.json</code></li>
+                                <li>Implement custom <code>XOSServiceBase</code> for database operations</li>
+                                <li>Create domain models in <code>CVS.Transaction/Domain/</code></li>
+                                <li>Set up connection string management with client-based routing</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Database Model Template</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'db-model')">Copy</button>
+                        </div>
+                        <pre id="db-model" class="language-csharp"><code>public class BaseObject&lt;T&gt;
+{
+    public T ID { get; set; }
+    public string Text { get; set; }
+}
+
+// Business Entity Example - Replace with your entities
+public class BusinessEntity : BaseObject&lt;int&gt;
+{
+    public short ClientID { get; set; }
+    public short SiteID { get; set; }
+    public DateTime TransactionDate { get; set; }
+    // Additional properties specific to your domain...
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="phase-4">
+                    <h3>Phase 4: Business Services Layer (Day 4-5)</h3>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                            <h4>Create Service Interfaces</h4>
+                            <span class="collapsible-toggle">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <ol>
+                                <li><code>Interfaces/IUserService.cs</code> - User management operations</li>
+                                <li><code>Interfaces/IBusinessEntityService.cs</code> - Core business operations <em>- Replace with your domain</em></li>
+                                <li><code>Interfaces/IDashboardService.cs</code> - Dashboard data services</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Service Implementation Pattern</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'service-pattern')">Copy</button>
+                        </div>
+                        <pre id="service-pattern" class="language-csharp"><code>public class UserService : XOSServiceBase, IUserService
+{
+    public UserService(IServiceProvider serviceProvider, ILogger&lt;UserService&gt; logger)
+        : base(serviceProvider, logger) { }
+    
+    public async Task&lt;LoginOutput&gt; SigninAsync(LoginInput login)
+    {
+        // Business logic implementation
+        // Database operations using this.DBUtils()
+        // Error handling and logging
+    }
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="phase-5">
+                    <h3>Phase 5: API Controllers (Day 5-6)</h3>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                            <h4>Create Controllers</h4>
+                            <span class="collapsible-toggle">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <ol>
+                                <li><code>Controllers/AuthController.cs</code> - Authentication & authorization</li>
+                                <li><code>Controllers/BusinessEntityController.cs</code> - Core business operations <em>- Replace with your domain</em></li>
+                                <li><code>Controllers/DashboardController.cs</code> - Dashboard APIs</li>
+                                <li><code>Controllers/ProcessController.cs</code> - Business process operations <em>- Customize for your workflows</em></li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Controller Template</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'controller-template')">Copy</button>
+                        </div>
+                        <pre id="controller-template" class="language-csharp"><code>[Authorize]
+[EnableCors(AppConstants.CROS_POLICY_NAME)]
+[Produces("application/json")]
+[Route("api/[controller]")]
+[ApiController]
+public class BankDataController : ControllerBase
+{
+    private readonly IBankDataService _bankDataService;
+    private readonly ILogger&lt;BankDataController&gt; _logger;
+
+    public BankDataController(IBankDataService bankDataService, ILogger&lt;BankDataController&gt; logger)
+    {
+        _bankDataService = bankDataService;
+        _logger = logger;
+    }
+
+    [HttpGet]
+    public async Task&lt;ActionResult&gt; GetBankData([FromQuery] BankDataFilter filter)
+    {
+        try
+        {
+            var result = await _bankDataService.GetBankDataAsync(filter);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving bank data");
+            return StatusCode(500, "Internal server error");
+        }
+    }
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="phase-6">
+                    <h3>Phase 6: Real-time Communication (Day 6-7)</h3>
+                    
+                    <div class="collapsible">
+                        <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                            <h4>SignalR Implementation</h4>
+                            <span class="collapsible-toggle">▼</span>
+                        </div>
+                        <div class="collapsible-content">
+                            <ol>
+                                <li><code>SignalR/NotificationsHub.cs</code> - Real-time hub</li>
+                                <li><code>Services/SignalRNotifierService.cs</code> - Notification service</li>
+                                <li>Configure SignalR in <code>Program.cs</code></li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>SignalR Hub Template</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'signalr-hub')">Copy</button>
+                        </div>
+                        <pre id="signalr-hub" class="language-csharp"><code>public class NotificationsHub : Hub
+{
+    public async Task JoinGroup(string groupName)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+    }
+
+    public async Task SendNotification(string group, string message)
+    {
+        await Clients.Group(group).SendAsync("ReceiveNotification", message);
+    }
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="phase-7">
+                    <h3>Phase 7: Frontend Integration (Day 7-8)</h3>
+                    
+                    <div class="alert alert-info">
+                        <h4>React Integration</h4>
+                        <ul>
+                            <li>Configure static file serving in <code>Program.cs</code></li>
+                            <li>Set up fallback routing for SPA</li>
+                            <li>Implement JWT token handling in React</li>
+                            <li>Configure SignalR client connections</li>
+                        </ul>
+                    </div>
+                </section>
+            </section>
+
+            <section id="api-endpoints">
+                <h2>API Endpoints Overview</h2>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Authentication Endpoints</h4>
+                        <ul>
+                            <li><code>POST /api/auth/sign-in</code> - User authentication</li>
+                            <li><code>POST /api/auth/refresh-token</code> - Token refresh</li>
+                            <li><code>POST /api/auth/sign-out</code> - User logout</li>
+                            <li><code>POST /api/auth/GetSecretQuestion</code> - Password recovery</li>
+                            <li><code>POST /api/auth/ChangePassword</code> - Password change</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Business Operation Endpoints</h4>
+                        <ul>
+                            <li><code>GET/POST /api/bankdata</code> - Bank data management</li>
+                            <li><code>GET/POST /api/bankreconciliation</code> - Bank reconciliation</li>
+                            <li><code>GET /api/dashboard</code> - Dashboard analytics</li>
+                            <li><code>GET/POST /api/department</code> - Department management</li>
+                            <li><code>GET/POST /api/bacsrefund</code> - BACS refund processing</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>File Management</h4>
+                        <ul>
+                            <li>File upload/download operations</li>
+                            <li>PDF processing endpoints</li>
+                            <li>CSV import/export functionality</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="database-design">
+                <h2>Database Schema Design</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Core Tables Structure</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Core Database Schema</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'db-schema')">Copy</button>
+                            </div>
+                            <pre id="db-schema" class="language-sql"><code>-- Client Management
+cvs_clnt_mast (clnt_id, clnt_ref, clnt_nam, rcrd_stat)
+
+-- User Management  
+cvs_usr_mast (clnt_id, usr_cd, dsply_nam, login_id, passwd, rcrd_stat)
+cvs_usr_site_dtls (clnt_id, usr_cd, site_id, usr_grp_dtl, lgn_vld_frm, lgn_vld_till)
+
+-- Site & Access Control
+cvs_site_mast (clnt_id, site_id, site_nam, tm_zon_txt, rcrd_stat)
+cvs_usr_grp_mast (clnt_id, site_id, usr_grp_cd, usr_grp_desc)
+cvs_usr_grp_accs_dtls (clnt_id, site_id, usr_grp_cd, fnctn_cd)
+
+-- Business Entities
+cvs_bank_data (clnt_id, site_id, transaction data...)
+cvs_bank_reconciliation (reconciliation data...)</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <h4>Database Connection Management</h4>
+                    <ul>
+                        <li>Multi-tenant architecture with client-based connection routing</li>
+                        <li>Separate read/write connection strings</li>
+                        <li>Connection pooling and timeout management</li>
+                        <li>Support for both PostgreSQL and SQLite databases</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="authentication-flow">
+                <h2>Authentication & Authorization Flow</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>JWT Token Structure</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>JWT Token Structure</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'jwt-structure')">Copy</button>
+                            </div>
+                            <pre id="jwt-structure" class="language-json"><code>{
+  "sub": "user_id",
+  "name": "User Name",
+  "ClientID": "1",
+  "SiteID": "1", 
+  "UserGroupID": "1",
+  "TimezoneID": "UTC",
+  "exp": 1234567890,
+  "iss": "CVS_API"
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Authentication Process</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ol>
+                            <li><strong>Login Request</strong> - Validate credentials against database</li>
+                            <li><strong>Multi-site Handling</strong> - Present site/role selection if multiple options</li>
+                            <li><strong>Token Generation</strong> - Create JWT with user claims</li>
+                            <li><strong>Token Storage</strong> - Store refresh token in database</li>
+                            <li><strong>Authorization</strong> - Validate token on subsequent requests</li>
+                            <li><strong>Token Refresh</strong> - Automatic token renewal process</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Security Features</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li>Password hashing with secure algorithms</li>
+                            <li>Refresh token rotation</li>
+                            <li>Token revocation on logout</li>
+                            <li>IP address tracking</li>
+                            <li>Session timeout management</li>
+                            <li>Secret question-based password recovery</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="business-logic">
+                <h2>Business Logic & Service Layers</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Service Layer Architecture</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li><strong>Base Service Class</strong> - <code>XOSServiceBase</code> provides common functionality</li>
+                            <li><strong>Dependency Injection</strong> - Constructor-based DI for all services</li>
+                            <li><strong>Error Handling</strong> - Consistent exception handling and logging</li>
+                            <li><strong>Database Access</strong> - Abstracted through <code>DBUtils</code> helper methods</li>
+                            <li><strong>Multi-tenancy</strong> - Client-specific database connections</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Key Business Services</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ol>
+                            <li><strong>UserService</strong> - User authentication, authorization, profile management</li>
+                            <li><strong>BankDataService</strong> - Bank transaction processing and management</li>
+                            <li><strong>BankReconciliationService</strong> - Automated bank statement reconciliation</li>
+                            <li><strong>DashboardService</strong> - Analytics and reporting data aggregation</li>
+                            <li><strong>AuditService</strong> - System audit logging and compliance tracking</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Data Access Patterns</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li><strong>Repository Pattern</strong> - Encapsulated in service base classes</li>
+                            <li><strong>Unit of Work</strong> - Transaction management across operations</li>
+                            <li><strong>Connection Management</strong> - Client-based connection routing</li>
+                            <li><strong>Query Building</strong> - Dynamic SQL generation with parameterization</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="testing-strategy">
+                <h2>Testing Strategy</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Unit Testing Structure</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Test Project Structure</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'test-structure')">Copy</button>
+                            </div>
+                            <pre id="test-structure" class="language-none"><code>CVS.Tests/
+├── Controllers/
+│   ├── AuthControllerTests.cs
+│   ├── BankDataControllerTests.cs
+│   └── DashboardControllerTests.cs
+├── Services/
+│   ├── UserServiceTests.cs
+│   ├── BankDataServiceTests.cs
+│   └── TokenStoreServiceTests.cs
+└── Integration/
+    ├── AuthenticationFlowTests.cs
+    └── DatabaseConnectionTests.cs</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Test Dependencies Setup</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Test Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'test-config')">Copy</button>
+                            </div>
+                            <pre id="test-config" class="language-csharp"><code>// Test service configuration
+services.AddScoped&lt;IUserService, UserService&gt;();
+services.AddLogging();
+services.Configure&lt;AppSetting&gt;(configuration);
+
+// Mock database connections for testing
+services.AddSingleton&lt;IDBFactory, MockDBFactory&gt;();</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>API Testing Examples</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>API Test Commands</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'api-tests')">Copy</button>
+                            </div>
+                            <pre id="api-tests" class="language-bash"><code># Authentication Test
+curl -X POST http://localhost:5139/api/auth/sign-in \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ClientReference": "TEST",
+    "LoginID": "admin",
+    "Password": "password123"
+  }'
+
+# Get Bank Data
+curl -X GET http://localhost:5139/api/bankdata \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Real-time Notification Test
+# Connect to SignalR hub at /hub/notificationhub</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="development-workflow">
+                <h2>Development Workflow</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Local Development Setup</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ol>
+                            <li><strong>Prerequisites:</strong> .NET 8 SDK, PostgreSQL, Node.js (for React frontend)</li>
+                            <li><strong>Database Setup:</strong> Create PostgreSQL database and run schema scripts</li>
+                            <li><strong>Configuration:</strong> Update <code>appsettings.Development.json</code> with local settings</li>
+                            <li><strong>Build & Run:</strong> <code>dotnet run --project CVS.WebApi</code></li>
+                            <li><strong>Frontend Development:</strong> <code>npm start</code> in UIPages directory</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Environment Configuration</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Environment Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'env-config')">Copy</button>
+                            </div>
+                            <pre id="env-config" class="language-json"><code>{
+  "XOSConfig": {
+    "DBSettings": [{
+      "Keys": ["1", "LOCAL"],
+      "WriteConnectionString": "Server=localhost;Database=CVS_DEV;...",
+      "ReadConnectionString": "Server=localhost;Database=CVS_DEV;...",
+      "ProviderName": "Npgsql"
+    }],
+    "SqliteConnection": "Files\\DB File\\SqliteDB.db",
+    "CorsIPs": ["http://localhost:3000"]
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Development Commands</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Development Commands</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'dev-commands')">Copy</button>
+                            </div>
+                            <pre id="dev-commands" class="language-bash"><code># Build solution
+dotnet build
+
+# Run with hot reload
+dotnet watch --project CVS.WebApi
+
+# Run tests
+dotnet test
+
+# Create migration (if using EF Core)
+dotnet ef migrations add InitialCreate
+
+# Frontend development
+cd CVS.WebApi/UIPages
+npm install
+npm start</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="error-handling">
+                <h2>Error Handling & Logging</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Logging Configuration</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li><strong>Serilog</strong> with structured logging</li>
+                            <li><strong>File-based logging</strong> with daily rotation</li>
+                            <li><strong>Console logging</strong> for development</li>
+                            <li><strong>Request/Response logging</strong> with user context</li>
+                            <li><strong>Error tracking</strong> with correlation IDs</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Error Handling Strategy</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Error Handling Pattern</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'error-handling')">Copy</button>
+                            </div>
+                            <pre id="error-handling" class="language-csharp"><code>public async Task&lt;ActionResult&gt; ExampleAction()
+{
+    try
+    {
+        // Business logic
+        var result = await _service.ProcessDataAsync();
+        return Ok(result);
+    }
+    catch (BusinessException ex)
+    {
+        _logger.LogWarning(ex, "Business logic error: {Message}", ex.Message);
+        return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Unexpected error in {Action}", nameof(ExampleAction));
+        return StatusCode(500, "Internal server error");
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Response Standardization</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Standard API Response</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'api-response')">Copy</button>
+                            </div>
+                            <pre id="api-response" class="language-csharp"><code>public class ApiResponse&lt;T&gt;
+{
+    public bool Success { get; set; }
+    public T Data { get; set; }
+    public string ErrorMessage { get; set; }
+    public List&lt;string&gt; ValidationErrors { get; set; }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="deployment">
+                <h2>Deployment & Scaling</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Deployment Approach</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>The CVS application is deployed as a standalone .NET application without containerization. The deployment process involves:</p>
+                        <ul>
+                            <li>Publishing the .NET application using <code>dotnet publish</code></li>
+                            <li>Deploying to IIS or hosting as a Windows/Linux service</li>
+                            <li>Configuring the production environment settings in <code>appsettings.Production.json</code></li>
+                            <li>Setting up the PostgreSQL database connections for production</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Performance Considerations</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li><strong>Connection Pooling</strong> - Database connection management</li>
+                            <li><strong>Caching Strategy</strong> - Redis for session and data caching</li>
+                            <li><strong>Load Balancing</strong> - Multiple API instances behind load balancer</li>
+                            <li><strong>Database Optimization</strong> - Query performance tuning and indexing</li>
+                            <li><strong>File Storage</strong> - Cloud storage for file management</li>
+                            <li><strong>Monitoring</strong> - Application performance monitoring (APM)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="replication-guide">
+                <h2>Replication Guide for Similar Systems</h2>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>For Building Similar Financial/ERP Systems</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="nav-grid">
+                            <div class="nav-card">
+                                <h4>1. Architecture Foundation</h4>
+                                <ul>
+                                    <li>Use the layered architecture pattern with clear separation of concerns</li>
+                                    <li>Implement multi-tenant database architecture</li>
+                                    <li>Set up comprehensive authentication/authorization system</li>
+                                    <li>Use SignalR for real-time features</li>
+                                </ul>
+                            </div>
+
+                            <div class="nav-card">
+                                <h4>2. Core Components to Replicate</h4>
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Core Components</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'core-components')">Copy</button>
+                                    </div>
+                                    <pre id="core-components" class="language-csharp"><code>// Base service class
+public abstract class ServiceBase
+{
+    protected IServiceProvider ServiceProvider { get; }
+    protected ILogger Logger { get; }
+    // Database access methods
+    // Common utility functions
+}
+
+// Multi-tenant configuration
+public class TenantSettings
+{
+    public List&lt;string&gt; Keys { get; set; }
+    public string ConnectionString { get; set; }
+    public string ProviderName { get; set; }
+}</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="nav-card">
+                                <h4>3. Security Implementation</h4>
+                                <ul>
+                                    <li>JWT-based authentication with custom claims</li>
+                                    <li>Refresh token rotation mechanism</li>
+                                    <li>Role-based access control with site/group hierarchy</li>
+                                    <li>Secure password handling and recovery</li>
+                                </ul>
+                            </div>
+
+                            <div class="nav-card">
+                                <h4>4. Database Design Patterns</h4>
+                                <ul>
+                                    <li>Client-based partitioning for multi-tenancy</li>
+                                    <li>Audit logging for all transactions</li>
+                                    <li>Flexible user-site-group relationship model</li>
+                                    <li>Standardized naming conventions</li>
+                                </ul>
+                            </div>
+
+                            <div class="nav-card">
+                                <h4>5. API Design Standards</h4>
+                                <ul>
+                                    <li>RESTful endpoint structure</li>
+                                    <li>Consistent error handling and response formats</li>
+                                    <li>Comprehensive input validation</li>
+                                    <li>Swagger/OpenAPI documentation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Customization Checklist</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="nav-grid">
+                            <div class="nav-card">
+                                <h4>Required Customizations</h4>
+                                <ul style="list-style-type: none;">
+                                    <li>☐ Update domain models for specific business requirements</li>
+                                    <li>☐ Modify authentication claims based on user roles</li>
+                                    <li>☐ Adapt database schema for business entities</li>
+                                    <li>☐ Configure CORS policies for client applications</li>
+                                    <li>☐ Set up logging and monitoring for production environment</li>
+                                    <li>☐ Implement business-specific validation rules</li>
+                                    <li>☐ Create custom SignalR hubs for real-time features</li>
+                                    <li>☐ Configure file storage and processing pipelines</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="next-steps">
+                <h2>Next Steps for Implementation</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Implementation Phases</h4>
+                        <ol>
+                            <li><strong>Foundation Phase</strong> - Set up project structure and basic authentication</li>
+                            <li><strong>Core Services</strong> - Implement primary business logic services</li>
+                            <li><strong>API Layer</strong> - Create controllers and endpoint mapping</li>
+                            <li><strong>Frontend Integration</strong> - Connect React SPA with backend APIs</li>
+                            <li><strong>Testing Implementation</strong> - Comprehensive test coverage</li>
+                            <li><strong>Deployment Setup</strong> - Production environment configuration</li>
+                            <li><strong>Performance Optimization</strong> - Fine-tune for production loads</li>
+                            <li><strong>Documentation</strong> - API documentation and developer guides</li>
+                        </ol>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Success Metrics</h4>
+                        <ul>
+                            <li>80%+ test coverage</li>
+                            <li>Sub-200ms API response times</li>
+                            <li>Zero security vulnerabilities</li>
+                            <li>Complete API documentation</li>
+                            <li>Successful multi-tenant deployment</li>
+                            <li>Real-time functionality working</li>
+                            <li>Production-ready logging</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="alert alert-success">
+                    <h3>Conclusion</h3>
+                    <p>This blueprint provides a complete roadmap for building enterprise-grade .NET Core applications with multi-tenant architecture, comprehensive security, and real-time capabilities. The modular design allows for easy customization while maintaining architectural consistency and best practices.</p>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>Backend Blueprint Version: 1.0.0</em><br>
+                <em>Last Updated: August 21, 2025</em><br>
+                <em>Maintainer: Development Team</em></p>
+                
+                <p><strong>Need Help?</strong> Reference this document when working with the XOS backend framework. For frontend integration, see <a href="README.html">Documentation Hub</a></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+
+        // Search functionality
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const content = document.querySelector('.main-content');
+            const sections = content.querySelectorAll('section, h2, h3, p, li, td');
+            
+            // Remove previous highlights
+            sections.forEach(section => {
+                section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
+            });
+            
+            if (searchTerm.length > 2) {
+                sections.forEach(section => {
+                    const text = section.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        section.innerHTML = highlightText(section.innerHTML, searchTerm);
+                    }
+                });
+            }
+        });
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        }
+
+        // Add mobile menu button for smaller screens
+        if (window.innerWidth <= 768) {
+            const menuButton = document.createElement('button');
+            menuButton.innerHTML = '☰ Menu';
+            menuButton.backend-blueprint.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
+            menuButton.onclick = toggleSidebar;
+            document.body.appendChild(menuButton);
+        }
+
+        // Auto-expand sections with search results
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            if (searchTerm.length > 2) {
+                document.querySelectorAll('.collapsible').forEach(collapsible => {
+                    const text = collapsible.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        collapsible.classList.add('expanded');
+                    }
+                });
+            }
+        });
+
+        // Theme Toggle Functionality - Fluent 2 Design System
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+                localStorage.setItem('preferred-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('preferred-theme', 'dark');
+            }
+        }
+
+        // Load saved theme preference or default to dark
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.setAttribute('data-theme', theme);
+            
+            if (theme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', loadTheme);
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('preferred-theme')) {
+                loadTheme();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Prompt Quick Reference - XOS Framework</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <!-- Theme Toggle Button -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="bi bi-moon-fill" id="theme-icon"></i>
+                <span id="theme-text">Dark</span>
+            </button>
+            
+            <h3><i class="bi bi-lightning-charge"></i> Quick Access</h3>
+            <ul>
+                <li><a href="#always-start"><i class="bi bi-exclamation-triangle"></i> Always Start Here</a></li>
+                <li><a href="#frontend-prompts"><i class="bi bi-palette"></i> Frontend Prompts</a></li>
+                <li><a href="#backend-prompts"><i class="bi bi-server"></i> Backend Prompts</a></li>
+                <li><a href="#fullstack-prompts"><i class="bi bi-link-45deg"></i> Full-Stack Prompts</a></li>
+                <li><a href="#quick-fixes"><i class="bi bi-lightning-charge-fill"></i> Quick Fixes</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-code-square"></i> Prompt Categories</h3>
+            <ul>
+                <li><a href="#testing-prompts"><i class="bi bi-bug"></i> Testing</a></li>
+                <li><a href="#debugging-prompts"><i class="bi bi-tools"></i> Debugging</a></li>
+                <li><a href="#common-patterns"><i class="bi bi-list-check"></i> Common Patterns</a></li>
+                <li><a href="#complete-module"><i class="bi bi-box-seam"></i> Complete Module</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-bookmark"></i> References</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-diamond"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Development Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1><i class="bi bi-clipboard-check"></i> Claude Prompt Quick Reference - XOS Framework</h1>
+
+            <section id="essential-start">
+                <div class="alert alert-critical">
+                    <h3>ALWAYS START WITH THIS</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Essential Context Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'essential-context')">Copy</button>
+                        </div>
+                        <pre id="essential-context">I'm working with the XOS framework which has custom patterns different from standard React/.NET. 
+Check @claude_docs for patterns before implementing.</pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="frontend-prompts">
+                <h2>Frontend Prompts</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Create New Component</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>New Component Prompt</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'new-component')">Copy</button>
+                            </div>
+                            <pre id="new-component">Create [ComponentName] using XOS MVVM pattern.
+Follow @claude_docs/development-guide/TDD-XOS-FRONTEND-WORKFLOW.md
+Use @claude_docs/frontend/ui-templates/XOSComponentTemplate as base.
+CRITICAL: Use VMBase Data reference pattern from @claude_docs/frontend/xos-input-handling-fix.md</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Fix Input Not Working</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Input Fix Prompt</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'fix-input')">Copy</button>
+                            </div>
+                            <pre id="fix-input">XOSTextbox inputs not accepting keyboard input in [ComponentName].
+Fix using @claude_docs/frontend/xos-input-handling-fix.md
+Ensure three-step event handler pattern and updateUI() calls.</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Fix Data Property Error</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Data Error Fix</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'fix-data-error')">Copy</button>
+                            </div>
+                            <pre id="fix-data-error">Getting 'Cannot set property Data' error in [ComponentName].
+Fix using VMBase initialization patterns from @claude_docs/CRITICAL_PATTERNS.md
+Use init() method with Data reference pattern.</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Style Component</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Styling Prompt</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'style-component')">Copy</button>
+                            </div>
+                            <pre id="style-component">Style [ComponentName] using Bootstrap 5 classes.
+Follow @claude_docs/frontend/xos-styling-integration.md
+Use XOS button patterns from @claude_docs/frontend/xos-button-styling-guide.md</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="backend-prompts">
+                <h2>Backend Prompts</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Create API Service</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>API Service Prompt</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'api-service')">Copy</button>
+                            </div>
+                            <pre id="api-service">Create [EntityName]Service with CRUD operations for PostgreSQL.
+Follow @claude_docs/backend/backend-blueprint.md patterns.
+Use GetEntityDataListAsync pattern from @claude_docs/backend/xos-backend-complete-guide.md
+POST endpoints only, return domain types directly.</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Create API Controller</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>API Controller Prompt</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'api-controller')">Copy</button>
+                            </div>
+                            <pre id="api-controller">Create [EntityName]Controller with POST endpoints.
+Follow @claude_docs/backend/api-routes.md patterns.
+Return domain types directly, not IActionResult.
+Use dependency injection for services.</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Database Integration</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Database Prompt</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'database-integration')">Copy</button>
+                            </div>
+                            <pre id="database-integration">Create PostgreSQL integration for [EntityName].
+Use raw SQL queries, not Entity Framework.
+Follow connection patterns from @claude_docs/backend/backend-blueprint.md
+Handle connection disposal properly.</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Add Unit Tests</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Testing Prompt</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'unit-tests')">Copy</button>
+                            </div>
+                            <pre id="unit-tests">Create unit tests for [ServiceName] targeting 80% coverage.
+Use xUnit framework with mock data.
+Follow test patterns from @claude_docs/testing/backend-testing-guide.md</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="troubleshooting-prompts">
+                <h2>Troubleshooting Prompts</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>General Issues</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>General Troubleshooting</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'general-troubleshoot')">Copy</button>
+                            </div>
+                            <pre id="general-troubleshoot">[Describe your specific problem here]
+Use XOS patterns from @claude_docs/CRITICAL_PATTERNS.md
+Check @claude_docs/troubleshooting/[frontend|backend|api|database|testing]-issues.md for solutions.</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Build/Compilation Errors</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Build Error Fix</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'build-errors')">Copy</button>
+                            </div>
+                            <pre id="build-errors">Getting build/compilation errors in [ProjectName].
+Check import statements and dependency issues.
+Verify patterns match @claude_docs/CRITICAL_PATTERNS.md requirements.</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Database Connection Issues</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Database Fix</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'db-connection')">Copy</button>
+                            </div>
+                            <pre id="db-connection">PostgreSQL connection issues in [ServiceName].
+Check connection string and disposal patterns.
+Follow @claude_docs/troubleshooting/database-issues.md guidance.</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>When Claude Gets Confused</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Reset Claude Context</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'reset-context')">Copy</button>
+                            </div>
+                            <pre id="reset-context">Use XOS patterns from @claude_docs/CRITICAL_PATTERNS.md
+This is NOT standard React/.NET - use XOS-specific implementations.
+Check the documentation before suggesting standard patterns.</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="fullstack-prompts">
+                <h2>Full-Stack Module Prompts</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Complete CRUD Module</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Full CRUD Module</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'full-crud')">Copy</button>
+                            </div>
+                            <pre id="full-crud">Create complete [ModuleName] CRUD module with frontend + backend.
+Follow full workflow from @claude_docs/MODULE-DEVELOPMENT-GUIDE.md
+Backend: PostgreSQL with raw SQL, POST-only endpoints
+Frontend: XOS MVVM with working keyboard inputs
+Target: 80% test coverage, working end-to-end</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Data Entry Form</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Data Entry Module</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'data-entry')">Copy</button>
+                            </div>
+                            <pre id="data-entry">Create [FormName] data entry form with validation.
+Use @claude_docs/frontend/ui-templates/WorkflowFormTemplate
+Backend validation and PostgreSQL persistence
+Include save/cancel/reset functionality</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Search and Grid Module</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Search Grid Module</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'search-grid')">Copy</button>
+                            </div>
+                            <pre id="search-grid">Create [EntityName] search and grid display module.
+Use @claude_docs/frontend/ui-templates/SearchListGridTemplate
+Include filtering, sorting, and pagination
+Backend API for search operations</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Report Generation</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Report Module</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'report-module')">Copy</button>
+                            </div>
+                            <pre id="report-module">Create [ReportName] report generation module.
+Use @claude_docs/frontend/ui-templates/ReportParameterTemplate
+Include parameter selection and export functionality
+Backend report generation with PostgreSQL queries</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>Claude Prompt Quick Reference - Version 2.1.0</em><br>
+                <em>Last Updated: August 21, 2025</em></p>
+                
+                <p><strong>Next Steps:</strong> <a href="CRITICAL_PATTERNS.html">Critical Patterns</a> | <a href="MODULE-DEVELOPMENT-GUIDE.html">Module Development Guide</a></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+                localStorage.setItem('preferred-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('preferred-theme', 'dark');
+            }
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.setAttribute('data-theme', theme);
+            
+            if (theme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadTheme);
+    </script>
+</body>
+</html>

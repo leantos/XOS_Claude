@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Master Setup Guide</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <!-- Theme Toggle Button -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="bi bi-moon-fill" id="theme-icon"></i>
+                <span id="theme-text">Dark</span>
+            </button>
+            
+            <h3><i class="bi bi-rocket"></i> Quick Start</h3>
+            <ul>
+                <li><a href="#prerequisites"><i class="bi bi-check-square"></i> Prerequisites</a></li>
+                <li><a href="#quick-start"><i class="bi bi-play-fill"></i> Quick Start</a></li>
+                <li><a href="#verification"><i class="bi bi-shield-check"></i> Verification</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-gear"></i> Setup Methods</h3>
+            <ul>
+                <li><a href="#quick-setup"><i class="bi bi-star"></i> Quick Setup</a></li>
+                <li><a href="#interactive-menu"><i class="bi bi-joystick"></i> Interactive Menu</a></li>
+                <li><a href="#fix-only"><i class="bi bi-wrench"></i> Fix Only Mode</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-cpu"></i> Configuration</h3>
+            <ul>
+                <li><a href="#framework-detection"><i class="bi bi-search"></i> Framework Detection</a></li>
+                <li><a href="#what-gets-configured"><i class="bi bi-list-check"></i> What Gets Configured</a></li>
+                <li><a href="#project-structure"><i class="bi bi-folder-open"></i> Project Structure</a></li>
+                <li><a href="#hook-statistics"><i class="bi bi-graph-up"></i> Hook Statistics</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-question-circle"></i> Help</h3>
+            <ul>
+                <li><a href="#common-scenarios"><i class="bi bi-lightbulb"></i> Common Scenarios</a></li>
+                <li><a href="#troubleshooting"><i class="bi bi-bug"></i> Troubleshooting</a></li>
+                <li><a href="#quick-reference"><i class="bi bi-bookmark"></i> Quick Reference</a></li>
+                <li><a href="#success-indicators"><i class="bi bi-trophy"></i> Success Indicators</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-arrow-left"></i> Navigation</h3>
+            <ul>
+                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Development Guide</a></li>
+                <li><a href="CLAUDE-PROMPT-QUICK-REFERENCE.html"><i class="bi bi-card-text"></i> Quick Reference</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search setup documentation..." id="searchInput">
+            </div>
+
+            <h1><i class="bi bi-rocket"></i> Claude Code Master Setup Guide</h1>
+
+            <section id="quick-start">
+                <h2><i class="bi bi-play-fill"></i> Quick Start</h2>
+                <div class="alert alert-success">
+                    <h3>For most users, this single command handles everything:</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Quick Setup Command</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'quick-setup-cmd')">Copy</button>
+                        </div>
+                        <pre id="quick-setup-cmd"><code class="language-powershell">powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup</code></pre>
+                    </div>
+                    <p><strong>⏱️ Time Required:</strong> 30-60 seconds<br>
+                    <strong>✅ Success Rate:</strong> 95% for standard projects</p>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Which Method Should I Use?</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="mermaid">
+                        graph TD
+                            A[Start] --> B{New to Claude Code?}
+                            B -->|Yes| C[Use Quick Setup]
+                            B -->|No| D{Need specific features?}
+                            D -->|Yes| E[Use Interactive Menu]
+                            D -->|No| F{Just fixing issues?}
+                            F -->|Yes| G[Use Fix Only Mode]
+                            F -->|No| C
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="prerequisites">
+                <h2><i class="bi bi-list-check"></i> Prerequisites</h2>
+                <p>Before running setup, ensure you have:</p>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Requirement</th>
+                                <th>Version</th>
+                                <th>Check Command</th>
+                                <th>Required For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>PowerShell</strong></td>
+                                <td>5.1+</td>
+                                <td><code>$PSVersionTable.PSVersion</code></td>
+                                <td>All features</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Node.js</strong></td>
+                                <td>16+</td>
+                                <td><code>node --version</code></td>
+                                <td>React/XOS projects</td>
+                            </tr>
+                            <tr>
+                                <td><strong>.NET SDK</strong></td>
+                                <td>6+</td>
+                                <td><code>dotnet --version</code></td>
+                                <td>Backend projects</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Git</strong></td>
+                                <td>2.30+</td>
+                                <td><code>git --version</code></td>
+                                <td>Version control</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Admin Rights</strong></td>
+                                <td>-</td>
+                                <td>Run as Administrator</td>
+                                <td>Hook installation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="setup-methods">
+                <h2><i class="bi bi-gear"></i> Setup Methods</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card" id="quick-setup">
+                        <h3><i class="bi bi-star"></i> Method 1: Quick Setup (Recommended)</h3>
+                        <p><strong>Best for:</strong> New projects, standard configurations</p>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Quick Setup</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'method1-cmd')">Copy</button>
+                            </div>
+                            <pre id="method1-cmd"><code class="language-powershell"># From your project directory
+powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup</code></pre>
+                        </div>
+                        
+                        <h4>What it does:</h4>
+                        <ul>
+                            <li>✅ Auto-detects framework</li>
+                            <li>✅ Installs appropriate hooks (13 optimized validations)</li>
+                            <li>✅ Creates CLAUDE.md documentation</li>
+                            <li>✅ Fixes common issues automatically</li>
+                            <li>✅ Sets up development environment</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card" id="interactive-menu">
+                        <h3><i class="bi bi-joystick"></i> Method 2: Interactive Menu</h3>
+                        <p><strong>Best for:</strong> Custom configurations, selective setup</p>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Interactive Menu</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'method2-cmd')">Copy</button>
+                            </div>
+                            <pre id="method2-cmd"><code class="language-powershell"># Launch interactive setup
+powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1</code></pre>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Option</th>
+                                        <th>Description</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>[1]</strong> 🚀 Quick Setup</td>
+                                        <td>All recommended configs</td>
+                                        <td>30-60s</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>[2]</strong> 🪝 Install Hooks</td>
+                                        <td>XOS validation rules</td>
+                                        <td>10s</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>[3]</strong> 🗄️ Setup MCP</td>
+                                        <td>PostgreSQL tools</td>
+                                        <td>20s</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>[4]</strong> 📋 Install Templates</td>
+                                        <td>UI components</td>
+                                        <td>15s</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>[5]</strong> 📚 Create Docs</td>
+                                        <td>CLAUDE.md context</td>
+                                        <td>5s</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>[6]</strong> 🛠️ Setup Environment</td>
+                                        <td>.gitignore, VSCode</td>
+                                        <td>10s</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>[7]</strong> 🔧 Fix Issues</td>
+                                        <td>Common problems</td>
+                                        <td>15s</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>[8]</strong> 🎯 Run ALL</td>
+                                        <td>Everything above</td>
+                                        <td>2-3m</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>[9]</strong> 📊 View Status</td>
+                                        <td>Check setup state</td>
+                                        <td>2s</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="nav-card" id="fix-only">
+                        <h3><i class="bi bi-wrench"></i> Method 3: Fix Only Mode</h3>
+                        <p><strong>Best for:</strong> Existing projects with issues</p>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Fix Only Mode</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'method3-cmd')">Copy</button>
+                            </div>
+                            <pre id="method3-cmd"><code class="language-powershell">powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -FixOnly</code></pre>
+                        </div>
+                        
+                        <h4>Fixes:</h4>
+                        <ul>
+                            <li>Phone regex in Utils.js</li>
+                            <li>Missing npm packages (react-color, fast-sort)</li>
+                            <li>Theme.css import issues</li>
+                            <li>Directory structure problems</li>
+                            <li>Port conflicts</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="framework-detection">
+                <h2><i class="bi bi-search"></i> Framework Detection</h2>
+                <p>The setup script automatically detects your project type:</p>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Framework</th>
+                                <th>Detection Method</th>
+                                <th>Applied Configuration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>XOS</strong></td>
+                                <td><code>xos-components/</code> exists</td>
+                                <td>MVVM hooks, component validation, theme checks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>React</strong></td>
+                                <td><code>package.json</code> with react</td>
+                                <td>React hooks, modern patterns</td>
+                            </tr>
+                            <tr>
+                                <td><strong>.NET</strong></td>
+                                <td><code>.csproj</code> files</td>
+                                <td>Database configs, build hooks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Node.js</strong></td>
+                                <td><code>package.json</code> exists</td>
+                                <td>NPM scripts, dependency checks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Generic</strong></td>
+                                <td>None of above</td>
+                                <td>Basic hooks, documentation</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="what-gets-configured">
+                <h2><i class="bi bi-gear"></i> What Gets Configured</h2>
+                
+                <div class="collapsible expanded">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>1. Claude Code Hooks (13 Validations)</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Hook</th>
+                                        <th>Purpose</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>✅ Component Validation</td>
+                                        <td>Prevents XOSButton usage</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ Theme CSS Check</td>
+                                        <td>Ensures components are visible</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ React Pattern Check</td>
+                                        <td>Enforces MVVM over hooks</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ ViewModel Validation</td>
+                                        <td>Ensures proper inheritance</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ Button Class Check</td>
+                                        <td>XOS classes over Bootstrap</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ Regex Validation</td>
+                                        <td>Fixes Utils.js patterns</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ Dependency Check</td>
+                                        <td>Warns about missing packages</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ VM File Check</td>
+                                        <td>Ensures ViewModels exist</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ Lifecycle Methods</td>
+                                        <td>Uses XOS patterns</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ Windows Path Check</td>
+                                        <td>Validates path formats</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ Linux Command Block</td>
+                                        <td>Prevents WSL commands</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ Build Failure Report</td>
+                                        <td>Shows test/build errors</td>
+                                    </tr>
+                                    <tr>
+                                        <td>✅ File Access Tracking</td>
+                                        <td>Logs modifications</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible expanded">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>2. Project Structure</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Project Structure</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'project-structure')">Copy</button>
+                            </div>
+                            <pre id="project-structure">YourProject/
+├── .claude/
+│   ├── settings.json        # Hook configuration
+│   ├── mcp.json            # Database tools (if applicable)
+│   └── logs/               # Activity tracking
+├── CLAUDE.md               # AI context document
+├── .gitignore             # Proper patterns
+├── .vscode/
+│   └── settings.json      # IDE optimization
+└── src/
+    ├── components/
+    │   └── templates/     # UI templates (XOS/React)
+    └── assets/
+        └── css/          # Required for XOS</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible expanded">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>3. Fixed Issues</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li>✅ Invalid phone regex patterns</li>
+                            <li>✅ Missing npm dependencies</li>
+                            <li>✅ Theme.css import problems</li>
+                            <li>✅ Component visibility issues</li>
+                            <li>✅ Build/test failures</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="verification">
+                <h2><i class="bi bi-check-circle"></i> Verification</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Quick Verification</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Check Setup Status</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'quick-verification')">Copy</button>
+                            </div>
+                            <pre id="quick-verification">if (Test-Path ".claude/settings.json") { "✅ Hooks installed" } else { "❌ Hooks missing" }
+if (Test-Path "CLAUDE.md") { "✅ Documentation created" } else { "❌ Documentation missing" }</pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Test Hook Functionality</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Test Hooks</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'test-hooks')">Copy</button>
+                            </div>
+                            <pre id="test-hooks"># Test 1: Try to use banned component
+echo "class Test extends React.Component {}" > test.jsx
+# Should show: "❌ ERROR: Components must extend cntrl.XOSComponent"
+
+# Test 2: Try XOSButton
+echo "const btn = <XOSButton />;" > test2.jsx
+# Should show: "❌ ERROR: Use XOSButtonWrapper instead"
+
+# Clean up test files
+Remove-Item test*.jsx</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-success">
+                    <h3>Success Indicators</h3>
+                    <p>After successful setup, you should see:</p>
+                    
+                    <div class="nav-grid">
+                        <div class="nav-card">
+                            <h4>✅ File System</h4>
+                            <ul>
+                                <li><code>.claude/</code> directory with settings.json</li>
+                                <li><code>CLAUDE.md</code> in project root</li>
+                                <li>No error messages during setup</li>
+                            </ul>
+                        </div>
+
+                        <div class="nav-card">
+                            <h4>✅ Behavior</h4>
+                            <ul>
+                                <li>XOSButton usage blocked</li>
+                                <li>Build failures reported clearly</li>
+                                <li>File modifications tracked</li>
+                                <li>Dependencies checked automatically</li>
+                            </ul>
+                        </div>
+
+                        <div class="nav-card">
+                            <h4>✅ Performance</h4>
+                            <ul>
+                                <li>Faster error detection</li>
+                                <li>Reduced debugging time</li>
+                                <li>Consistent code patterns</li>
+                                <li>Less Claude confusion</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="common-scenarios">
+                <h2><i class="bi bi-lightbulb"></i> Common Scenarios</h2>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h3>Scenario 1: New XOS Project</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>New XOS Project</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'scenario1-cmd')">Copy</button>
+                            </div>
+                            <pre id="scenario1-cmd"><code class="language-powershell">npx create-react-app my-xos-app
+cd my-xos-app
+# Copy XOS components from existing project
+Copy-Item "D:\ExistingProject\src\xos-components" "src\" -Recurse
+# Run setup
+powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h3>Scenario 2: Fixing Broken Project</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Fix Broken Project</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'scenario2-cmd')">Copy</button>
+                            </div>
+                            <pre id="scenario2-cmd"><code class="language-powershell"># Just fix without changing configs
+powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -FixOnly
+# If that doesn't work, try full setup
+powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h3>Scenario 3: Multiple Project Setup</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Multiple Projects</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'scenario3-cmd')">Copy</button>
+                            </div>
+                            <pre id="scenario3-cmd"><code class="language-powershell">@("Project1", "Project2", "Project3") | ForEach-Object {
+    Push-Location "D:\Projects\$_"
+    powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup
+    Pop-Location
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h3>Scenario 4: CI/CD Integration</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>CI/CD Setup</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'scenario4-cmd')">Copy</button>
+                            </div>
+                            <pre id="scenario4-cmd"><code class="language-yaml"># .github/workflows/setup.yml
+- name: Setup Claude Code
+  run: |
+    powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="hook-statistics">
+                <h2><i class="bi bi-graph-up"></i> Hook Statistics</h2>
+                
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>View File Access Patterns</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>File Access Statistics</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'file-access-stats')">Copy</button>
+                            </div>
+                            <pre id="file-access-stats"><code class="language-powershell"># Most accessed files
+Get-Content .claude/logs/file-access.log | 
+    Group-Object | 
+    Sort-Object Count -Descending | 
+    Select-Object -First 10 Name, Count
+
+# Hook trigger frequency
+Get-Content .claude/logs/hook-triggers.log | 
+    Select-String "Hook:" | 
+    Group-Object | 
+    Sort-Object Count -Descending</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="success-indicators">
+                <h2><i class="bi bi-trophy"></i> Success Indicators</h2>
+                <p>After successful setup, you should see:</p>
+                
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h3>✅ File System</h3>
+                        <ul>
+                            <li><code>.claude/</code> directory with settings.json</li>
+                            <li><code>CLAUDE.md</code> in project root</li>
+                            <li>No error messages during setup</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h3>✅ Behavior</h3>
+                        <ul>
+                            <li>XOSButton usage blocked</li>
+                            <li>Build failures reported clearly</li>
+                            <li>File modifications tracked</li>
+                            <li>Dependencies checked automatically</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h3>✅ Performance</h3>
+                        <ul>
+                            <li>Faster error detection</li>
+                            <li>Reduced debugging time</li>
+                            <li>Consistent code patterns</li>
+                            <li>Less Claude confusion</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="troubleshooting">
+                <h2><i class="bi bi-bug"></i> Troubleshooting</h2>
+                
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Common Issues & Solutions</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Issue</th>
+                                        <th>Solution</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>"Script cannot be loaded"</strong></td>
+                                        <td><code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>"Hooks not working"</strong></td>
+                                        <td>1. Restart Claude Code<br>2. Check <code>.claude/settings.json</code> exists<br>3. Verify PowerShell installed</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>"Access denied"</strong></td>
+                                        <td>Run PowerShell as Administrator</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>"MCP setup failed"</strong></td>
+                                        <td>Ensure PROJECT_SEED.md exists with connection strings</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>"Templates not copying"</strong></td>
+                                        <td>Verify <code>src/</code> directory exists and has write permissions</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Manual Hook Installation</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Manual Installation</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'manual-install')">Copy</button>
+                            </div>
+                            <pre id="manual-install"><code class="language-powershell"># Create directory
+New-Item -ItemType Directory -Path ".claude" -Force
+
+# Download and install hooks
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/your-repo/claude-docs/main/hooks/optimized-hooks-windows.json" -OutFile ".claude/settings.json"
+
+# Or copy from local
+Copy-Item "D:\Projects\CVS_Claude\claude_docs\hooks\optimized-hooks-windows.json" ".claude\settings.json"</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Disable/Enable Hooks</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Toggle Hooks</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'toggle-hooks')">Copy</button>
+                            </div>
+                            <pre id="toggle-hooks"><code class="language-powershell"># Disable hooks temporarily
+(Get-Content .claude/settings.json -Raw) -replace '"enabled": true', '"enabled": false' | Set-Content .claude/settings.json
+
+# Re-enable hooks
+(Get-Content .claude/settings.json) -replace '"enabled": false', '"enabled": true' | Set-Content .claude/settings.json</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Complete Uninstall</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Uninstall</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'uninstall-cmd')">Copy</button>
+                            </div>
+                            <pre id="uninstall-cmd"><code class="language-powershell"># Remove all Claude Code configurations
+Remove-Item .claude -Recurse -Force
+Remove-Item CLAUDE.md -Force
+Write-Host "✅ Claude Code setup removed" -ForegroundColor Green</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="updating-setup">
+                <h2><i class="bi bi-arrow-repeat"></i> Updating Your Setup</h2>
+                <p>To get the latest improvements:</p>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Update Setup</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'update-cmd')">Copy</button>
+                    </div>
+                    <pre id="update-cmd"><code class="language-powershell"># Pull latest claude_docs
+cd D:\Projects\CVS_Claude
+git pull
+
+# Re-run setup (safe, creates backups)
+cd YourProject
+powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup</code></pre>
+                </div>
+            </section>
+
+            <section id="additional-resources">
+                <h2><i class="bi bi-book"></i> Additional Resources</h2>
+                <ul>
+                    <li><strong>Detailed Hook Documentation:</strong> <code>claude_docs/hooks/hook-system.md</code></li>
+                    <li><strong>XOS Framework Guide:</strong> <code>claude_docs/frontend/xos-framework-complete-guide.md</code></li>
+                    <li><strong>Backend Patterns:</strong> <code>claude_docs/backend/xos-backend-complete-guide.md</code></li>
+                    <li><strong>Testing Guide:</strong> <code>claude_docs/testing/testing-best-practices.md</code></li>
+                    <li><strong>Troubleshooting:</strong> <code>claude_docs/troubleshooting/</code></li>
+                </ul>
+            </section>
+
+            <div class="alert alert-success">
+                <h2><i class="bi bi-lightning"></i> TL;DR - Just Run This:</h2>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>One-Line Setup</span>
+                        <button class="copy-btn" onclick="copyCode(this, 'tldr-cmd')">Copy</button>
+                    </div>
+                    <pre id="tldr-cmd"><code class="language-powershell">powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup</code></pre>
+                </div>
+                <p><strong>Time:</strong> 30-60 seconds | <strong>Success Rate:</strong> 95% | <strong>Benefit:</strong> Prevents 90% of common errors</p>
+            </div>
+
+            <section id="quick-reference">
+                <h2><i class="bi bi-bookmark"></i> Quick Reference</h2>
+                
+                <div class="collapsible expanded">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>Essential Commands</h3>
+                        <span class="collapsible-toggle">▲</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Quick Reference Commands</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'reference-cmds')">Copy</button>
+                            </div>
+                            <pre id="reference-cmds"><code class="language-powershell"># Quick setup (recommended)
+powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup
+
+# Interactive menu
+powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1
+
+# Fix issues only
+powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -FixOnly
+
+# Check status
+powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1
+# Then press [9]
+
+# View logs
+Get-Content .claude/logs/file-access.log -Tail 20
+
+# Disable hooks temporarily
+(Get-Content .claude/settings.json) -replace '"enabled": true', '"enabled": false' | Set-Content .claude/settings.json
+
+# Re-enable hooks
+(Get-Content .claude/settings.json) -replace '"enabled": false', '"enabled": true' | Set-Content .claude/settings.json</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>File Locations</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>File</th>
+                                        <th>Purpose</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>.claude/settings.json</code></td>
+                                        <td>Hook configuration</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>.claude/mcp.json</code></td>
+                                        <td>Database tools</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>.claude/logs/</code></td>
+                                        <td>Activity logs</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>CLAUDE.md</code></td>
+                                        <td>Project context</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>claude_docs/</code></td>
+                                        <td>Full documentation</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>Master Setup v3.0.0 | Last Updated: August 21, 2025</em><br>
+                <em>Making Claude Code development smoother, one hook at a time</em></p>
+                
+                <h3><i class="bi bi-compass"></i> Quick Navigation</h3>
+                <ul>
+                    <li><a href="README.html">← Back to claude_docs</a> - Main documentation hub</li>
+                    <li><a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a> - <strong>Essential patterns</strong></li>
+                    <li><a href="MODULE-DEVELOPMENT-GUIDE.html">Module Development Guide</a> - Complete workflows</li>
+                    <li><a href="CLAUDE-PROMPT-QUICK-REFERENCE.html">Quick Reference Prompts</a> - Copy-paste prompts</li>
+                    <li><a href="xos-input-handling-fix.html">XOS Input Fix</a> - Fix typing issues</li>
+                </ul>
+                
+                <p><strong>Need Help?</strong> Use the search box above or check the troubleshooting section for common solutions.</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'dark',
+            themeVariables: {
+                background: '#1a1a1a',
+                primaryColor: '#0d6efd',
+                primaryTextColor: '#ffffff',
+                primaryBorderColor: '#0d6efd',
+                lineColor: '#6c757d'
+            }
+        });
+
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+
+        // Search functionality
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const content = document.querySelector('.main-content');
+            const sections = content.querySelectorAll('section, h2, h3, p, li, td');
+            
+            // Remove previous highlights
+            sections.forEach(section => {
+                section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
+            });
+            
+            if (searchTerm.length > 2) {
+                sections.forEach(section => {
+                    const text = section.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        section.innerHTML = highlightText(section.innerHTML, searchTerm);
+                    }
+                });
+            }
+        });
+
+        // Auto-expand sections with search results
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            if (searchTerm.length > 2) {
+                document.querySelectorAll('.collapsible').forEach(collapsible => {
+                    const text = collapsible.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        collapsible.classList.add('expanded');
+                    }
+                });
+            }
+        });
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        }
+
+        // Add mobile menu button for smaller screens
+        if (window.innerWidth <= 768) {
+            const menuButton = document.createElement('button');
+            menuButton.innerHTML = '☰ Menu';
+            menuButton.SETUP.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
+            menuButton.onclick = toggleSidebar;
+            document.body.appendChild(menuButton);
+        }
+
+        // Theme Toggle Functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+                localStorage.setItem('preferred-theme', 'light');
+                // Update Mermaid theme
+                mermaid.initialize({ 
+                    startOnLoad: true, 
+                    theme: 'default',
+                    themeVariables: {
+                        background: '#ffffff',
+                        primaryColor: '#0d6efd',
+                        primaryTextColor: '#000000',
+                        primaryBorderColor: '#0d6efd',
+                        lineColor: '#6c757d'
+                    }
+                });
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('preferred-theme', 'dark');
+                // Update Mermaid theme
+                mermaid.initialize({ 
+                    startOnLoad: true, 
+                    theme: 'dark',
+                    themeVariables: {
+                        background: '#1a1a1a',
+                        primaryColor: '#0d6efd',
+                        primaryTextColor: '#ffffff',
+                        primaryBorderColor: '#0d6efd',
+                        lineColor: '#6c757d'
+                    }
+                });
+            }
+        }
+
+        // Load saved theme preference or default to dark
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.setAttribute('data-theme', theme);
+            
+            if (theme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', loadTheme);
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('preferred-theme')) {
+                loadTheme();
+            }
+        });
+    </script>
+</body>
+</html>

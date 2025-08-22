@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XOS Framework Documentation Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/autoloader/prism-autoloader.min.js"></script>
+</head>
+<body data-theme="dark">
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <!-- Theme Toggle Button -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="bi bi-moon-fill" id="theme-icon"></i>
+                <span id="theme-text">Dark</span>
+            </button>
+            
+            <h3><i class="bi bi-lightning-charge"></i> Quick Access</h3>
+            <ul>
+                <li><a href="#critical-start"><i class="bi bi-exclamation-triangle"></i> Start Here</a></li>
+                <li><a href="#copy-paste-prompts"><i class="bi bi-clipboard"></i> Copy-Paste Prompts</a></li>
+                <li><a href="#essential-files"><i class="bi bi-star"></i> Essential Files</a></li>
+                <li><a href="#quick-setup"><i class="bi bi-play-circle"></i> Quick Setup</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-palette"></i> Frontend</h3>
+            <ul>
+                <li><a href="#frontend-prompts"><i class="bi bi-code-square"></i> Component Prompts</a></li>
+                <li><a href="xos-input-handling-fix.html"><i class="bi bi-tools"></i> Input Fix Guide</a></li>
+                <li><a href="#"><i class="bi bi-grid-3x3-gap"></i> Component Templates (Coming Soon)</a></li>
+                <li><a href="frontend-troubleshooting.html"><i class="bi bi-question-circle"></i> Frontend Troubleshooting</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-server"></i> Backend</h3>
+            <ul>
+                <li><a href="#backend-prompts"><i class="bi bi-gear"></i> API Prompts</a></li>
+                <li><a href="backend-blueprint.html"><i class="bi bi-diagram-3"></i> Backend Blueprint</a></li>
+                <li><a href="api-routes.html"><i class="bi bi-arrow-left-right"></i> API Routes</a></li>
+                <li><a href="backend-troubleshooting.html"><i class="bi bi-bug"></i> Backend Troubleshooting</a></li>
+            </ul>
+            
+            <h3><i class="bi bi-wrench"></i> Tools</h3>
+            <ul>
+                <li><a href="SETUP.html"><i class="bi bi-download"></i> Setup Guide</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Development Guide</a></li>
+                <li><a href="CLAUDE-PROMPT-QUICK-REFERENCE.html"><i class="bi bi-card-text"></i> Quick Reference</a></li>
+                <li><a href="#development-workflow"><i class="bi bi-arrow-repeat"></i> Workflow</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Box -->
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search documentation..." id="searchInput">
+            </div>
+
+            <h1><i class="bi bi-book"></i> XOS Framework Documentation Hub</h1>
+
+            <div class="alert alert-critical" id="critical-start">
+                <h3>CRITICAL - READ FIRST</h3>
+                <p><strong><a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a></strong> - This document contains MANDATORY patterns that differ from standard development. XOS-based applications use a custom framework that significantly modifies standard React and ASP.NET Core patterns.</p>
+            </div>
+
+            <section id="quick-start">
+                <h2>Quick Start</h2>
+                <p>This documentation hub contains all technical documentation for your project.</p>
+                
+                <div class="collapsible">
+                    <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                        <h3>For New Developers - REQUIRED READING ORDER</h3>
+                        <span class="collapsible-toggle">▼</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ol>
+                            <li><strong><a href="CRITICAL_PATTERNS.html">CRITICAL PATTERNS</a></strong> - MUST READ FIRST</li>
+                            <li><strong>XOS Framework Guide (Coming Soon)</strong> - Custom framework overview</li>
+                            <li><strong><a href="backend-blueprint.html">Backend Blueprint</a></strong> - XOS backend patterns</li>
+                            <li><strong>Development Guide (Coming Soon)</strong> - Common commands</li>
+                            <li>Review Project Structure (Coming Soon)</li>
+                            <li>Check Naming Conventions (Coming Soon)</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <section id="claude-usage">
+                <h2>How Developers Should Use @claude_docs with Claude Code</h2>
+                
+                <div class="alert alert-warning">
+                    <h3>The Problem: XOS Framework ≠ Standard Development</h3>
+                    <p>This project uses <strong>XOS Framework</strong> - a custom enterprise system that completely changes React and .NET patterns. Standard tutorials will break your code.</p>
+                </div>
+
+                <div class="alert alert-success">
+                    <h3>The Solution: Reference @claude_docs in Every Prompt</h3>
+                    <p>The <code>@claude_docs/</code> system contains everything Claude needs to work correctly with XOS.</p>
+                </div>
+            </section>
+
+            <section id="copy-paste-prompts">
+                <h2>Copy-Paste Prompts for Developers</h2>
+
+                <div class="alert alert-critical">
+                    <h3>Always Start Here (Copy This Exactly)</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Essential Context Prompt</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'context-prompt')">Copy</button>
+                        </div>
+                        <pre id="context-prompt">I'm working with XOS framework. Check @claude_docs/CRITICAL_PATTERNS.md before implementing anything.</pre>
+                    </div>
+                    <p><strong>Why</strong>: Claude needs this context or it will use standard React/.NET patterns that don't work.</p>
+                </div>
+
+                <div class="nav-grid" id="frontend-prompts">
+                    <div class="nav-card">
+                        <h4>Frontend Development Prompts</h4>
+                        
+                        <div class="collapsible">
+                            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                <h4>Creating a New Component</h4>
+                                <span class="collapsible-toggle">▼</span>
+                            </div>
+                            <div class="collapsible-content">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>New Component Prompt</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'new-component')">Copy</button>
+                                    </div>
+                                    <pre id="new-component">Create [YourComponentName] component using XOS MVVM pattern.
+Follow @claude_docs/development-guide/TDD-XOS-FRONTEND-WORKFLOW.md
+Use @claude_docs/frontend/ui-templates/XOSComponentTemplate as base.
+CRITICAL: All inputs must accept keyboard typing - use patterns from @claude_docs/frontend/xos-input-handling-fix.md</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="collapsible">
+                            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                <h4>Fixing Input Issues</h4>
+                                <span class="collapsible-toggle">▼</span>
+                            </div>
+                            <div class="collapsible-content">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Input Fix Prompt</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'input-fix')">Copy</button>
+                                    </div>
+                                    <pre id="input-fix">[YourComponentName] inputs won't accept keyboard typing.
+Fix using three-step event handler pattern from @claude_docs/frontend/xos-input-handling-fix.md
+Ensure updateUI() is called after state changes.</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="collapsible">
+                            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                <h4>Data/State Errors</h4>
+                                <span class="collapsible-toggle">▼</span>
+                            </div>
+                            <div class="collapsible-content">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Data Error Fix Prompt</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'data-error')">Copy</button>
+                                    </div>
+                                    <pre id="data-error">Getting "Cannot set property Data" error in [ComponentName].
+Fix using ViewModel initialization patterns from @claude_docs/CRITICAL_PATTERNS.md
+Use init() method with Data reference pattern.</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nav-card" id="backend-prompts">
+                        <h4>Backend Development Prompts</h4>
+                        
+                        <div class="collapsible">
+                            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                <h4>Creating API Service</h4>
+                                <span class="collapsible-toggle">▼</span>
+                            </div>
+                            <div class="collapsible-content">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>API Service Prompt</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'api-service')">Copy</button>
+                                    </div>
+                                    <pre id="api-service">Create [EntityName]Service with CRUD operations for PostgreSQL.
+Follow @claude_docs/backend/backend-blueprint.md patterns.
+Use GetEntityDataListAsync pattern from @claude_docs/backend/xos-backend-complete-guide.md
+POST endpoints only, return domain types directly.
+Target 80% test coverage.</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="collapsible">
+                            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                <h4>Creating API Controller</h4>
+                                <span class="collapsible-toggle">▼</span>
+                            </div>
+                            <div class="collapsible-content">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>API Controller Prompt</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'api-controller')">Copy</button>
+                                    </div>
+                                    <pre id="api-controller">Create [EntityName]Controller with POST endpoints.
+Follow @claude_docs/backend/api-routes.md patterns.
+Return domain types directly, not IActionResult.
+Use dependency injection for services.</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Complete Feature Prompts</h4>
+                        
+                        <div class="collapsible">
+                            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                <h4>Full-Stack Module</h4>
+                                <span class="collapsible-toggle">▼</span>
+                            </div>
+                            <div class="collapsible-content">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Full-Stack Module Prompt</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'fullstack-module')">Copy</button>
+                                    </div>
+                                    <pre id="fullstack-module">Create complete [ModuleName] module with frontend + backend.
+Use module examples from @claude_docs/COMMON-MODULE-EXAMPLES.md
+Follow full workflow from @claude_docs/MODULE-DEVELOPMENT-GUIDE.md
+Backend: PostgreSQL with raw SQL, POST-only endpoints
+Frontend: XOS MVVM with working keyboard inputs
+Target: 80% test coverage, working end-to-end</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Troubleshooting Prompts</h4>
+                        
+                        <div class="collapsible">
+                            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                <h4>General Issues</h4>
+                                <span class="collapsible-toggle">▼</span>
+                            </div>
+                            <div class="collapsible-content">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>General Issue Prompt</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'general-issue')">Copy</button>
+                                    </div>
+                                    <pre id="general-issue">[Describe your specific problem here]
+Fix using patterns from @claude_docs/CLAUDE-PROMPT-QUICK-REFERENCE.html
+Check @claude_docs/troubleshooting/[frontend|backend|api|database|testing]-issues.md for solutions.</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="collapsible">
+                            <div class="collapsible-header" onclick="toggleCollapsible(this)">
+                                <h4>When Claude Gets Confused</h4>
+                                <span class="collapsible-toggle">▼</span>
+                            </div>
+                            <div class="collapsible-content">
+                                <div class="code-block">
+                                    <div class="code-header">
+                                        <span>Claude Confusion Fix</span>
+                                        <button class="copy-btn" onclick="copyCode(this, 'claude-confused')">Copy</button>
+                                    </div>
+                                    <pre id="claude-confused">Use XOS patterns from @claude_docs/CRITICAL_PATTERNS.md
+This is NOT standard React/.NET - use XOS-specific implementations.</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="essential-files">
+                <h2>Essential Files Every Developer Should Know</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>File</th>
+                                <th>Copy-Paste This Reference</th>
+                                <th>When to Use</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>CRITICAL_PATTERNS.md</strong></td>
+                                <td><code>@claude_docs/CRITICAL_PATTERNS.md</code></td>
+                                <td><span class="badge badge-critical">Every single prompt</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>MODULE-DEVELOPMENT-GUIDE.md</strong></td>
+                                <td><code>@claude_docs/MODULE-DEVELOPMENT-GUIDE.md</code></td>
+                                <td>Creating any new feature</td>
+                            </tr>
+                            <tr>
+                                <td><strong>CLAUDE-PROMPT-QUICK-REFERENCE.md</strong></td>
+                                <td><code>@claude_docs/CLAUDE-PROMPT-QUICK-REFERENCE.md</code></td>
+                                <td>Need more copy-paste prompts</td>
+                            </tr>
+                            <tr>
+                                <td><strong>xos-input-handling-fix.md</strong></td>
+                                <td><code>@claude_docs/frontend/xos-input-handling-fix.md</code></td>
+                                <td>Inputs won't type</td>
+                            </tr>
+                            <tr>
+                                <td><strong>backend-blueprint.md</strong></td>
+                                <td><code>@claude_docs/backend/backend-blueprint.md</code></td>
+                                <td>Any backend work</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SETUP.md</strong></td>
+                                <td><code>@claude_docs/SETUP.md</code></td>
+                                <td>Initial project setup</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="pro-tips">
+                <h2>Pro Tips for Developers</h2>
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Do This</h4>
+                        <ol>
+                            <li><strong>Always copy-paste the prompts above</strong> - they're tested and work</li>
+                            <li><strong>Be specific about problems</strong> - "Username input won't type" vs "it's broken"</li>
+                            <li><strong>Reference exact file paths</strong> - <code>@claude_docs/path/file.md</code></li>
+                            <li><strong>Let Claude handle the complexity</strong> - just point it to the right docs</li>
+                        </ol>
+                    </div>
+                    <div class="nav-card">
+                        <h4>Don't Do This</h4>
+                        <ol>
+                            <li>Don't assume Claude knows XOS patterns without references</li>
+                            <li>Don't try to explain XOS yourself - let the docs do it</li>
+                            <li>Don't skip the <code>@claude_docs/CRITICAL_PATTERNS.md</code> reference</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <section id="development-workflow">
+                <h2>Development Workflow</h2>
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Step-by-Step Process</h4>
+                        <ol>
+                            <li><strong>Need new feature?</strong> → Use "Full-Stack Module" prompt</li>
+                            <li><strong>Component broken?</strong> → Use "Fixing Input Issues" or "Data/State Errors" prompts</li>
+                            <li><strong>API not working?</strong> → Use "Creating API Service" prompt</li>
+                            <li><strong>Claude confused?</strong> → Reference <code>@claude_docs/CRITICAL_PATTERNS.md</code></li>
+                            <li><strong>Still stuck?</strong> → Check <code>@claude_docs/troubleshooting/</code></li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <section id="quick-setup">
+                <h2>Quick Setup (Do This First)</h2>
+                <div class="alert alert-info">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Setup Command</span>
+                            <button class="copy-btn" onclick="copyCode(this, 'setup-command')">Copy</button>
+                        </div>
+                        <pre id="setup-command">powershell D:\Projects\CVS_Claude\claude_docs\master-setup.ps1 -QuickSetup</pre>
+                    </div>
+                    <p>This prevents 90% of XOS framework errors automatically.</p>
+                </div>
+            </section>
+
+            <section id="quick-navigation">
+                <h2>Quick Navigation</h2>
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4>Most Used Files</h4>
+                        <ul>
+                            <li><a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a> - <strong>Start here always</strong></li>
+                            <li><a href="CLAUDE-PROMPT-QUICK-REFERENCE.html">CLAUDE-PROMPT-QUICK-REFERENCE.html</a> - More copy-paste prompts</li>
+                            <li><a href="MODULE-DEVELOPMENT-GUIDE.html">MODULE-DEVELOPMENT-GUIDE.html</a> - Complete workflows</li>
+                            <li><a href="SETUP.html">SETUP.html</a> - Environment setup</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Frontend Development</h4>
+                        <ul>
+                            <li><a href="xos-input-handling-fix.html">XOS Input Fix</a> - Fix typing issues</li>
+                            <li>Component Templates (Coming Soon) - Ready-made components</li>
+                            <li>XOS Framework Guide (Coming Soon) - Complete reference</li>
+                            <li><a href="frontend-troubleshooting.html">Frontend Troubleshooting</a> - Common problems</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Backend Development</h4>
+                        <ul>
+                            <li><a href="backend-blueprint.html">Backend Blueprint</a> - Architecture patterns</li>
+                            <li><a href="api-routes.html">API Routes</a> - Endpoint patterns</li>
+                            <li>XOS Backend Guide (Coming Soon) - Complete reference</li>
+                            <li><a href="backend-troubleshooting.html">Backend Troubleshooting</a> - Common problems</li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4>Troubleshooting</h4>
+                        <ul>
+                            <li><a href="api-troubleshooting.html">API Issues</a> - Endpoint problems</li>
+                            <li><a href="database-troubleshooting.html">Database Issues</a> - PostgreSQL problems</li>
+                            <li><a href="testing-troubleshooting.html">Testing Issues</a> - Test failures</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="footer">
+                <p><em>Documentation Version: 2.1.0</em><br>
+                <em>Last Updated: August 21, 2025</em><br>
+                <em>Maintainer: Development Team</em></p>
+                
+                <p><strong>Need Help?</strong> Start with <a href="CLAUDE-PROMPT-QUICK-REFERENCE.html">Quick Reference</a> or use the search above to find topics quickly</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Copy code functionality
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const text = codeElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Collapsible sections
+        function toggleCollapsible(header) {
+            const collapsible = header.parentElement;
+            collapsible.classList.toggle('expanded');
+        }
+
+        // Search functionality
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const content = document.querySelector('.main-content');
+            const sections = content.querySelectorAll('section, h2, h3, p, li, td');
+            
+            // Remove previous highlights
+            sections.forEach(section => {
+                section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
+            });
+            
+            if (searchTerm.length > 2) {
+                sections.forEach(section => {
+                    const text = section.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        section.innerHTML = highlightText(section.innerHTML, searchTerm);
+                    }
+                });
+            }
+        });
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        }
+
+        // Add mobile menu button for smaller screens
+        if (window.innerWidth <= 768) {
+            const menuButton = document.createElement('button');
+            menuButton.innerHTML = '☰ Menu';
+            menuButton.README.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
+            menuButton.onclick = toggleSidebar;
+            document.body.appendChild(menuButton);
+        }
+
+        // Auto-expand sections with search results
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            if (searchTerm.length > 2) {
+                document.querySelectorAll('.collapsible').forEach(collapsible => {
+                    const text = collapsible.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        collapsible.classList.add('expanded');
+                    }
+                });
+            }
+        });
+
+        // Theme Toggle Functionality - Fluent 2 Design System
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+                localStorage.setItem('preferred-theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('preferred-theme', 'dark');
+            }
+        }
+
+        // Load saved theme preference or default to dark
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            body.setAttribute('data-theme', theme);
+            
+            if (theme === 'light') {
+                themeIcon.className = 'bi bi-sun-fill';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'bi bi-moon-fill';
+                themeText.textContent = 'Dark';
+            }
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', loadTheme);
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('preferred-theme')) {
+                loadTheme();
+            }
+        });
+    </script>
+</body>
+</html>
