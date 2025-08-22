@@ -79,22 +79,22 @@
 
 /* Light Theme - Fluent 2 Design System */
 [data-theme="light"] {
-    /* Fluent 2 Color Tokens - Neutral Palette (Light) */
+    /* Fluent 2 Light Theme - Better Contrast */
     --colorNeutralBackground1: #ffffff;
-    --colorNeutralBackground2: #f9f9f9;
-    --colorNeutralBackground3: #f0f0f0;
-    --colorNeutralBackground4: #e6e6e6;
-    --colorNeutralBackground5: #d9d9d9;
-    --colorNeutralBackground6: #cccccc;
+    --colorNeutralBackground2: #fafafa;
+    --colorNeutralBackground3: #f3f3f3;
+    --colorNeutralBackground4: #e8e8e8;
+    --colorNeutralBackground5: #d1d1d1;
+    --colorNeutralBackground6: #b4b4b4;
     
-    /* Foreground Colors */
-    --colorNeutralForeground1: #242424;
-    --colorNeutralForeground2: #323130;
-    --colorNeutralForeground3: #605e5c;
-    --colorNeutralForeground4: #8a8886;
-    --colorNeutralForegroundDisabled: #a19f9d;
+    /* Light Theme Foreground Colors - Better Readability */
+    --colorNeutralForeground1: #1f1f1f;
+    --colorNeutralForeground2: #2e2e2e;
+    --colorNeutralForeground3: #424242;
+    --colorNeutralForeground4: #6b6b6b;
+    --colorNeutralForegroundDisabled: #9e9e9e;
     
-    /* Brand Colors */
+    /* Light Theme Brand Colors */
     --colorBrandBackground: #0078d4;
     --colorBrandBackgroundHover: #106ebe;
     --colorBrandBackgroundPressed: #005a9e;
@@ -108,10 +108,10 @@
     --colorPaletteYellowBackground3: #fff4ce;
     --colorPaletteLightBlueBackground3: #deecf9;
     
-    /* Stroke/Border Colors */
-    --colorNeutralStroke1: #d2d0ce;
-    --colorNeutralStroke2: #c8c6c4;
-    --colorNeutralStrokeAccessible: #605e5c;
+    /* Light Theme Stroke/Border Colors - Better Contrast */
+    --colorNeutralStroke1: #d1d1d1;
+    --colorNeutralStroke2: #c7c7c7;
+    --colorNeutralStrokeAccessible: #424242;
     --colorBrandStroke1: #0078d4;
     
     /* Shadow Tokens - Fluent 2 Elevation System (Light) */
@@ -556,7 +556,7 @@ strong {
     overflow: hidden;
 }
 
-/* Standalone code blocks (pre > code pattern) - Override Prism */
+/* Clean code blocks - no extra padding or shadows */
 pre:not(.code-block pre),
 pre code,
 .code-block pre {
@@ -564,11 +564,11 @@ pre code,
     border: 1px solid var(--colorNeutralStroke1) !important;
     border-radius: var(--borderRadiusMedium);
     margin: 16px 0;
-    padding: 16px !important;
+    padding: 12px !important;
     overflow-x: auto;
     font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
     font-size: 13px !important;
-    line-height: 1.5 !important;
+    line-height: 1.4 !important;
     color: var(--colorNeutralForeground1) !important;
     opacity: 1 !important;
     visibility: visible !important;
@@ -578,8 +578,8 @@ pre code,
 
 /* Fix light mode code block colors */
 [data-theme="light"] .code-block {
-    background: var(--colorNeutralBackground2);
-    border: 1px solid var(--colorNeutralStroke2);
+    background: var(--colorNeutralBackground3);
+    border: 1px solid var(--colorNeutralStroke1);
 }
 
 [data-theme="light"] .code-header {
@@ -592,12 +592,12 @@ pre code,
     color: var(--colorNeutralForeground1);
 }
 
-/* Light mode standalone code blocks - Override Prism */
+/* Light mode code blocks - Clean styling */
 [data-theme="light"] pre:not(.code-block pre),
 [data-theme="light"] pre code,
 [data-theme="light"] .code-block pre {
-    background: var(--colorNeutralBackground2) !important;
-    border: 1px solid var(--colorNeutralStroke2) !important;
+    background: var(--colorNeutralBackground3) !important;
+    border: 1px solid var(--colorNeutralStroke1) !important;
     color: var(--colorNeutralForeground1) !important;
     opacity: 1 !important;
     visibility: visible !important;
@@ -654,13 +654,13 @@ pre code,
 
 pre {
     margin: 0;
-    padding: 16px;
+    padding: 12px;
     overflow-x: auto;
     white-space: pre-wrap;
     font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace;
     font-size: 13px;
-    line-height: 1.5;
-    color: var(--text-secondary);
+    line-height: 1.4;
+    color: var(--colorNeutralForeground1);
     text-shadow: none !important;
 }
 

@@ -21,7 +21,8 @@
       "Bash(do if grep -q \"<!-- Search Box -->\" \"$file\")",
       "Bash(then sed -i '/<!-- Search Box -->/d' \"$file\")",
       "Bash(grep:*)",
-      "Bash(do sed -i 's|href=\"\"index\\.html\"\"|href=\"\"../../index.html\"\"|g' \"$file\")"
+      "Bash(do sed -i 's|href=\"\"index\\.html\"\"|href=\"\"../../index.html\"\"|g' \"$file\")",
+      "WebFetch(domain:fluent2.microsoft.design)"
     ],
     "deny": [],
     "ask": []
