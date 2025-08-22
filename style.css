@@ -298,9 +298,11 @@ body {
     margin-left: 320px;
     padding: 32px 40px;
     max-width: 1400px;
+    width: calc(100% - 320px);
     flex: 1;
     background: var(--colorNeutralBackground1);
     transition: all 0.2s ease;
+    overflow-x: auto;
 }
 
 /* Theme Toggle Button - Fluent 2 Style (In Sidebar) */
@@ -968,6 +970,7 @@ tr:hover {
     
     .main-content {
         margin-left: 280px;
+        width: calc(100% - 280px);
         padding: 24px 32px;
     }
 }
@@ -987,6 +990,7 @@ tr:hover {
     
     .main-content {
         margin-left: 0;
+        width: 100%;
         padding: 16px 20px;
     }
     
