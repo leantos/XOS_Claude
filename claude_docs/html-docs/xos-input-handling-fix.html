@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XOS Input Handling - Critical Fix Guide</title>
+    <link rel="icon" type="image/png" href="xos-docs.png">
+    <link rel="shortcut icon" type="image/png" href="xos-docs.png">
+    <link rel="apple-touch-icon" href="xos-docs.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -20,7 +23,7 @@
                 <span id="theme-text">Dark</span>
             </button>
             
-            <h3><i class="bi bi-arrow-left"></i> <a href="README.html" style="color: inherit; text-decoration: none;">Back to Hub</a></h3>
+            <h3><i class="bi bi-arrow-left"></i> <a href="index.html" style="color: inherit; text-decoration: none;">Back to Hub</a></h3>
             
             <h3><i class="bi bi-tools"></i> Quick Fix</h3>
             <ul>
@@ -548,7 +551,7 @@ ViewModel:    extends VMBase (state management)</pre>
                 <em>Last Updated: August 21, 2025</em><br>
                 <em>Maintainer: Development Team</em></p>
                 
-                <p><strong>Still having issues?</strong> <a href="README.html">Return to Documentation Hub</a> or check <a href="frontend-troubleshooting.html">Frontend Troubleshooting</a></p>
+                <p><strong>Still having issues?</strong> <a href="index.html">Return to Documentation Hub</a> or check <a href="frontend-troubleshooting.html">Frontend Troubleshooting</a></p>
             </div>
         </main>
     </div>
@@ -613,7 +616,7 @@ ViewModel:    extends VMBase (state management)</pre>
         if (window.innerWidth <= 768) {
             const menuButton = document.createElement('button');
             menuButton.innerHTML = '☰ Menu';
-            menuButton.xos-input-handling-fix.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
+            menuButton.style.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
             menuButton.onclick = toggleSidebar;
             document.body.appendChild(menuButton);
         }

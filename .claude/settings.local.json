@@ -9,7 +9,9 @@
       "Bash(fi)",
       "Bash(done)",
       "Bash(node:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git add:*)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": []

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Complete Module Development Guide - XOS Framework</title>
+    <link rel="icon" type="image/png" href="xos-docs.png">
+    <link rel="shortcut icon" type="image/png" href="xos-docs.png">
+    <link rel="apple-touch-icon" href="xos-docs.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -35,7 +38,7 @@
             
             <h3><i class="bi bi-arrow-left"></i> Quick Links</h3>
             <ul>
-                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="index.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
                 <li><a href="CRITICAL_PATTERNS.html"><i class="bi bi-exclamation-triangle"></i> Critical Patterns</a></li>
                 <li><a href="CLAUDE-PROMPT-QUICK-REFERENCE.html"><i class="bi bi-clipboard"></i> Quick Reference</a></li>
                 <li><a href="SETUP.html"><i class="bi bi-gear"></i> Setup Guide</a></li>
@@ -968,7 +971,7 @@ Frontend:
                     <div class="nav-card">
                         <h4><i class="bi bi-arrow-left"></i> Back to</h4>
                         <ul>
-                            <li><a href="README.html">claude_docs Hub</a> - Main documentation hub</li>
+                            <li><a href="index.html">claude_docs Hub</a> - Main documentation hub</li>
                             <li><a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a> - <strong>Read this first</strong></li>
                         </ul>
                     </div>
@@ -1074,7 +1077,7 @@ Frontend:
         if (window.innerWidth <= 768) {
             const menuButton = document.createElement('button');
             menuButton.innerHTML = '☰ Menu';
-            menuButton.MODULE-DEVELOPMENT-GUIDE.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
+            menuButton.style.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
             menuButton.onclick = toggleSidebar;
             document.body.appendChild(menuButton);
         }

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CVS API Routes Reference</title>
+    <link rel="icon" type="image/png" href="xos-docs.png">
+    <link rel="shortcut icon" type="image/png" href="xos-docs.png">
+    <link rel="apple-touch-icon" href="xos-docs.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -22,7 +25,7 @@
             
             <h3><i class="bi bi-lightning-charge"></i> Quick Access</h3>
             <ul>
-                <li><a href="README.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
+                <li><a href="index.html"><i class="bi bi-house"></i> Documentation Hub</a></li>
                 <li><a href="#controller-registry"><i class="bi bi-list-ul"></i> Controller Registry</a></li>
                 <li><a href="#authentication"><i class="bi bi-shield-check"></i> Authentication</a></li>
                 <li><a href="#common-responses"><i class="bi bi-arrow-return-left"></i> Response Formats</a></li>
@@ -34,8 +37,11 @@
                 <li><a href="#opera-audit"><i class="bi bi-file-text"></i> Opera Audit (API-02)</a></li>
                 <li><a href="#bank-reconciliation"><i class="bi bi-bank"></i> Bank Reconciliation (API-03)</a></li>
                 <li><a href="#refund-management"><i class="bi bi-arrow-counterclockwise"></i> Refund Management (API-04)</a></li>
+                <li><a href="#bacs-refund"><i class="bi bi-bank2"></i> BACS Refund (API-05)</a></li>
                 <li><a href="#dashboard"><i class="bi bi-speedometer2"></i> Dashboard (API-06)</a></li>
                 <li><a href="#reports"><i class="bi bi-graph-up"></i> Reports (API-07)</a></li>
+                <li><a href="#user-master"><i class="bi bi-person-gear"></i> User Master (API-08)</a></li>
+                <li><a href="#site-management"><i class="bi bi-building"></i> Site Management (API-09)</a></li>
                 <li><a href="#workflow"><i class="bi bi-arrow-repeat"></i> Workflow (API-10)</a></li>
             </ul>
             
@@ -412,6 +418,60 @@
                 </div>
             </section>
 
+            <section id="bacs-refund">
+                <h2>BACS Refund Management (API-05)</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Route</th>
+                                <th>Purpose</th>
+                                <th>Parameters</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-info">GET</span></td>
+                                <td><code>/bacsrefund/list</code></td>
+                                <td>List BACS refunds</td>
+                                <td><code>?status&dateFrom&dateTo</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-info">GET</span></td>
+                                <td><code>/bacsrefund/{id}</code></td>
+                                <td>Get BACS refund details</td>
+                                <td><code>id: int</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-success">POST</span></td>
+                                <td><code>/bacsrefund/create</code></td>
+                                <td>Create BACS refund</td>
+                                <td>Body: BacsRefundRequest</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-warning">PUT</span></td>
+                                <td><code>/bacsrefund/update</code></td>
+                                <td>Update BACS refund</td>
+                                <td>Body: BacsRefundRequest</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-success">POST</span></td>
+                                <td><code>/bacsrefund/process</code></td>
+                                <td>Process BACS file</td>
+                                <td>FormData: file</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-success">POST</span></td>
+                                <td><code>/bacsrefund/validate</code></td>
+                                <td>Validate BACS data</td>
+                                <td><code>{refundIds}</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <section id="dashboard">
                 <h2>Dashboard (API-06)</h2>
                 <div class="table-container">
@@ -496,6 +556,114 @@
                                 <td><code>/report/history</code></td>
                                 <td>Report history</td>
                                 <td><code>?userId&dateFrom</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="user-master">
+                <h2>User Master Management (API-08)</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Route</th>
+                                <th>Purpose</th>
+                                <th>Parameters</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-info">GET</span></td>
+                                <td><code>/usermaster/list</code></td>
+                                <td>List users</td>
+                                <td><code>?pageNo&pageSize&status</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-info">GET</span></td>
+                                <td><code>/usermaster/{id}</code></td>
+                                <td>Get user details</td>
+                                <td><code>id: int</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-success">POST</span></td>
+                                <td><code>/usermaster/create</code></td>
+                                <td>Create user</td>
+                                <td>Body: UserMasterRequest</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-warning">PUT</span></td>
+                                <td><code>/usermaster/update</code></td>
+                                <td>Update user</td>
+                                <td>Body: UserMasterRequest</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-danger">DELETE</span></td>
+                                <td><code>/usermaster/{id}</code></td>
+                                <td>Delete user</td>
+                                <td><code>id: int</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-success">POST</span></td>
+                                <td><code>/usermaster/resetpassword</code></td>
+                                <td>Reset password</td>
+                                <td><code>{userId, newPassword}</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="site-management">
+                <h2>Site Management (API-09)</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Route</th>
+                                <th>Purpose</th>
+                                <th>Parameters</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-info">GET</span></td>
+                                <td><code>/site/list</code></td>
+                                <td>List sites</td>
+                                <td><code>?active&region</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-info">GET</span></td>
+                                <td><code>/site/{id}</code></td>
+                                <td>Get site details</td>
+                                <td><code>id: int</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-success">POST</span></td>
+                                <td><code>/site/create</code></td>
+                                <td>Create site</td>
+                                <td>Body: SiteRequest</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-warning">PUT</span></td>
+                                <td><code>/site/update</code></td>
+                                <td>Update site</td>
+                                <td>Body: SiteRequest</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-success">POST</span></td>
+                                <td><code>/site/activate</code></td>
+                                <td>Activate site</td>
+                                <td><code>{siteId}</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-success">POST</span></td>
+                                <td><code>/site/deactivate</code></td>
+                                <td>Deactivate site</td>
+                                <td><code>{siteId, reason}</code></td>
                             </tr>
                         </tbody>
                     </table>
@@ -973,7 +1141,7 @@
                 <em>Last Updated: August 21, 2025</em><br>
                 <em>Base URL: https://localhost:5139/api</em></p>
                 
-                <p><strong>Need Help?</strong> Check the <a href="README.html">Documentation Hub</a> for troubleshooting guides and development workflows</p>
+                <p><strong>Need Help?</strong> Check the <a href="index.html">Documentation Hub</a> for troubleshooting guides and development workflows</p>
             </div>
         </main>
     </div>
@@ -1038,7 +1206,7 @@
         if (window.innerWidth <= 768) {
             const menuButton = document.createElement('button');
             menuButton.innerHTML = '☰ Menu';
-            menuButton.api-routes.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
+            menuButton.style.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
             menuButton.onclick = toggleSidebar;
             document.body.appendChild(menuButton);
         }
