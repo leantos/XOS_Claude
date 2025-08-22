@@ -927,56 +927,13 @@ Get-Content .claude/logs/file-access.log -Tail 20
             collapsible.classList.toggle('expanded');
         }
 
-        // Search functionality
-        function highlightText(text, searchTerm) {
             if (!searchTerm) return text;
-            const regex = new RegExp(`(${searchTerm})`, 'gi');
-            return text.replace(regex, '<span class="highlight">$1</span>');
         }
 
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const content = document.querySelector('.main-content');
-            const sections = content.querySelectorAll('section, h2, h3, p, li, td');
             
-            // Remove previous highlights
-            sections.forEach(section => {
-                section.innerHTML = section.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/gi, '$1');
-            });
-            
-            if (searchTerm.length > 2) {
-                sections.forEach(section => {
-                    const text = section.textContent.toLowerCase();
-                    if (text.includes(searchTerm)) {
-                        section.innerHTML = highlightText(section.innerHTML, searchTerm);
-                    }
-                });
             }
         });
 
-        // Auto-expand sections with search results
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            if (searchTerm.length > 2) {
-                document.querySelectorAll('.collapsible').forEach(collapsible => {
-                    const text = collapsible.textContent.toLowerCase();
-                    if (text.includes(searchTerm)) {
-                        collapsible.classList.add('expanded');
-                    }
-                });
-            }
-        });
-
-        // Mobile sidebar toggle
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('open');
-        }
-
-        // Add mobile menu button for smaller screens
-        if (window.innerWidth <= 768) {
-            const menuButton = document.createElement('button');
-            menuButton.innerHTML = '☰ Menu';
-            menuButton.SETUP.cssText = 'position: fixed; top: 1rem; left: 1rem; z-index: 200; padding: 0.5rem; background: var(--primary-color); color: white; border: none; border-radius: 0.25rem; cursor: pointer;';
             menuButton.onclick = toggleSidebar;
             document.body.appendChild(menuButton);
         }

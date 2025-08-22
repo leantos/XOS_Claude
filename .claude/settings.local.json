@@ -23,7 +23,11 @@
       "Bash(grep:*)",
       "Bash(do sed -i 's|href=\"\"index\\.html\"\"|href=\"\"../../index.html\"\"|g' \"$file\")",
       "WebFetch(domain:fluent2.microsoft.design)",
-      "Bash(do sed -i '/\\/\\/ Theme Toggle Functionality/,/});$/d' \"$file\")"
+      "Bash(do sed -i '/\\/\\/ Theme Toggle Functionality/,/});$/d' \"$file\")",
+      "Bash(do if grep -q \"searchInput\" \"$file\")",
+      "Bash(then echo \"=== $file has searchInput JS but might be missing the input element ===\")",
+      "Bash(do if grep -q \"searchTerm.*target.*value\" \"$file\")",
+      "Bash(then echo \"=== $file has broken search code ===\")"
     ],
     "deny": [],
     "ask": []
