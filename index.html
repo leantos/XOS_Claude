@@ -26,6 +26,7 @@
             <h3><i class="bi bi-lightning-charge"></i> Quick Access</h3>
             <ul>
                 <li><a href="#critical-start"><i class="bi bi-exclamation-triangle"></i> Start Here</a></li>
+                <li><a href="#how-to-use"><i class="bi bi-question-circle"></i> How to Use</a></li>
                 <li><a href="#copy-paste-prompts"><i class="bi bi-clipboard"></i> Copy-Paste Prompts</a></li>
                 <li><a href="#essential-files"><i class="bi bi-star"></i> Essential Files</a></li>
                 <li><a href="#quick-setup"><i class="bi bi-play-circle"></i> Quick Setup</a></li>
@@ -69,6 +70,93 @@
                 <h3>CRITICAL - READ FIRST</h3>
                 <p><strong><a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a></strong> - This document contains MANDATORY patterns that differ from standard development. XOS-based applications use a custom framework that significantly modifies standard React and ASP.NET Core patterns.</p>
             </div>
+
+            <section id="how-to-use">
+                <h2><i class="bi bi-question-circle"></i> How to Use This Documentation</h2>
+                
+                <div class="alert alert-info">
+                    <h3>📖 Dual-Purpose Documentation System</h3>
+                    <p>This documentation works in two ways:</p>
+                    <ul>
+                        <li><strong>Web Browsing:</strong> Read online at this site for learning and reference</li>
+                        <li><strong>Claude Code Integration:</strong> Reference via <code>@claude_docs/</code> in your projects</li>
+                    </ul>
+                </div>
+
+                <div class="nav-grid">
+                    <div class="nav-card">
+                        <h4><i class="bi bi-git"></i> For Development Teams</h4>
+                        <p>Add this documentation to your XOS project as a Git submodule:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Add Documentation Submodule</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'add-submodule')">Copy</button>
+                            </div>
+                            <pre id="add-submodule"># In your project root directory
+git submodule add https://github.com/your-org/xos-docs.git claude_docs
+git commit -m "Add XOS documentation"
+git push</pre>
+                        </div>
+                        <p><small>Team members clone with: <code>git clone --recurse-submodules [repo-url]</code></small></p>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-robot"></i> With Claude Code</h4>
+                        <p>Reference documentation files directly in your prompts:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Claude Code Reference Examples</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'claude-refs')">Copy</button>
+                            </div>
+                            <pre id="claude-refs">Create user login using @claude_docs/CRITICAL_PATTERNS.md
+
+Fix input issues with @claude_docs/frontend/xos-input-handling-fix.md
+
+Build API following @claude_docs/backend/backend-blueprint.md</pre>
+                        </div>
+                        <p><small>Always include <code>@claude_docs/CRITICAL_PATTERNS.md</code> in your prompts</small></p>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-arrow-clockwise"></i> Keeping Updated</h4>
+                        <p>Pull latest documentation when convenient for your team:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span>Update Documentation</span>
+                                <button class="copy-btn" onclick="copyCode(this, 'update-docs')">Copy</button>
+                            </div>
+                            <pre id="update-docs"># Check for updates
+cd claude_docs && git fetch && git log HEAD..origin/main --oneline && cd ..
+
+# Pull latest version
+git submodule update --remote claude_docs
+git add claude_docs && git commit -m "Update XOS documentation"</pre>
+                        </div>
+                        <p><small>You control when to update - no automatic changes to your project</small></p>
+                    </div>
+
+                    <div class="nav-card">
+                        <h4><i class="bi bi-exclamation-triangle"></i> Why This Matters</h4>
+                        <ul>
+                            <li><strong>XOS ≠ Standard:</strong> This framework completely changes React/.NET patterns</li>
+                            <li><strong>Prevents Errors:</strong> Standard tutorials will break your code</li>
+                            <li><strong>Team Consistency:</strong> Everyone uses the same proven patterns</li>
+                            <li><strong>Claude Accuracy:</strong> AI needs context to work with custom frameworks</li>
+                        </ul>
+                        <p><small><strong>Bottom line:</strong> Always reference <code>@claude_docs/</code> files in your Claude prompts</small></p>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <h3>🚨 Quick Setup for New Projects</h3>
+                    <p>If your project doesn't have the <code>claude_docs</code> folder yet:</p>
+                    <ol>
+                        <li>Ask your team lead for the documentation repository URL</li>
+                        <li>Run the "Add Documentation Submodule" command above</li>
+                        <li>Start using <code>@claude_docs/</code> references in your Claude prompts</li>
+                    </ol>
+                </div>
+            </section>
 
             <section id="quick-start">
                 <h2>Quick Start</h2>
