@@ -22,7 +22,8 @@
       "Bash(then sed -i '/<!-- Search Box -->/d' \"$file\")",
       "Bash(grep:*)",
       "Bash(do sed -i 's|href=\"\"index\\.html\"\"|href=\"\"../../index.html\"\"|g' \"$file\")",
-      "WebFetch(domain:fluent2.microsoft.design)"
+      "WebFetch(domain:fluent2.microsoft.design)",
+      "Bash(do sed -i '/\\/\\/ Theme Toggle Functionality/,/});$/d' \"$file\")"
     ],
     "deny": [],
     "ask": []

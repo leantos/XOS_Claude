@@ -17,11 +17,6 @@
     <div class="container">
         <!-- Sidebar Navigation -->
         <nav class="sidebar">
-            <!-- Theme Toggle Button -->
-            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-                <i class="bi bi-moon-fill" id="theme-icon"></i>
-                <span id="theme-text">Dark</span>
-            </button>
             
             <h3><i class="bi bi-lightning-charge"></i> Quick Access</h3>
             <ul>
@@ -1220,56 +1215,6 @@
             }
         });
 
-        // Theme Toggle Functionality - Fluent 2 Design System
-        function toggleTheme() {
-            const body = document.body;
-            const themeIcon = document.getElementById('theme-icon');
-            const themeText = document.getElementById('theme-text');
-            const currentTheme = body.getAttribute('data-theme');
-            
-            if (currentTheme === 'dark') {
-                body.setAttribute('data-theme', 'light');
-                themeIcon.className = 'bi bi-sun-fill';
-                themeText.textContent = 'Light';
-                localStorage.setItem('preferred-theme', 'light');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                themeIcon.className = 'bi bi-moon-fill';
-                themeText.textContent = 'Dark';
-                localStorage.setItem('preferred-theme', 'dark');
-            }
-        }
-
-        // Load saved theme preference or default to dark
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('preferred-theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-            
-            const body = document.body;
-            const themeIcon = document.getElementById('theme-icon');
-            const themeText = document.getElementById('theme-text');
-            
-            body.setAttribute('data-theme', theme);
-            
-            if (theme === 'light') {
-                themeIcon.className = 'bi bi-sun-fill';
-                themeText.textContent = 'Light';
-            } else {
-                themeIcon.className = 'bi bi-moon-fill';
-                themeText.textContent = 'Dark';
-            }
-        }
-
-        // Initialize theme on page load
-        document.addEventListener('DOMContentLoaded', loadTheme);
-
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-            if (!localStorage.getItem('preferred-theme')) {
-                loadTheme();
-            }
-        });
 
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

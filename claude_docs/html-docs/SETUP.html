@@ -18,11 +18,6 @@
     <div class="container">
         <!-- Sidebar Navigation -->
         <nav class="sidebar">
-            <!-- Theme Toggle Button -->
-            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-                <i class="bi bi-moon-fill" id="theme-icon"></i>
-                <span id="theme-text">Dark</span>
-            </button>
             
             <h3><i class="bi bi-rocket"></i> Quick Start</h3>
             <ul>
@@ -986,30 +981,6 @@ Get-Content .claude/logs/file-access.log -Tail 20
             document.body.appendChild(menuButton);
         }
 
-        // Theme Toggle Functionality
-        function toggleTheme() {
-            const body = document.body;
-            const themeIcon = document.getElementById('theme-icon');
-            const themeText = document.getElementById('theme-text');
-            const currentTheme = body.getAttribute('data-theme');
-            
-            if (currentTheme === 'dark') {
-                body.setAttribute('data-theme', 'light');
-                themeIcon.className = 'bi bi-sun-fill';
-                themeText.textContent = 'Light';
-                localStorage.setItem('preferred-theme', 'light');
-                // Update Mermaid theme
-                mermaid.initialize({ 
-                    startOnLoad: true, 
-                    theme: 'default',
-                    themeVariables: {
-                        background: '#ffffff',
-                        primaryColor: '#0d6efd',
-                        primaryTextColor: '#000000',
-                        primaryBorderColor: '#0d6efd',
-                        lineColor: '#6c757d'
-                    }
-                });
             } else {
                 body.setAttribute('data-theme', 'dark');
                 themeIcon.className = 'bi bi-moon-fill';

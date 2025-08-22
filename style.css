@@ -77,119 +77,8 @@
     --lineHeightBase600: 32px;
 }
 
-/* Light Theme - Fluent 2 Design System */
-[data-theme="light"] {
-    /* Fluent 2 Light Theme - Better Contrast */
-    --colorNeutralBackground1: #ffffff;
-    --colorNeutralBackground2: #fafafa;
-    --colorNeutralBackground3: #f3f3f3;
-    --colorNeutralBackground4: #e8e8e8;
-    --colorNeutralBackground5: #d1d1d1;
-    --colorNeutralBackground6: #b4b4b4;
-    
-    /* Light Theme Foreground Colors - Better Readability */
-    --colorNeutralForeground1: #1f1f1f;
-    --colorNeutralForeground2: #2e2e2e;
-    --colorNeutralForeground3: #424242;
-    --colorNeutralForeground4: #6b6b6b;
-    --colorNeutralForegroundDisabled: #9e9e9e;
-    
-    /* Light Theme Brand Colors */
-    --colorBrandBackground: #0078d4;
-    --colorBrandBackgroundHover: #106ebe;
-    --colorBrandBackgroundPressed: #005a9e;
-    --colorBrandForeground1: #0078d4;
-    --colorBrandForeground2: #106ebe;
-    --colorBrandForegroundInverted: #ffffff;
-    
-    /* Semantic Colors */
-    --colorPaletteRedBackground3: #fed9cc;
-    --colorPaletteGreenBackground3: #dff6dd;
-    --colorPaletteYellowBackground3: #fff4ce;
-    --colorPaletteLightBlueBackground3: #deecf9;
-    
-    /* Light Theme Stroke/Border Colors - Better Contrast */
-    --colorNeutralStroke1: #d1d1d1;
-    --colorNeutralStroke2: #c7c7c7;
-    --colorNeutralStrokeAccessible: #424242;
-    --colorBrandStroke1: #0078d4;
-    
-    /* Shadow Tokens - Fluent 2 Elevation System (Light) */
-    --shadow2: 0px 1px 2px 0px rgba(0, 0, 0, 0.08), 0px 0px 2px 0px rgba(0, 0, 0, 0.06);
-    --shadow4: 0px 2px 4px 0px rgba(0, 0, 0, 0.08), 0px 0px 4px 0px rgba(0, 0, 0, 0.06);
-    --shadow8: 0px 4px 8px 0px rgba(0, 0, 0, 0.08), 0px 0px 8px 0px rgba(0, 0, 0, 0.06);
-    --shadow16: 0px 8px 16px 0px rgba(0, 0, 0, 0.08), 0px 0px 16px 0px rgba(0, 0, 0, 0.06);
-    --shadow28: 0px 14px 28px 0px rgba(0, 0, 0, 0.12), 0px 0px 8px 0px rgba(0, 0, 0, 0.10);
-    --shadow64: 0px 32px 64px 0px rgba(0, 0, 0, 0.12), 0px 0px 8px 0px rgba(0, 0, 0, 0.10);
-    
-    /* Border Radius Tokens (same across themes) */
-    --borderRadiusNone: 0px;
-    --borderRadiusSmall: 2px;
-    --borderRadiusMedium: 4px;
-    --borderRadiusLarge: 6px;
-    --borderRadiusXLarge: 8px;
-    --borderRadius2xLarge: 12px;
-    
-    /* Typography Tokens (same across themes) */
-    --fontWeightRegular: 400;
-    --fontWeightMedium: 500;
-    --fontWeightSemibold: 600;
-    --fontWeightBold: 700;
-    --fontSizeBase100: 10px;
-    --fontSizeBase200: 12px;
-    --fontSizeBase300: 14px;
-    --fontSizeBase400: 16px;
-    --fontSizeBase500: 20px;
-    --fontSizeBase600: 24px;
-    --lineHeightBase100: 14px;
-    --lineHeightBase200: 16px;
-    --lineHeightBase300: 20px;
-    --lineHeightBase400: 22px;
-    --lineHeightBase500: 28px;
-    --lineHeightBase600: 32px;
-}
 
 /* Legacy Compatibility Mappings */
-:root, [data-theme="dark"], [data-theme="light"] {
-    --primary-color: var(--colorBrandBackground);
-    --primary-hover: var(--colorBrandBackgroundHover);
-    --primary-light: var(--colorBrandForeground1);
-    --success-color: #107c10;
-    --warning-color: #faa356;
-    --danger-color: #d13438;
-    --info-color: var(--colorBrandBackground);
-    --bg-primary: var(--colorNeutralBackground1);
-    --bg-secondary: var(--colorNeutralBackground2);
-    --bg-tertiary: var(--colorNeutralBackground3);
-    --bg-accent: var(--colorNeutralBackground4);
-    --text-primary: var(--colorNeutralForeground1);
-    --text-secondary: var(--colorNeutralForeground2);
-    --text-tertiary: var(--colorNeutralForeground3);
-    --text-inverse: var(--colorNeutralForeground1);
-    --border-primary: var(--colorNeutralStroke1);
-    --border-secondary: var(--colorNeutralStroke2);
-    --border-focus: var(--colorBrandStroke1);
-    --code-bg: var(--colorNeutralBackground3);
-    --highlight-bg: var(--colorBrandBackground);
-    
-    /* Shadow mappings to new tokens */
-    --shadow-2: var(--shadow2);
-    --shadow-4: var(--shadow4);
-    --shadow-8: var(--shadow8);
-    --shadow-16: var(--shadow16);
-    --shadow-64: var(--shadow64);
-    --shadow-low: var(--shadow2);
-    --shadow-medium: var(--shadow8);
-    
-    /* Border radius mappings */
-    --corner-radius-small: var(--borderRadiusSmall);
-    --corner-radius-medium: var(--borderRadiusMedium);
-    --corner-radius-large: var(--borderRadiusLarge);
-    --corner-radius-xlarge: var(--borderRadiusXLarge);
-    --radius-small: var(--borderRadiusSmall);
-    --radius-medium: var(--borderRadiusMedium);
-    --radius-large: var(--borderRadiusLarge);
-}
 
 * {
     box-sizing: border-box;
@@ -440,10 +329,6 @@ strong {
     background: rgba(239, 68, 68, 0.12);
 }
 
-[data-theme="light"] .alert-critical {
-    background: #fef2f2;
-    border-color: #dc2626;
-}
 
 .alert-critical h3 {
     margin-top: 0;
@@ -455,9 +340,6 @@ strong {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="light"] .alert-critical h3 {
-    color: #dc2626;
-}
 
 .alert-warning {
     border-color: var(--warning-color);
@@ -469,10 +351,6 @@ strong {
     background: rgba(245, 158, 11, 0.12);
 }
 
-[data-theme="light"] .alert-warning {
-    background: #fffbeb;
-    border-color: #d97706;
-}
 
 .alert-warning h3 {
     margin-top: 0;
@@ -484,9 +362,6 @@ strong {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="light"] .alert-warning h3 {
-    color: #d97706;
-}
 
 .alert-info {
     border-color: var(--info-color);
@@ -498,10 +373,6 @@ strong {
     background: rgba(59, 130, 246, 0.12);
 }
 
-[data-theme="light"] .alert-info {
-    background: #eff6ff;
-    border-color: #2563eb;
-}
 
 .alert-info h3 {
     margin-top: 0;
@@ -513,9 +384,6 @@ strong {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="light"] .alert-info h3 {
-    color: #2563eb;
-}
 
 .alert-success {
     border-color: var(--success-color);
@@ -527,10 +395,6 @@ strong {
     background: rgba(34, 197, 94, 0.12);
 }
 
-[data-theme="light"] .alert-success {
-    background: #f0fdf4;
-    border-color: #16a34a;
-}
 
 .alert-success h3 {
     margin-top: 0;
@@ -542,9 +406,6 @@ strong {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="light"] .alert-success h3 {
-    color: #16a34a;
-}
 
 /* Code Blocks - Fluent 2 Design System */
 .code-block {
