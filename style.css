@@ -563,7 +563,7 @@ pre code,
     background: var(--colorNeutralBackground3) !important;
     border: 1px solid var(--colorNeutralStroke1) !important;
     border-radius: var(--borderRadiusMedium);
-    margin: 16px 0;
+    /* margin: 16px 0; */
     /* padding: 12px !important; */
     overflow-x: auto;
     font-family: 'Cascadia Code', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
