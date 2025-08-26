@@ -1,0 +1,57 @@
+[build]
+  # Directory containing the HTML documentation files
+  publish = "claude_docs/html-docs"
+  # No build command needed for static HTML site
+  command = "echo 'Static HTML site - no build required'"
+
+# Headers for security and performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Cache static assets for 1 year
+  
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpeg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Redirects for better SEO and user experience
+[[redirects]]
+  from = "/docs/*"
+  to = "/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/documentation/*"
+  to = "/:splat"
+  status = 301
+
+# SPA fallback - only if needed for your specific routing requirements
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200

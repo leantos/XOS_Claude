@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XOS Framework Documentation Hub</title>
-    <link rel="icon" type="image/png" href="claude_docs/html-docs/favicon.png">
-    <link rel="shortcut icon" type="image/png" href="claude_docs/html-docs/favicon.png">
-    <link rel="apple-touch-icon" href="claude_docs/html-docs/favicon.png">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="shortcut icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -29,25 +29,25 @@
             <h3><i class="bi bi-palette"></i> Frontend Patterns</h3>
             <ul>
                 <li><a href="#frontend-prompts"><i class="bi bi-code-square"></i> Component Patterns</a></li>
-                <li><a href="claude_docs/html-docs/xos-input-handling-fix.html"><i class="bi bi-tools"></i> Input Fix Guide</a></li>
+                <li><a href="xos-input-handling-fix.html"><i class="bi bi-tools"></i> Input Fix Guide</a></li>
                 <li><a href="#complete-frontend"><i class="bi bi-grid-3x3-gap"></i> Complete Components</a></li>
-                <li><a href="claude_docs/html-docs/frontend-troubleshooting.html"><i class="bi bi-question-circle"></i> Frontend Troubleshooting</a></li>
+                <li><a href="frontend-troubleshooting.html"><i class="bi bi-question-circle"></i> Frontend Troubleshooting</a></li>
             </ul>
             
             <h3><i class="bi bi-server"></i> Backend Patterns</h3>
             <ul>
                 <li><a href="#backend-prompts"><i class="bi bi-gear"></i> API Patterns</a></li>
-                <li><a href="claude_docs/html-docs/backend-blueprint.html"><i class="bi bi-diagram-3"></i> Backend Blueprint</a></li>
-                <li><a href="claude_docs/html-docs/api-routes.html"><i class="bi bi-arrow-left-right"></i> API Routes</a></li>
+                <li><a href="backend-blueprint.html"><i class="bi bi-diagram-3"></i> Backend Blueprint</a></li>
+                <li><a href="api-routes.html"><i class="bi bi-arrow-left-right"></i> API Routes</a></li>
                 <li><a href="#complete-backend"><i class="bi bi-database"></i> Complete Services</a></li>
-                <li><a href="claude_docs/html-docs/backend-troubleshooting.html"><i class="bi bi-bug"></i> Backend Troubleshooting</a></li>
+                <li><a href="backend-troubleshooting.html"><i class="bi bi-bug"></i> Backend Troubleshooting</a></li>
             </ul>
             
             <h3><i class="bi bi-tools"></i> Automation & Tools</h3>
             <ul>
                 <li><a href="#automation-agents"><i class="bi bi-robot"></i> AI Agents</a></li>
-                <li><a href="claude_docs/html-docs/SETUP.html"><i class="bi bi-download"></i> Setup Guide</a></li>
-                <li><a href="claude_docs/html-docs/MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Development Guide</a></li>
+                <li><a href="SETUP.html"><i class="bi bi-download"></i> Setup Guide</a></li>
+                <li><a href="MODULE-DEVELOPMENT-GUIDE.html"><i class="bi bi-book"></i> Development Guide</a></li>
                 <li><a href="#hooks-config"><i class="bi bi-link-45deg"></i> Claude Code Hooks</a></li>
                 <li><a href="#development-workflow"><i class="bi bi-arrow-repeat"></i> Workflow</a></li>
             </ul>
@@ -56,7 +56,7 @@
             <ul>
                 <li><a href="#testing-patterns"><i class="bi bi-check-circle"></i> Testing Patterns</a></li>
                 <li><a href="#security-rules"><i class="bi bi-lock"></i> Security Rules</a></li>
-                <li><a href="claude_docs/html-docs/testing-troubleshooting.html"><i class="bi bi-bug"></i> Testing Troubleshooting</a></li>
+                <li><a href="testing-troubleshooting.html"><i class="bi bi-bug"></i> Testing Troubleshooting</a></li>
             </ul>
         </nav>
 
@@ -69,7 +69,7 @@
                 <h3>🚨 CRITICAL - READ FIRST</h3>
                 <p><strong>This is NOT standard React + ASP.NET Core development!</strong></p>
                 <p>XOS Framework completely changes how you build components, handle state, and make API calls. Following standard tutorials will break your code.</p>
-                <p><strong>Essential Reading:</strong> <a href="claude_docs/html-docs/CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a> and <a href="claude_docs/html-docs/README.html">README.html</a></p>
+                <p><strong>Essential Reading:</strong> <a href="CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.html</a> and <a href="README.html">README.html</a></p>
             </div>
 
             <section id="xos-complete-patterns">
@@ -84,35 +84,35 @@
                     <div class="nav-card">
                         <h4><i class="bi bi-palette"></i> Frontend Patterns</h4>
                         <ul>
-                            <li><a href="claude_docs/xos-complete-patterns/frontend/component-complete.jsx">component-complete.jsx</a> - 1000+ lines, every UI pattern</li>
-                            <li><a href="claude_docs/xos-complete-patterns/frontend/viewmodel-complete.jsx">viewmodel-complete.jsx</a> - 800+ lines, all VM patterns</li>
-                            <li><a href="claude_docs/xos-complete-patterns/frontend/service-complete.js">service-complete.js</a> - 500+ lines, all API calls</li>
+                            <li><a href="../xos-complete-patterns/frontend/component-complete.jsx">component-complete.jsx</a> - 1000+ lines, every UI pattern</li>
+                            <li><a href="../xos-complete-patterns/frontend/viewmodel-complete.jsx">viewmodel-complete.jsx</a> - 800+ lines, all VM patterns</li>
+                            <li><a href="../xos-complete-patterns/frontend/service-complete.js">service-complete.js</a> - 500+ lines, all API calls</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4><i class="bi bi-server"></i> Backend Patterns</h4>
                         <ul>
-                            <li><a href="claude_docs/xos-complete-patterns/backend/controller-complete.cs">controller-complete.cs</a> - 600+ lines, all endpoints</li>
-                            <li><a href="claude_docs/xos-complete-patterns/backend/service-complete.cs">service-complete.cs</a> - 1200+ lines, all DB operations</li>
+                            <li><a href="../xos-complete-patterns/backend/controller-complete.cs">controller-complete.cs</a> - 600+ lines, all endpoints</li>
+                            <li><a href="../xos-complete-patterns/backend/service-complete.cs">service-complete.cs</a> - 1200+ lines, all DB operations</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4><i class="bi bi-gear"></i> Infrastructure</h4>
                         <ul>
-                            <li><a href="claude_docs/xos-complete-patterns/infrastructure/program-complete.cs">program-complete.cs</a> - Complete startup configuration</li>
-                            <li><a href="claude_docs/xos-complete-patterns/infrastructure/xos-controller-base.cs">xos-controller-base.cs</a> - Base controller patterns</li>
-                            <li><a href="claude_docs/xos-complete-patterns/infrastructure/xos-data-framework.cs">xos-data-framework.cs</a> - Data access patterns</li>
+                            <li><a href="../xos-complete-patterns/infrastructure/program-complete.cs">program-complete.cs</a> - Complete startup configuration</li>
+                            <li><a href="../xos-complete-patterns/infrastructure/xos-controller-base.cs">xos-controller-base.cs</a> - Base controller patterns</li>
+                            <li><a href="../xos-complete-patterns/infrastructure/xos-data-framework.cs">xos-data-framework.cs</a> - Data access patterns</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4><i class="bi bi-palette2"></i> Styling & UI</h4>
                         <ul>
-                            <li><a href="claude_docs/xos-complete-patterns/styling/bootstrap-complete.html">bootstrap-complete.html</a> - 1000+ lines, all Bootstrap usage</li>
-                            <li><a href="claude_docs/xos-complete-patterns/styling/theme-complete.css">theme-complete.css</a> - 600+ lines, complete theming</li>
-                            <li><a href="claude_docs/xos-complete-patterns/jquery-bootstrap/modal-patterns.js">modal-patterns.js</a> - Modal handling</li>
+                            <li><a href="../xos-complete-patterns/styling/bootstrap-complete.html">bootstrap-complete.html</a> - 1000+ lines, all Bootstrap usage</li>
+                            <li><a href="../xos-complete-patterns/styling/theme-complete.css">theme-complete.css</a> - 600+ lines, complete theming</li>
+                            <li><a href="../xos-complete-patterns/jquery-bootstrap/modal-patterns.js">modal-patterns.js</a> - Modal handling</li>
                         </ul>
                     </div>
                 </div>
@@ -216,9 +216,9 @@ git add claude_docs && git commit -m "Update XOS documentation"</pre>
                     </div>
                     <div class="collapsible-content">
                         <ol>
-                            <li><strong><a href="claude_docs/html-docs/CRITICAL_PATTERNS.html">CRITICAL PATTERNS</a></strong> - MUST READ FIRST</li>
+                            <li><strong><a href="CRITICAL_PATTERNS.html">CRITICAL PATTERNS</a></strong> - MUST READ FIRST</li>
                             <li><strong>XOS Framework Guide (Coming Soon)</strong> - Custom framework overview</li>
-                            <li><strong><a href="claude_docs/html-docs/backend-blueprint.html">Backend Blueprint</a></strong> - XOS backend patterns</li>
+                            <li><strong><a href="backend-blueprint.html">Backend Blueprint</a></strong> - XOS backend patterns</li>
                             <li><strong>Development Guide (Coming Soon)</strong> - Common commands</li>
                             <li>Review Project Structure (Coming Soon)</li>
                             <li>Check Naming Conventions (Coming Soon)</li>
@@ -498,29 +498,29 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     <div class="nav-card">
                         <h4><i class="bi bi-gear"></i> Development Agents</h4>
                         <ul>
-                            <li><a href="claude_docs/automation/agents/backend-service-builder.html">Backend Service Builder</a> - Complete service generation</li>
-                            <li><a href="claude_docs/automation/agents/frontend-architect.html">Frontend Architect</a> - Component architecture</li>
-                            <li><a href="claude_docs/automation/agents/database-architect.html">Database Architect</a> - Schema design</li>
-                            <li><a href="claude_docs/automation/agents/test-automation-engineer.html">Test Automation Engineer</a> - Test generation</li>
+                            <li><a href="../automation/agents/backend-service-builder.html">Backend Service Builder</a> - Complete service generation</li>
+                            <li><a href="../automation/agents/frontend-architect.html">Frontend Architect</a> - Component architecture</li>
+                            <li><a href="../automation/agents/database-architect.html">Database Architect</a> - Schema design</li>
+                            <li><a href="../automation/agents/test-automation-engineer.html">Test Automation Engineer</a> - Test generation</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4><i class="bi bi-tools"></i> Operations Agents</h4>
                         <ul>
-                            <li><a href="claude_docs/automation/agents/devops-automator.html">DevOps Automator</a> - Deployment & CI/CD</li>
-                            <li><a href="claude_docs/automation/agents/performance-optimizer.html">Performance Optimizer</a> - Code optimization</li>
-                            <li><a href="claude_docs/automation/agents/security-auditor.html">Security Auditor</a> - Security analysis</li>
-                            <li><a href="claude_docs/automation/agents/documentation-engineer.html">Documentation Engineer</a> - Docs generation</li>
+                            <li><a href="../automation/agents/devops-automator.html">DevOps Automator</a> - Deployment & CI/CD</li>
+                            <li><a href="../automation/agents/performance-optimizer.html">Performance Optimizer</a> - Code optimization</li>
+                            <li><a href="../automation/agents/security-auditor.html">Security Auditor</a> - Security analysis</li>
+                            <li><a href="../automation/agents/documentation-engineer.html">Documentation Engineer</a> - Docs generation</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4><i class="bi bi-git"></i> Git & Workflow</h4>
                         <ul>
-                            <li><a href="claude_docs/automation/agents/git-workflow-manager.html">Git Workflow Manager</a> - Git automation</li>
-                            <li><a href="claude_docs/automation/agents/code-reviewer.html">Code Reviewer</a> - Automated reviews</li>
-                            <li><a href="claude_docs/git-github/git-automation-guide.html">Git Automation Guide</a> - Workflow setup</li>
+                            <li><a href="../automation/agents/git-workflow-manager.html">Git Workflow Manager</a> - Git automation</li>
+                            <li><a href="../automation/agents/code-reviewer.html">Code Reviewer</a> - Automated reviews</li>
+                            <li><a href="../git-github/git-automation-guide.html">Git Automation Guide</a> - Workflow setup</li>
                         </ul>
                     </div>
                 </div>
@@ -550,9 +550,9 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     <div class="nav-card">
                         <h4><i class="bi bi-gear"></i> Available Configurations</h4>
                         <ul>
-                            <li><a href="claude_docs/hooks/optimized-hooks-windows.json">Optimized Hooks (Windows)</a> - Best performance setup</li>
-                            <li><a href="claude_docs/hooks/claude-code-hooks-windows.json">Standard Hooks</a> - Basic configuration</li>
-                            <li><a href="claude_docs/hooks/hook-system.html">Hook System Guide</a> - Understanding hooks</li>
+                            <li><a href="../hooks/optimized-hooks-windows.json">Optimized Hooks (Windows)</a> - Best performance setup</li>
+                            <li><a href="../hooks/claude-code-hooks-windows.json">Standard Hooks</a> - Basic configuration</li>
+                            <li><a href="../hooks/hook-system.html">Hook System Guide</a> - Understanding hooks</li>
                         </ul>
                     </div>
                 </div>
@@ -565,18 +565,18 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     <div class="nav-card">
                         <h4><i class="bi bi-server"></i> Backend Testing</h4>
                         <ul>
-                            <li><a href="claude_docs/testing/backend-testing-guide.html">Backend Testing Guide</a> - Complete testing strategy</li>
-                            <li><a href="claude_docs/testing/test-examples/backend-examples.html">Backend Examples</a> - Sample tests</li>
-                            <li><a href="claude_docs/testing/xos-framework-testing.html">XOS Framework Testing</a> - Framework-specific tests</li>
+                            <li><a href="../testing/backend-testing-guide.html">Backend Testing Guide</a> - Complete testing strategy</li>
+                            <li><a href="../testing/test-examples/backend-examples.html">Backend Examples</a> - Sample tests</li>
+                            <li><a href="../testing/xos-framework-testing.html">XOS Framework Testing</a> - Framework-specific tests</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4><i class="bi bi-palette"></i> Frontend Testing</h4>
                         <ul>
-                            <li><a href="claude_docs/testing/frontend-testing-guide.html">Frontend Testing Guide</a> - Component testing</li>
-                            <li><a href="claude_docs/testing/test-examples/frontend-examples.html">Frontend Examples</a> - Sample tests</li>
-                            <li><a href="claude_docs/testing/testing-best-practices.html">Testing Best Practices</a> - XOS-specific practices</li>
+                            <li><a href="../testing/frontend-testing-guide.html">Frontend Testing Guide</a> - Component testing</li>
+                            <li><a href="../testing/test-examples/frontend-examples.html">Frontend Examples</a> - Sample tests</li>
+                            <li><a href="../testing/testing-best-practices.html">Testing Best Practices</a> - XOS-specific practices</li>
                         </ul>
                     </div>
                 </div>
@@ -685,19 +685,19 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     <div class="nav-card">
                         <h4><i class="bi bi-gear"></i> Available Setup Scripts</h4>
                         <ul>
-                            <li><a href="claude_docs/master-setup.ps1">master-setup.ps1</a> - Complete environment setup</li>
-                            <li><a href="claude_docs/setup/auto-setup.ps1">auto-setup.ps1</a> - Automated dependency installation</li>
-                            <li><a href="claude_docs/setup/install-postgres-mcp.ps1">install-postgres-mcp.ps1</a> - PostgreSQL MCP setup</li>
-                            <li><a href="claude_docs/hooks/setup-optimized-hooks.ps1">setup-optimized-hooks.ps1</a> - Claude Code hooks</li>
+                            <li><a href="../master-setup.ps1">master-setup.ps1</a> - Complete environment setup</li>
+                            <li><a href="../setup/auto-setup.ps1">auto-setup.ps1</a> - Automated dependency installation</li>
+                            <li><a href="../setup/install-postgres-mcp.ps1">install-postgres-mcp.ps1</a> - PostgreSQL MCP setup</li>
+                            <li><a href="../hooks/setup-optimized-hooks.ps1">setup-optimized-hooks.ps1</a> - Claude Code hooks</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4><i class="bi bi-book"></i> Setup Guides</h4>
                         <ul>
-                            <li><a href="claude_docs/setup/xos-app-setup-guide.html">XOS App Setup Guide</a> - Step-by-step instructions</li>
-                            <li><a href="claude_docs/setup/postgres-mcp-complete-setup.html">PostgreSQL MCP Setup</a> - Database configuration</li>
-                            <li><a href="claude_docs/essential/SETUP.html">Essential Setup</a> - Core requirements</li>
+                            <li><a href="../setup/xos-app-setup-guide.html">XOS App Setup Guide</a> - Step-by-step instructions</li>
+                            <li><a href="../setup/postgres-mcp-complete-setup.html">PostgreSQL MCP Setup</a> - Database configuration</li>
+                            <li><a href="../essential/SETUP.html">Essential Setup</a> - Core requirements</li>
                         </ul>
                     </div>
                 </div>
@@ -709,40 +709,40 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                     <div class="nav-card">
                         <h4>🚀 Start Here</h4>
                         <ul>
-                            <li><a href="claude_docs/START-HERE.html">START-HERE.md</a> - <strong>New to XOS? Start here</strong></li>
-                            <li><a href="claude_docs/essential/CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.md</a> - <strong>Essential reading</strong></li>
-                            <li><a href="claude_docs/xos-complete-patterns/ABSOLUTE-RULES.html">ABSOLUTE-RULES.md</a> - Unbreakable laws</li>
-                            <li><a href="claude_docs/essential/SETUP.html">SETUP.md</a> - Environment setup</li>
+                            <li><a href="../START-HERE.html">START-HERE.md</a> - <strong>New to XOS? Start here</strong></li>
+                            <li><a href="../essential/CRITICAL_PATTERNS.html">CRITICAL_PATTERNS.md</a> - <strong>Essential reading</strong></li>
+                            <li><a href="../xos-complete-patterns/ABSOLUTE-RULES.html">ABSOLUTE-RULES.md</a> - Unbreakable laws</li>
+                            <li><a href="../essential/SETUP.html">SETUP.md</a> - Environment setup</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4>🎯 Complete Patterns (Source of Truth)</h4>
                         <ul>
-                            <li><a href="claude_docs/xos-complete-patterns/frontend/component-complete.jsx">Frontend Components</a> - 1000+ lines, every UI pattern</li>
-                            <li><a href="claude_docs/xos-complete-patterns/backend/controller-complete.cs">Backend Controllers</a> - 600+ lines, all endpoints</li>
-                            <li><a href="claude_docs/xos-complete-patterns/backend/service-complete.cs">Backend Services</a> - 1200+ lines, all DB operations</li>
-                            <li><a href="claude_docs/xos-complete-patterns/styling/bootstrap-complete.html">Bootstrap Styling</a> - 1000+ lines, all UI patterns</li>
+                            <li><a href="../xos-complete-patterns/frontend/component-complete.jsx">Frontend Components</a> - 1000+ lines, every UI pattern</li>
+                            <li><a href="../xos-complete-patterns/backend/controller-complete.cs">Backend Controllers</a> - 600+ lines, all endpoints</li>
+                            <li><a href="../xos-complete-patterns/backend/service-complete.cs">Backend Services</a> - 1200+ lines, all DB operations</li>
+                            <li><a href="../xos-complete-patterns/styling/bootstrap-complete.html">Bootstrap Styling</a> - 1000+ lines, all UI patterns</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4>🔧 Tools & Automation</h4>
                         <ul>
-                            <li><a href="claude_docs/automation/agents/">AI Agents</a> - Specialized automation</li>
-                            <li><a href="claude_docs/hooks/">Claude Code Hooks</a> - Auto-configuration</li>
-                            <li><a href="claude_docs/testing/">Testing Guides</a> - Complete testing strategy</li>
-                            <li><a href="claude_docs/git-github/">Git Workflows</a> - Version control automation</li>
+                            <li><a href="../automation/agents/">AI Agents</a> - Specialized automation</li>
+                            <li><a href="../hooks/">Claude Code Hooks</a> - Auto-configuration</li>
+                            <li><a href="../testing/">Testing Guides</a> - Complete testing strategy</li>
+                            <li><a href="../git-github/">Git Workflows</a> - Version control automation</li>
                         </ul>
                     </div>
 
                     <div class="nav-card">
                         <h4>🩺 Troubleshooting</h4>
                         <ul>
-                            <li><a href="claude_docs/xos-complete-patterns/COMMON-PITFALLS.html">Common Pitfalls</a> - What breaks everything</li>
-                            <li><a href="claude_docs/html-docs/api-troubleshooting.html">API Issues</a> - Endpoint problems</li>
-                            <li><a href="claude_docs/html-docs/database-troubleshooting.html">Database Issues</a> - PostgreSQL problems</li>
-                            <li><a href="claude_docs/html-docs/testing-troubleshooting.html">Testing Issues</a> - Test failures</li>
+                            <li><a href="../xos-complete-patterns/COMMON-PITFALLS.html">Common Pitfalls</a> - What breaks everything</li>
+                            <li><a href="api-troubleshooting.html">API Issues</a> - Endpoint problems</li>
+                            <li><a href="database-troubleshooting.html">Database Issues</a> - PostgreSQL problems</li>
+                            <li><a href="testing-troubleshooting.html">Testing Issues</a> - Test failures</li>
                         </ul>
                     </div>
                 </div>
@@ -753,7 +753,7 @@ This is NOT standard React/.NET - use XOS-specific implementations.</pre>
                 <em>Last Updated: August 22, 2025</em><br>
                 <em>Maintainer: Development Team</em></p>
                 
-                <p><strong>Need Help?</strong> Start with <a href="claude_docs/html-docs/README.html">README.html</a> or browse the <a href="#xos-complete-patterns">XOS Complete Patterns</a> section for production-ready code examples.</p>
+                <p><strong>Need Help?</strong> Start with <a href="README.html">README.html</a> or browse the <a href="#xos-complete-patterns">XOS Complete Patterns</a> section for production-ready code examples.</p>
                 
                 <p><strong>Pro Tip:</strong> Always reference <code>../</code> files in your Claude prompts for accurate XOS Framework assistance.</p>
             </div>

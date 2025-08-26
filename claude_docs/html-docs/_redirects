@@ -1,0 +1,13 @@
+# Redirects and rewrites for XOS Documentation
+# Handle common documentation URL patterns
+
+# Legacy redirects
+/docs/* /:splat 301
+/documentation/* /:splat 301
+
+# Handle missing favicon requests
+/favicon.ico /favicon.png 200
+
+# Redirect missing files to index for SPA-like behavior (careful with this)
+# Only enable if needed for your specific routing requirements
+# /* /index.html 200
